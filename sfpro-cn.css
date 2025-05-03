@@ -1,0 +1,496 @@
+/* WEB FONT 2016.12.22 */
+html[lang=zh-CN] .more::after, 
+html[lang=zh-CN] .more .icon-htc,
+html[lang=zh-CN] .icon-downloadsolid::before, 
+html[lang=zh-CN] .icon-downloadsolid::after,
+html[lang=zh-CN] .icon-chevronright::before, 
+html[lang=zh-CN] .icon-chevronright::after { position: relative; top: -1.5px; }
+.icon-play:before,
+.icon-play:after,
+.icon-playcircle:before,
+.icon-playcircle:after { top:-1px; }
+
+
+
+html[lang=zh-CN] .more.arrowicon_top::before,
+html[lang=zh-CN] .more.arrowicon_top::after,
+html[lang=zh-CN] .more.arrowicon_top .icon-htc { top: 0px; }
+
+html[lang=zh-CN] .centeralign { padding-left: 0.4em; }
+@media only screen and (max-width: 735px) { html[lang=zh-CN] .centeralign { padding-left: 0; } }
+@media only screen and (max-width: 735px) and (max-device-width: 768px) { html[lang=zh-CN] .centeralign { padding-left: 0; } }
+
+/* center align all */
+html[lang=zh-CN] .centerall { padding-left: 0.4em; }
+
+/* center align all 0.5 */
+html[lang=zh-CN] .centerall_05 { padding-left: 0.5em; }
+html[lang=zh-CN] .centerall_055 { padding-left: 0.55em; }
+html[lang=zh-CN] .centerall_06 { padding-left: 0.6em; }
+
+/* center align , large and medium  0.4em , small 0.3*/
+html[lang=zh-CN] .centerall_43 { padding-left: 0.4em; }
+@media only screen and (max-width: 735px) { html[lang=zh-CN] .centerall_43 { padding-left: 0.3em; } }
+@media only screen and (max-width: 735px) and (max-device-width: 768px) { html[lang=zh-CN] .centerall_43 { padding-left: 0.3em;  } }
+
+
+/* center align for bigger font-size large and medium  0.6em */
+html[lang=zh-CN] .centeralign_06 { padding-left: 0.6em; }
+@media only screen and (max-width: 735px) { html[lang=zh-CN] .centeralign_06 { padding-left: 0; } }
+@media only screen and (max-width: 735px) and (max-device-width: 768px) { html[lang=zh-CN] .centeralign_06 { padding-left: 0; } }
+
+
+/* center align medium  and small*/
+@media only screen and (max-width: 1068px) { html[lang=zh-CN] .centerms { padding-left: 0.4em; } }
+@media only screen and (max-width: 735px) { html[lang=zh-CN] .centerms { padding-left: 0.4em; } }
+
+/* center align ,xs is different*/
+html[lang=zh-CN] .centerexs { padding-left: 0.3em; }
+@media only screen and (max-width: 320px){ html[lang=zh-CN] .centerexs { padding-left: 0.15em; }}
+
+/* center align , small 0.7*/
+
+@media only screen and (max-width: 735px) { html[lang=zh-CN] .center_s7 { padding-left: 0.65em; }}
+@media only screen and (max-width: 735px) and (max-device-width: 768px) { html[lang=zh-CN] html[lang=zh-TW] .center_s8 { padding-left: 0.65em; }}
+
+/* center align , small 0.4*/
+
+@media only screen and (max-width: 735px) { html[lang=zh-CN] .center_s4 { padding-left: 0.4em; }}
+@media only screen and (max-width: 735px) and (max-device-width: 768px) { html[lang=zh-CN] html[lang=zh-TW] .center_s4 { padding-left: 0.4em; }}
+
+
+
+/* --center align end--*/
+
+html[lang=zh-CN] sup.star {font-size: 0.8em;}
+html[lang=zh-CN] h1 sup.star, html[lang=zh-CN] h2 sup.star, html[lang=zh-CN] h3 sup.star {font-size: 0.5em;}
+
+html[lang=zh-CN] #ac-globalfooter .ac-gf-more::after,
+html[lang=zh-CN] #ac-globalfooter .ac-gf-more .icon-htc{top:-1px;}
+
+html[lang=zh-CN] .badge-small{font-size: 15px;}
+@media only screen and (max-width: 1024px) {html[lang=zh-CN] .badge-small{font-size: 12px;}}
+@media only screen and (max-width: 735px) { html[lang=zh-CN] .badge-small{font-size: 12px;}}
+
+html[lang=zh-CN] span.badge-half.seven{ margin-left:-0.1em; }
+
+
+
+html[lang=zh-CN] .intro,
+html[lang=zh-CN] .elevated-copy,
+html[lang=zh-CN] .elevated-intro{line-height: 1.6;}
+html[lang=zh-CN] .main .body-copy{line-height: 1.8;}
+
+/* <br> 在不同 viewport 的 换行 Show & Hide Start */
+@media only screen and (max-width: 735px) {html[lang=zh-CN] br.hide-for-small {display: none}}
+@media only screen and (max-width: 1024px) {html[lang=zh-CN] br.hide-for-medium {display: none}}
+html[lang=zh-CN] br.hide-for-large {display: none}
+@media only screen and (max-width: 1024px) {html[lang=zh-CN] br.hide-for-large {display: block}}
+
+@media only screen and (max-width: 735px) {html[lang=zh-CN] br.show-for-small {display: block}}
+@media only screen and (max-width: 320px) {html[lang=zh-CN] br.hide-for-xsmall {display: none}}
+@media only screen and (max-width: 1024px) {html[lang=zh-CN] br.show-for-medium {display: block}}
+
+html[lang=zh-CN] br.show-for-large {display: block}
+html[lang=zh-CN] br.show-only-for-small {display: none}
+@media only screen and (max-width: 735px) {html[lang=zh-CN] br.show-only-for-small {display: block}}
+
+html[lang=zh-CN] br.show-only-for-medium {display: none}
+@media only screen and (max-width: 1024px) {html[lang=zh-CN] br.show-only-for-medium {display: block}}
+@media only screen and (max-width: 1068px) {html[lang=zh-CN] br.show-only-for-medium {display: block}}
+@media only screen and (max-width: 735px) {html[lang=zh-CN] br.show-only-for-medium {display: none}}
+
+html[lang=zh-CN] br.show-only-for-large {display: block}
+@media only screen and (max-width: 1024px) {html[lang=zh-CN] br.show-only-for-large {display: none}}
+@media only screen and (max-width: 1068px) {html[lang=zh-CN] br.show-only-for-large {display: none}}
+@media only screen and (max-width: 735px) {html[lang=zh-CN] br.show-only-for-large {display: none}}
+
+br.show-only-for-xsmall {display: none}
+@media only screen and (max-width: 320px) {html[lang=zh-CN] br.show-only-for-xsmall {display: block}}
+
+html[lang=zh-CN] br.small-hide {display: none}
+html[lang=zh-CN] br.small-show {display: block}
+
+@media only screen and (min-width: 736px) {
+html[lang=zh-CN] br.medium-hide {display: none}
+html[lang=zh-CN] br.medium-show {display: block}}
+
+@media only screen and (min-width: 1069px) {
+html[lang=zh-CN] br.large-hide {display: none}
+html[lang=zh-CN] br.large-show {display: block}}
+
+@media only screen and (min-width: 1442px) {
+html[lang=zh-CN] br.xlarge-hide {display: none}
+html[lang=zh-CN] br.xlarge-show {display: block}}
+
+
+/* <br> 在不同 viewport 的 换行 Show & Hide End*/
+
+/* certer all */
+html[lang=zh-CN] .cl_00{
+	padding-left: 0em;
+}
+html[lang=zh-CN] .cl_01{
+	padding-left: 0.1em;
+}
+html[lang=zh-CN] .cl_015{
+	padding-left: 0.15em;
+}
+html[lang=zh-CN] .cl_02{
+	padding-left: 0.2em;
+}
+html[lang=zh-CN] .cl_025{
+	padding-left: 0.25em;
+}
+html[lang=zh-CN] .cl_03{
+	padding-left: 0.3em;
+}
+html[lang=zh-CN] .cl_035{
+	padding-left: 0.35em;
+}
+html[lang=zh-CN] .cl_04{
+	padding-left: 0.4em;
+}
+html[lang=zh-CN] .cl_045{
+	padding-left: 0.45em;
+}
+html[lang=zh-CN] .cl_05{
+	padding-left: 0.5em;
+}
+html[lang=zh-CN] .cl_055{
+	padding-left: 0.55em;
+}
+html[lang=zh-CN] .cl_06{
+	padding-left: 0.6em;
+}
+html[lang=zh-CN] .cl_065{
+	padding-left: 0.65em;
+}
+html[lang=zh-CN] .cl_07{
+	padding-left: 0.7em;
+}
+html[lang=zh-CN] .cl_075{
+	padding-left: 0.75em;
+}
+html[lang=zh-CN] .cl_08{
+	padding-left: 0.8em;
+}
+html[lang=zh-CN] .cl_085{
+	padding-left: 0.85em;
+}
+html[lang=zh-CN] .cl_09{
+	padding-left: 0.9em;
+}
+html[lang=zh-CN] .cl_095{
+	padding-left: 0.95em;
+}
+html[lang=zh-CN] .cl_100{
+	padding-left: 1em;
+}
+
+@media only screen and (max-width: 1068px) {
+	html[lang=zh-CN] .cm_00{
+		padding-left: 0em;
+	}
+	html[lang=zh-CN] .cm_01{
+		padding-left: 0.1em;
+	}
+	html[lang=zh-CN] .cm_015{
+		padding-left: 0.15em;
+	}
+	html[lang=zh-CN] .cm_02{
+		padding-left: 0.2em;
+	}
+	html[lang=zh-CN] .cm_025{
+		padding-left: 0.25em;
+	}
+	html[lang=zh-CN] .cm_03{
+		padding-left: 0.3em;
+	}
+	html[lang=zh-CN] .cm_035{
+		padding-left: 0.35em;
+	}
+	html[lang=zh-CN] .cm_04{
+		padding-left: 0.4em;
+	}
+	html[lang=zh-CN] .cm_045{
+		padding-left: 0.45em;
+	}
+	html[lang=zh-CN] .cm_05{
+		padding-left: 0.5em;
+	}
+	html[lang=zh-CN] .cm_055{
+		padding-left: 0.55em;
+	}
+	html[lang=zh-CN] .cm_06{
+		padding-left: 0.6em;
+	}
+	html[lang=zh-CN] .cm_065{
+		padding-left: 0.65em;
+	}
+	html[lang=zh-CN] .cm_07{
+		padding-left: 0.7em;
+	}
+	html[lang=zh-CN] .cm_075{
+		padding-left: 0.75em;
+	}
+	html[lang=zh-CN] .cm_08{
+		padding-left: 0.8em;
+	}
+	html[lang=zh-CN] .cm_085{
+		padding-left: 0.85em;
+	}
+	html[lang=zh-CN] .cm_09{
+		padding-left: 0.9em;
+	}
+	html[lang=zh-CN] .cm_095{
+		padding-left: 0.95em;
+	}
+	html[lang=zh-CN] .cm_100{
+		padding-left: 1em;
+	}
+}
+@media only screen and (max-width: 734px) {
+	html[lang=zh-CN] .cs_00{
+		padding-left: 0em;
+	}
+	html[lang=zh-CN] .cs_01{
+		padding-left: 0.1em;
+	}
+	html[lang=zh-CN] .cs_015{
+		padding-left: 0.15em;
+	}
+	html[lang=zh-CN] .cs_02{
+		padding-left: 0.2em;
+	}
+	html[lang=zh-CN] .cs_025{
+		padding-left: 0.25em;
+	}
+	html[lang=zh-CN] .cs_03{
+		padding-left: 0.3em;
+	}
+	html[lang=zh-CN] .cs_035{
+		padding-left: 0.35em;
+	}
+	html[lang=zh-CN] .cs_04{
+		padding-left: 0.4em;
+	}
+	html[lang=zh-CN] .cs_045{
+		padding-left: 0.45em;
+	}
+	html[lang=zh-CN] .cs_05{
+		padding-left: 0.5em;
+	}
+	html[lang=zh-CN] .cs_055{
+		padding-left: 0.55em;
+	}
+	html[lang=zh-CN] .cs_06{
+		padding-left: 0.6em;
+	}
+	html[lang=zh-CN] .cs_065{
+		padding-left: 0.65em;
+	}
+	html[lang=zh-CN] .cs_07{
+		padding-left: 0.7em;
+	}
+	html[lang=zh-CN] .cs_075{
+		padding-left: 0.75em;
+	}
+	html[lang=zh-CN] .cs_08{
+		padding-left: 0.8em;
+	}
+	html[lang=zh-CN] .cs_085{
+		padding-left: 0.85em;
+	}
+	html[lang=zh-CN] .cs_09{
+		padding-left: 0.9em;
+	}
+	html[lang=zh-CN] .cs_095{
+		padding-left: 0.95em;
+	}
+	html[lang=zh-CN] .cs_100{
+		padding-left: 1em;
+	}
+}
+
+/* 隐藏符号距离 */
+.hide-symbol {
+		margin-right: -0.4em;
+}
+
+.hide-symbol.l0 {
+		margin-right: 0em;
+}
+
+.hide-symbol.l1 {
+		margin-right: -0.1em;
+}
+
+.hide-symbol.l2 {
+		margin-right: -0.2em;
+}
+
+.hide-symbol.l3 {
+		margin-right: -0.3em;
+}
+
+.hide-symbol.l4 {
+		margin-right: -0.4em;
+}
+
+.hide-symbol.l5 {
+		margin-right: -0.5em;
+}
+
+.hide-symbol.l6 {
+		margin-right: -0.6em;
+}
+
+.hide-symbol.l7 {
+		margin-right: -0.7em;
+}
+
+.hide-symbol.l8 {
+		margin-right: -0.8em;
+}
+
+.hide-symbol.l9 {
+		margin-right: -0.9em;
+}
+
+.hide-symbol.l10 {
+		margin-right: -1em;
+}
+
+@media only screen and (max-width: 1068px) {
+		.hide-symbol.m0 {
+				margin-right: 0em;
+		}
+		.hide-symbol.m1 {
+				margin-right: -0.1em;
+		}
+		.hide-symbol.m2 {
+				margin-right: -0.2em;
+		}
+		.hide-symbol.m3 {
+				margin-right: -0.3em;
+		}
+		.hide-symbol.m4 {
+				margin-right: -0.4em;
+		}
+		.hide-symbol.m5 {
+				margin-right: -0.5em;
+		}
+		.hide-symbol.m6 {
+				margin-right: -0.6em;
+		}
+		.hide-symbol.m7 {
+				margin-right: -0.7em;
+		}
+		.hide-symbol.m8 {
+				margin-right: -0.8em;
+		}
+		.hide-symbol.m9 {
+				margin-right: -0.9em;
+		}
+		.hide-symbol.m10 {
+				margin-right: -1em;
+		}
+}
+
+@media only screen and (max-width: 734px) {
+		.hide-symbol.s0 {
+				margin-right: 0em;
+		}
+		.hide-symbol.s1 {
+				margin-right: -0.1em;
+		}
+		.hide-symbol.s2 {
+				margin-right: -0.2em;
+		}
+		.hide-symbol.s3 {
+				margin-right: -0.3em;
+		}
+		.hide-symbol.s4 {
+				margin-right: -0.4em;
+		}
+		.hide-symbol.s5 {
+				margin-right: -0.5em;
+		}
+		.hide-symbol.s6 {
+				margin-right: -0.6em;
+		}
+		.hide-symbol.s7 {
+				margin-right: -0.7em;
+		}
+		.hide-symbol.s8 {
+				margin-right: -0.8em;
+		}
+		.hide-symbol.s9 {
+				margin-right: -0.9em;
+		}
+		.hide-symbol.s10 {
+				margin-right: -1em;
+		}
+}
+
+/* Ignore punctuation */
+
+.headline-center-l{
+	position: absolute;
+}
+
+@media only screen and (max-width: 1068px) {
+	.headline-center-m{
+		position: absolute;
+	}
+}
+
+@media only screen and (max-width: 734px) {
+	.headline-center-s{
+		position: absolute;
+	}
+}
+
+/* half space */
+.gc-half-space {
+    font-size: 0.5em;
+}
+
+
+/* Abbreviation - Ignore punctuation */
+.l-p {
+	position: absolute;
+}
+
+@media only screen and (max-width: 1068px) {
+	.m-p {
+		position: absolute;
+	}
+}
+
+@media only screen and (max-width: 734px) {
+	.s-p {
+		position: absolute;
+	}
+}
+
+.l-rp {
+	position: static;
+}
+
+@media only screen and (max-width: 1068px) {
+	.m-rp {
+		position: static;
+	}
+}
+
+@media only screen and (max-width: 734px) {
+	.s-rp {
+		position: static;
+	}
+}
+/* fixed icon */
+.icon-wrapper .icon, .icon-wrapper .more:not(.icon-before)::after, .icon-wrapper .icon-before::before, .icon-wrapper .icon-after::after {
+    position: relative;
+}
