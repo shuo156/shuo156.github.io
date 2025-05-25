@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高中数学知识速记卡片</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- KaTeX CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet">
+    <!-- 自定义字体 CSS -->
+    <link href="https://shuo156.github.io/custom-font.css" rel="stylesheet">
+    <!-- 自定义样式 CSS -->
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+            --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #212529;
+            --card-bg: #343a40;
+            --text-color: #f8f9fa;
+            --card-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            padding: 2rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            box-shadow: var(--card-shadow);
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+            height: 250px;
+            position: relative;
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            overflow-y: auto;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1000;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+
+        .stage-selector {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .stage-selector .btn {
+            margin: 0 0.5rem;
+        }
+
+        .stage-content {
+            display: none;
+        }
+
+        .stage-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <button class="btn btn-primary theme-toggle" onclick="toggleTheme()">切换主题</button>
+    <div class="container">
+        <h1>高中数学知识速记卡片</h1>
+        <div class="stage-selector">
+            <button class="btn btn-outline-primary" onclick="showStage('grade1')">高一</button>
+            <button class="btn btn-outline-primary" onclick="showStage('grade2')">高二</button>
+            <button class="btn btn-outline-primary" onclick="showStage('grade3')">高三</button>
+        </div>
+
+        <!-- 高一内容 -->
+        <div id="grade1" class="stage-content active">
+            <div class="row">
+                <!-- 集合 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-front">
+                            <h5>集合</h5>
+                            <p>基本概念</p>
+                        </div>
+                        <div class="card-back">
+                            <p>集合：由满足特定条件的元素组成的整体。<br>
+                            表示方法：列举法、描述法<br>
+                            运算：\(\cup\)（并集）、\(\cap\)（交集）、\(A \setminus B\)（补集）<br>
+                            <strong>例题</strong>: \( A = \{1, 2, 3\}, B = \{2, 3, 4\} \)，求 \( A \cap B \)。<br>
+                            <strong>解析</strong>: \( A \cap B = \{2, 3\} \)，取共同元素。</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 函数 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-front">
+                            <h5>函数</h5>
+                            <p>定义与性质</p>
+                        </div>
+                        <div class="card-back">
+                            <p>函数：\( y = f(x) \)，从定义域到值域的映射。<br>
+                            性质：单调性、奇偶性、周期性<br>
+                            <strong>例题</strong>: 判断 \( f(x) = x^2 \) 的奇偶性。<br>
+                            <strong>解析</strong>: \( f(-x) = (-x)^2 = x^2 = f(x) \)，为偶函数。</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 指数函数 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-front">
+                            <h5>指数函数</h5>
+                            <p>形式与性质</p>
+                        </div>
+                        <div class="card-back">
+                            <p>形式：\( y = a^x \ (a > 0, a \neq 1) \)<br>
+                            性质：当 \( a > 1 \)，单调递增；当 \( 0 < a < 1 \)，单调递减。<br>
+                            <strong>例题</strong>: 求 \( y = 2^x \) 在 \( x = 3 \) 的值。<br>
+                            <strong>解析</strong>: \( y = 2^3 = 8 \).</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 对数函数 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-front">
+                            <h5>对数函数</h5>
+                            <p>形式与性质</p>
+                        </div>
+                        <div class="card-back">
+                            <p>形式：\( y = \log_a x \ (a > 0, a \neq 1) \)<br>
+                            性质：定义域 \( (0, +\infty) \)，值域 \( \mathbb{R} \)<br>
+                            <strong>例题</strong>: 求 \( \log_2 8 \)。<br>
+                            <strong>解析</strong>: \( \log_2 8 = \log_2 (2^3) = 3 \).</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 三角函数 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-front">
+                            <h5>三角函数</h5>
+                            <p>基本公式</p>
+                        </div>
+                        <div class="card-back">
+                            <p>定义：\( \sin \theta, \cos \theta, \tan \theta \)<br>
+                            公式：\( \sin^2 \theta + \cos^2 \theta = 1 \)<br>
+                            <strong>例题</strong>: 求 \( \sin \frac{\pi}{6} \)。<br>
+                            <strong>解析</strong>: \( \sin \frac{\pi}{6} = \frac{1}{2} \).</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 数列 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-front">
+                            <h5>数列</h5>
+                            <p>等差与等比</p>
+                        </div>
+                        <div class="card-back">
+                            <p>等差：\( a_n = a_1 + (n-1)d \)<br>
+                            等比：\( a_n = a_1 \cdot q^{n-1} \)<br>
+                            <strong>例题</strong>: 等差数列首项 2，公差 3，求第 5 项。<br>
+                            <strong>解析</strong>: \( a_5 = 2 + (5-1) \cdot 3 = 14 \).</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 向量 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-front">
+                            <h5>向量</h5>
+                            <p>运算与性质</p>
+                        </div>
+                        <div class="card-back">
+                            <p>运算：加法、数量积 \( \vec{a} \cdot \vec{b} = |\vec{a}||\vec{b}|\cos \theta \)<br>
+                            <strong>例题</strong>: \( \vec{a} = (1, 2), \vec{b} = (3, 4) \)，求 \( \vec{a} + \vec{b} \)。<br>
+                            <strong>解析</strong>: \( \vec{a} + \vec{b} = (1+3, 2+4) = (4, 6) \).</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 基本不等式 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-front">
+                            <h5>基本不等式</h5>
+                            <p>均值与柯西</p>
+                        </div>
+                        <div class="card-back">
+                            <p>均值：\( \frac{a + b}{2} \geq \sqrt{ab} \)<br>
+                            <strong>例题</strong>: 验证 \( a = 4, b = 9 \)。<br>
+                            <strong>解析</strong>: \( \frac{4 + 9}{2} = 6.5 \geq \sqrt{4 \cdot 9} = 6 \)，成立。</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 二次函数 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-front">
+                            <h5>二次函数</h5>
+                            <p> Cleveland
+                            <strong>例题</strong>: 求 \( y = x^2 - 4x + 3 \) 的顶点。<br>
+                            <strong>解析</strong>: \( x = -\frac{-4}{2 \cdot 1} = 2 \)，\( y = 2^2 - 4 \cdot 2 + 3 = -1 \)，顶点 \( (2, -1) \).</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 排列组合 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-front">
+                            <h5>排列组合</h5>
+                            <p>基本公式</p>
+                        </div>
+                        <div class="card-back">
+                            <p>排列：\( A_n^m = \frac{n!}{(n-m)!} \)<br>
+                            组合：\( C_n^m = \frac{n!}{m!(n-m)!} \)<br>
+                            <strong>例题</strong>: 从 5 人中选 3 人，求组合数。<br>
+                            <strong>解析</strong>: \( C_5^3 = \frac{5!}{3! \cdot 2!} = 10 \).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 高二内容 -->
+        <div id="grade2" class="stage-content">
+            <div class="row">
+                <!-- 立体几何 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-front">
+                            <h5>立体几何</h5>
+                            <p>基本概念</p>
+                        </div>
+                        <div class="card-back">
+                            <p>点、线、面关系：平行、垂直、夹角<br>
+                            <strong>例题</strong>: 求正方体对角线长度（边长 \( a \)。<br>
+                            <strong>解析</strong>: 空间对角线 \( d = a\sqrt{3} \)，由勾股定理推导。</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 直线方程 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-front">
+                            <h5>直线方程</h5>
+                            <p>形式与性质</p>
+                        </div>
+                        <div class="card-back">
+                            <p>形式：点斜式 \( y - y_1 = k(x - x_1) \)，一般式 \( ax + by + c = 0 \)<br>
+                            <strong>例题</strong>: 求过点 \( (1, 2) \)，斜率 3 的直线方程。<br>
+                            <strong>解析</strong>: \( y - 2 = 3(x - 1) \)，即 \( y = 3x - 1 \).</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 圆的方程 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-front">
+                            <h5>圆的方程</h5>
+                            <p>标准与一般</p>
+                        </div>
+                        <div class="card-back">
+                            <p>标准式：\( (x - h)^2 + (y - k)^2 = r^2 \)<br>
+                            <strong>例题</strong>: 圆心 \( (1, -2) \)，半径 3，求方程。<br>
+                            <strong>解析</strong>: \( (x - 1)^2 + (y + 2)^2 = 9 \).</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 椭圆 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-front">
+                            <h5>椭圆</h5>
+                            <p>标准方程</p>
+                        </div>
+                        <div class="card-back">
+                            <p>标准式：\( \frac{x^2}{a^2} + \frac{y^2}{b^2} = 1 \ (a > b > 0) \)<br>
+                            <strong>例题</strong>: 求椭圆 \( \frac{x^2}{16} + \frac{y^2}{9} = 1 \) 的焦距。<br>
+                            <strong>解析</strong>: \( c = \sqrt{a^2 - b^2} = \sqrt{16 - 9} = \sqrt{7} \).</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 复数 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-front">
+                            <h5>复数</h5>
+                            <p>运算与性质</p>
+                        </div>
+                        <div class="card-back">
+                            <p>形式：\( z = a + bi \)<br>
+                            运算：加减乘除、模 \( |z| = \sqrt{a^2 + b^2} \)<br>
+                            <strong>例题</strong>: 求 \( (1 + i)(2 - i) \)。<br>
+                            <strong>解析</strong>: \( = 2 - i + 2i - i^2 = 3 + i \).</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 统计与概率 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-front">
+                            <h5>统计与概率</h5>
+                            <p>基本概念</p>
+                        </div>
+                        <div class="card-back">
+                            <p>概率：\( P(A) = \frac{\text{有利事件数}}{\text{总事件数}} \)<br>
+                            <strong>例题</strong>: 掷骰子，求点数为 6 的概率。<br>
+                            <strong>解析</strong>: \( P = \frac{1}{6} \).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 高三内容 -->
+        <div id="grade3" class="stage-content">
+            <div class="row">
+                <!-- 导数 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-front">
+                            <h5>导数</h5>
+                            <p>定义与应用</p>
+                        </div>
+                        <div class="card-back">
+                            <p>定义：\( f'(x) = \lim_{\Delta x \to 0} \frac{f(x + \Delta x) - f(x)}{\Delta x} \)<br>
+                            <strong>例题</strong>: 求 \( f(x) = x^3 \) 的导数。<br>
+                            <strong>解析</strong>: \( f'(x) = 3x^2 \).</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 积分 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-front">
+                            <h5>积分</h5>
+                            <p>基本概念</p>
+                        </div>
+                        <div class="card-back">
+                            <p>不定积分：\( \int f(x) \, dx = F(x) + C \)<br>
+                            <strong>例题</strong>: 求 \( \int x^2 \, dx \)。<br>
+                            <strong>解析</strong>: \( \int x^2 \, dx = \frac{x^3}{3} + C \).</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 空间向量 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-front">
+                            <h5>空间向量</h5>
+                            <p>运算与应用</p>
+                        </div>
+                        <div class="card-back">
+                            <p>运算：数量积、向量积<br>
+                            <strong>例题</strong>: 求 \( \vec{a} = (1, 0, 1), \vec{b} = (0, 1, 0) \) 的数量积。<br>
+                            <strong>解析</strong>: \( \vec{a} \cdot \vec{b} = 1 \cdot 0 + 0 \cdot 1 + 1 \cdot 0 = 0 \).</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 推理与证明 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-front">
+                            <h5>推理与证明</h5>
+                            <p>方法</p>
+                        </div>
+                        <div class="card-back">
+                            <p>方法：归纳法、反证法<br>
+                            <strong>例题</strong>: 证明 \( 1 + 3 + \dots + (2n-1) = n^2 \)。<br>
+                            <strong>解析</strong>: 数学归纳法：当 \( n = 1 \)，成立；假设 \( n = k \) 成立，则 \( n = k+1 \) 时验证成立。</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 算法初步 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-front">
+                            <h5>算法初步</h5>
+                            <p>基本概念</p>
+                        </div>
+                        <div class="card-back">
+                            <p>算法：解决问题的方法和步骤<br>
+                            <strong>例题</strong>: 编写求 \( 1 + 2 + \dots + n \) 的算法。<br>
+                            <strong>解析</strong>: 使用循环，公式 \( S = \frac{n(n+1)}{2} \).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <!-- KaTeX JS -->
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+    <script>
+        // KaTeX 渲染
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "\\(", right: "\\)", display: false}
+                ]
+            });
+        });
+
+        // 卡片翻转
+        $(document).ready(function() {
+            $('.card').click(function() {
+                $(this).toggleClass('flipped');
+            });
+        });
+
+        // 主题切换
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                html.removeAttribute('data-theme');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+            }
+        }
+
+        // 阶段切换
+        function showStage(grade) {
+            $('.stage-content').removeClass('active');
+            $(`#${grade}`).addClass('active');
+        }
+    </script>
+</body>
+</html>
