@@ -11,7 +11,7 @@
 }
 
 body {
-    background-color: #f5f5f5;
+    background-color: #f0f2f5;
     display: flex;
     height: 100vh;
     overflow: hidden;
@@ -26,12 +26,12 @@ body {
 /* 侧边栏 */
 .sidebar {
     width: 260px;
-    background-color: #1a1a1a;
+    background-color: #20232a;
     color: #fff;
     padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 15px;
     transition: transform 0.3s ease;
     position: fixed;
     top: 0;
@@ -56,7 +56,7 @@ body {
     font-weight: 600;
 }
 
-.new-chat {
+.new-chat, .save-chat, .load-chat {
     background-color: #2a2a2a;
     color: #fff;
     border: none;
@@ -66,7 +66,7 @@ body {
     transition: background-color 0.3s;
 }
 
-.new-chat:hover {
+.new-chat:hover, .save-chat:hover, .load-chat:hover {
     background-color: #3a3a3a;
 }
 
@@ -81,6 +81,7 @@ body {
     background: #fff;
     border-radius: 8px;
     cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .hamburger svg {
@@ -95,6 +96,7 @@ body {
     flex-direction: column;
     background-color: #fff;
     transition: margin-left 0.3s ease;
+    margin-left: 260px;
 }
 
 .chat-history {
@@ -107,11 +109,14 @@ body {
 }
 
 .message {
+    display: flex;
+    align-items: flex-start;
     max-width: 80%;
     padding: 12px 16px;
     border-radius: 8px;
     animation: fadeIn 0.5s ease-in;
     font-size: 16px;
+    gap: 10px;
 }
 
 .message.user {
@@ -129,6 +134,49 @@ body {
 .message.thinking::after {
     content: '...';
     animation: typing 1s infinite;
+}
+
+.message .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+.message.ai .avatar {
+    background: url('ai/deepseek.png') no-repeat center/cover; /* deepseek头像 */
+}
+
+.message.user .avatar {
+    display: none; /* 用户无头像 */
+}
+
+.message.think, .message.search {
+    background-color: #e6f0ff;
+    cursor: pointer;
+    position: relative;
+}
+
+.message.think .expand-btn, .message.search .expand-btn {
+    display: inline-block;
+    margin-left: 10px;
+    padding: 4px 8px;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.message .expanded-content {
+    display: none;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.message.expanded .expanded-content {
+    display: block;
 }
 
 /* 输入区域 */
@@ -236,6 +284,11 @@ body {
         padding: 10px 12px;
     }
 
+    .message .avatar {
+        width: 28px;
+        height: 28px;
+    }
+
     .input-area {
         padding: 10px;
     }
@@ -276,7 +329,7 @@ body {
         font-size: 14px;
     }
 
-    .new-chat {
+    .new-chat, .save-chat, .load-chat {
         padding: 6px 10px;
         font-size: 12px;
     }
@@ -290,9 +343,14 @@ body {
         width: 18px;
         height: 18px;
     }
+
+    .message .avatar {
+        width: 24px;
+        height: 24px;
+    }
 }
 
 /* 键盘弹出时调整输入框 */
 .keyboard-active .input-area {
-    padding-bottom: 200px; /* 动态调整以避免键盘遮挡 */
+    padding-bottom: 200px;
 }
