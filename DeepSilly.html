@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeepSilly</title>
+    <title>DeepSeek智能助手</title>
     <link rel="stylesheet" href="ai/styles.css">
 </head>
 <body>
@@ -14,9 +14,11 @@
                 <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
                 </svg>
-                <h1>DeepSilly</h1>
+                <h1>DeepSeek智能助手</h1>
             </div>
             <button class="new-chat">新建聊天</button>
+            <button class="save-chat">保存聊天</button>
+            <button class="load-chat">加载聊天</button>
         </div>
         <!-- Hamburger 菜单（移动端） -->
         <div class="hamburger" id="hamburger">
@@ -28,7 +30,7 @@
         <div class="chat-area">
             <div class="chat-history" id="chatHistory"></div>
             <div class="input-area">
-                <textarea id="userInput" placeholder="给DeepSilly发送消息"></textarea>
+                <textarea id="userInput" placeholder="向DeepSilly提问"></textarea>
                 <div class="input-buttons">
                     <button id="sendBtn">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
