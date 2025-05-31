@@ -3,11 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DeepSeek Chat</title>
-  <!-- 引入 Roboto 字体 -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <title>DeepSeek</title>
+  <!-- 引入 DeepSeek 官方字体 -->
   <style>
-    /* 自定义字体作为回退 */
     @font-face {
       font-family: 'DeepSeekFont';
       src: url('fontDS.ttf') format('truetype');
@@ -18,34 +16,33 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Roboto', 'DeepSeekFont', sans-serif;
+      font-family: 'DeepSeekFont', sans-serif;
     }
 
-    /* 主题变量 */
+    /* ===== 主题色彩变量 ===== */
     :root {
-      --color-primary: #003366; /* DeepSeek 深蓝色 */
-      --color-secondary: #BAC4FF; /* 辅助浅蓝色 */
-      --color-bg-main-light: #ffffff; /* 白色背景 */
-      --color-bg-sidebar-light: #f5f5f5;
-      --color-bg-chat-light: #ffffff;
-      --color-bg-input-light: #eeeeee;
-      --color-bubble-ai-light: #e5e5e5;
-      --color-bubble-user-light: #d3d3d3;
-      --color-text-light: #333333;
-      --color-icon-light: #333333;
-      --color-border-light: #dddddd;
-      --color-bg-main-dark: #18191a;
+      --color-bg-main-light: #FFFFFF;
+      --color-bg-sidebar-light: #F5F5F5;
+      --color-bg-chat-light: #FFFFFF;
+      --color-bg-input-light: #EEEEEE;
+      --color-bubble-ai-light: #E5E5E5;
+      --color-bubble-user-light: #D3D3D3;
+      --color-text-light: #1A1A1A;
+      --color-icon-light: #1A1A1A;
+      --color-border-light: #DDDDDD;
+
+      --color-bg-main-dark: #18191A;
       --color-bg-sidebar-dark: #202225;
-      --color-bg-chat-dark: #18191a;
+      --color-bg-chat-dark: #18191A;
       --color-bg-input-dark: #202225;
-      --color-bubble-ai-dark: #282b30;
-      --color-bubble-user-dark: #5865f2;
-      --color-text-dark: #e3e5e8;
-      --color-icon-dark: #e3e5e8;
-      --color-border-dark: #2f3136;
+      --color-bubble-ai-dark: #282B30;
+      --color-bubble-user-dark: #5865F2;
+      --color-text-dark: #E3E5E8;
+      --color-icon-dark: #E3E5E8;
+      --color-border-dark: #2F3136;
     }
 
-    /* 浅色主题 */
+    /* ===== 默认浅色主题 ===== */
     body.light {
       background-color: var(--color-bg-main-light);
       color: var(--color-text-light);
@@ -76,31 +73,37 @@
       background-color: var(--color-bubble-user-light);
       color: var(--color-text-light);
     }
-    body.light .icon-btn svg, body.light .new-chat-btn svg {
+    body.light .icon-btn svg path,
+    body.light .menu-btn svg path {
       stroke: var(--color-icon-light);
       fill: var(--color-icon-light);
     }
     body.light .new-chat-btn {
-      background-color: var(--color-primary);
-      color: #ffffff;
-      border: none;
+      background-color: var(--color-bubble-user-light);
+      color: var(--color-text-light);
+      border: 1px solid var(--color-border-light);
     }
     body.light .sidebar-footer {
       border-top: 1px solid var(--color-border-light);
     }
-    body.light .navbar {
-      background-color: var(--color-bg-main-light);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    body.light .sidebar-footer .profile-pic {
+      /* background: #CCCCCC; 移除背景，使用SVG */
     }
-    body.light .nav-links a {
+    body.light .menu-panel {
+      background-color: var(--color-bg-sidebar-light);
+      border: 1px solid var(--color-border-light);
+    }
+    body.light .menu-panel li {
       color: var(--color-text-light);
     }
-    body.light .header-actions button {
-      background-color: var(--color-primary);
-      color: #ffffff;
+    body.light .menu-panel li:hover {
+      background-color: var(--color-border-light);
+    }
+    body.light .menu-btn {
+      background-color: var(--color-bg-input-light); /* 使用主题变量 */
     }
 
-    /* 深色主题 */
+    /* ===== 深色主题 ===== */
     body.dark {
       background-color: var(--color-bg-main-dark);
       color: var(--color-text-dark);
@@ -130,98 +133,101 @@
       background-color: var(--color-bubble-user-dark);
       color: var(--color-text-dark);
     }
-    body.dark .icon-btn svg, body.dark .new-chat-btn svg {
+    body.dark .icon-btn svg path,
+    body.dark .menu-btn svg path {
       stroke: var(--color-icon-dark);
       fill: var(--color-icon-dark);
     }
     body.dark .new-chat-btn {
       background-color: var(--color-bubble-user-dark);
       color: var(--color-text-dark);
+      border: none;
     }
     body.dark .sidebar-footer {
       border-top: 1px solid var(--color-border-dark);
     }
-    body.dark .navbar {
-      background-color: var(--color-bg-main-dark);
+    body.dark .sidebar-footer .profile-pic {
+      /* background: #555555; 移除背景，使用SVG */
     }
-    body.dark .nav-links a {
+    body.dark .menu-panel {
+      background-color: var(--color-bg-sidebar-dark);
+      border: 1px solid var(--color-border-dark);
+    }
+    body.dark .menu-panel li {
       color: var(--color-text-dark);
     }
-    body.dark .header-actions button {
-      background-color: var(--color-primary);
-      color: #ffffff;
+    body.dark .menu-panel li:hover {
+      background-color: var(--color-border-dark);
+    }
+    body.dark .menu-btn {
+      background-color: var(--color-bg-input-dark); /* 使用主题变量 */
     }
 
-    /* 全局布局 */
+    /* ===== 全局布局与样式 ===== */
     html, body {
       height: 100%;
       width: 100%;
       overflow: hidden;
-      font-size: 16px; /* 主体字体大小 */
       transition: background-color 0.3s, color 0.3s;
     }
     .container {
       display: flex;
-      height: calc(100vh - 60px); /* 留出顶部导航栏空间 */
-    }
-
-    /* 顶部导航栏 */
-    .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
+      height: 100vh;
       width: 100%;
-      height: 60px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 20px;
-      z-index: 1000;
-    }
-    .logo {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--color-primary);
-    }
-    .nav-links {
-      list-style: none;
-      display: flex;
-      gap: 20px;
-    }
-    .nav-links a {
-      text-decoration: none;
-      font-size: 16px;
-      transition: color 0.2s;
-    }
-    .nav-links a:hover {
-      color: var(--color-secondary);
-    }
-    .header-actions {
-      display: flex;
-      gap: 10px;
-    }
-    .header-actions button {
-      padding: 8px 16px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: opacity 0.2s;
-    }
-    .header-actions button:hover {
-      opacity: 0.85;
-    }
-    .menu-toggle {
-      display: none;
-      font-size: 24px;
-      cursor: pointer;
-      color: var(--color-text-light);
-    }
-    body.dark .menu-toggle {
-      color: var(--color-text-dark);
     }
 
-    /* 侧边栏 */
+    /* ===== 菜单按钮（灰色三条杠） ===== */
+    .menu-btn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 11;
+      transition: background 0.2s;
+    }
+    .menu-btn:hover {
+      background-color: #AAAAAA;
+    }
+    .menu-btn svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    /* ===== 弹出菜单（用于切换主题 & 清除记录） ===== */
+    .menu-panel {
+      position: absolute;
+      top: 56px;
+      left: 10px;
+      width: 180px;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: none;
+      z-index: 12;
+    }
+    .menu-panel ul {
+      list-style: none;
+    }
+    .menu-panel li {
+      padding: 10px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .menu-panel li + li {
+      border-top: 1px solid var(--color-border-light);
+    }
+
+    /* ===== 侧边栏 ===== */
     .sidebar {
       width: 280px;
       display: flex;
@@ -240,7 +246,7 @@
       margin-right: 10px;
     }
     .sidebar-header span {
-      font-size: 24px; /* 标题字体大小 */
+      font-size: 1.2rem;
       font-weight: bold;
     }
     .new-chat-btn {
@@ -249,7 +255,7 @@
       margin: 10px 20px;
       padding: 10px 14px;
       border-radius: 8px;
-      font-size: 16px;
+      font-size: 0.95rem;
       cursor: pointer;
       transition: background 0.2s, color 0.2s;
     }
@@ -260,12 +266,14 @@
       width: 18px;
       height: 18px;
       margin-right: 8px;
+      stroke: currentColor;
+      fill: currentColor;
     }
     .chat-list {
       flex: 1;
       overflow-y: auto;
       padding: 20px;
-      font-size: 16px;
+      font-size: 0.9rem;
       line-height: 1.5;
       text-align: center;
     }
@@ -276,6 +284,7 @@
       display: flex;
       align-items: center;
       padding: 20px;
+      transition: border-color 0.3s;
     }
     .profile-pic {
       width: 36px;
@@ -284,27 +293,29 @@
       margin-right: 12px;
     }
     .profile-name {
-      font-size: 16px;
+      font-size: 1rem;
     }
 
-    /* 主区域 */
+    /* ===== 主区域 ===== */
     .main {
       flex: 1;
       display: flex;
       flex-direction: column;
       position: relative;
+      transition: background-color 0.3s;
     }
     .chat-window {
       flex: 1;
       padding: 20px 24px;
       overflow-y: auto;
       scrollbar-width: none;
+      transition: background-color 0.3s;
     }
     .chat-window::-webkit-scrollbar {
       display: none;
     }
 
-    /* 消息气泡 */
+    /* ===== 消息气泡 & 动画 ===== */
     .message {
       display: flex;
       margin-bottom: 16px;
@@ -334,23 +345,26 @@
     .message .bubble {
       max-width: 65%;
       padding: 10px 14px;
-      font-size: 16px;
+      font-size: 1rem;
       line-height: 1.5;
       word-break: break-word;
       border-radius: 12px;
+      transition: background-color 0.3s, color 0.3s;
     }
     .message.ai .bubble {
-      border-radius: 12px 12px 12px 0;
+      border-radius: 12px 12px 12px 0px;
     }
     .message.user .bubble {
-      border-radius: 12px 12px 0 12px;
+      border-radius: 12px 12px 0px 12px;
     }
 
-    /* 输入区域 */
+    /* ===== 输入区 ===== */
     .chat-input {
       display: flex;
       align-items: center;
       padding: 10px 20px;
+      border-top: 1px solid;
+      transition: background-color 0.3s, border-color 0.3s;
     }
     .chat-input input {
       flex: 1;
@@ -358,8 +372,13 @@
       padding: 0 14px;
       border: none;
       border-radius: 8px;
-      font-size: 16px;
+      font-size: 1rem;
       outline: none;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .chat-input input::placeholder {
+      color: inherit;
+      opacity: 0.6;
     }
     .icon-btn {
       width: 40px;
@@ -371,9 +390,8 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: background 0.2s;
-      background-color: var(--color-primary);
-      color: #ffffff;
+      transition: background 0.2s, color 0.3s;
+      flex-shrink: 0;
     }
     .icon-btn:hover {
       opacity: 0.85;
@@ -381,9 +399,11 @@
     .icon-btn svg {
       width: 20px;
       height: 20px;
+      stroke: currentColor;
+      fill: currentColor;
     }
 
-    /* 加载动画 */
+    /* ===== 加载动画样式 ===== */
     .loading-container {
       display: flex;
       align-items: center;
@@ -394,137 +414,126 @@
       height: 32px;
     }
 
-    /* 按钮激活态 */
-    .icon-btn.active {
-      background-color: var(--color-secondary);
+    /* ===== 按钮激活态样式（淡蓝背景） ===== */
+    .icon-btn.active,
+    .menu-btn.active {
+      background-color: #E0F2FF;
     }
 
-    /* 响应式设计 */
-    @media (max-width: 768px) {
-      .navbar {
-        flex-wrap: wrap;
-      }
-      .menu-toggle {
-        display: block;
-      }
-      .nav-links {
-        display: none;
-        flex-direction: column;
-        width: 100%;
-        background-color: var(--color-bg-main-light);
-        position: absolute;
-        top: 60px;
-        left: 0;
-        padding: 10px;
-      }
-      body.dark .nav-links {
-        background-color: var(--color-bg-main-dark);
-      }
-      .nav-links.active {
-        display: flex;
-      }
-      .nav-links li {
-        padding: 10px 0;
-      }
-      .header-actions {
-        display: none; /* 移动端隐藏按钮，放入汉堡菜单 */
-      }
+    /* ===== 响应式折叠侧边栏 ===== */
+    @media (max-width: 600px) {
       .sidebar {
         position: absolute;
-        top: 60px;
+        top: 0;
         left: 0;
         width: 100%;
-        transform: translateX(-100%);
-        z-index: 999;
+        transform: translateY(-100%);
+        z-index: 10;
       }
       .sidebar.visible {
-        transform: translateX(0);
+        transform: translateY(0);
       }
       .main {
         margin-top: 60px;
       }
     }
-
-    /* 官网内容样式 */
-    .content-section {
-      padding: 40px;
-      text-align: center;
-    }
-    .content-section h1 {
-      font-size: 32px;
-      margin-bottom: 20px;
-      color: var(--color-primary);
-    }
-    .content-section h2 {
-      font-size: 24px;
-      margin-bottom: 15px;
-      color: var(--color-primary);
-    }
-    .content-section p {
-      font-size: 16px;
-      margin-bottom: 20px;
-      color: var(--color-text-light);
-    }
-    body.dark .content-section p {
-      color: var(--color-text-dark);
-    }
   </style>
+
+  <!-- 网站图标 -->
   <link rel="icon" href="deepseek.png" type="image/png" />
 </head>
-<body class="light">
-  <!-- 顶部导航栏 -->
-  <nav class="navbar">
-    <div class="logo">DeepSeek</div>
-    <div class="menu-toggle" onclick="toggleMenu()">☰</div>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="#">首页</a></li>
-      <li><a href="#">产品</a></li>
-      <li><a href="#">研究</a></li>
-      <li><a href="#">关于</a></li>
-      <li><a href="#">联系</a></li>
-      <!-- 移动端显示主题切换和清除聊天 -->
-      <li class="mobile-only"><a href="#" id="toggleThemeMenu">切换主题</a></li>
-      <li class="mobile-only"><a href="#" id="clearChatMenu">清除聊天</a></li>
-    </ul>
-    <div class="header-actions">
-      <button id="toggleTheme">切换主题</button>
-      <button id="clearChat">清除聊天</button>
-    </div>
-  </nav>
-
-  <!-- 主内容区域 -->
+<body>
   <div class="container">
+    <!-- 菜单按钮 -->
+    <button class="menu-btn" id="menuBtn" title="菜单">
+      <svg viewBox="0 0 24 24">
+        <path
+          d="M3,7H11M11,7H19M11.282,17H3"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          fill="none"
+        />
+      </svg>
+    </button>
+
+    <!-- 弹出菜单：切换主题 & 清除记录 -->
+    <div class="menu-panel" id="menuPanel">
+      <ul>
+        <li id="toggleThemeMenu">切换浅/深色主题</li>
+        <li id="clearChatMenu">清除聊天记录</li>
+      </ul>
+    </div>
+
     <!-- 侧边栏 -->
     <aside class="sidebar" id="sidebar">
       <div>
+        <!-- Logo 区域 -->
         <div class="sidebar-header">
           <img src="deepseek.png" alt="DeepSeek 图标" />
-          <span>DeepSeek Chat</span>
+          <span>DeepSeek</span>
         </div>
+        <!-- 新对话 按钮 -->
         <button class="new-chat-btn" id="newChatBtn">
           <svg viewBox="0 0 24 24">
-            <path d="M12,3.45C6.988,3.45 3.202,7.292 3.202,12H1.302C1.302,6.215 5.967,1.55 12,1.55C18.033,1.55 22.7,6.214 22.7,12H20.8C20.8,7.292 17.013,3.45 12,3.45Z" fill="currentColor" fill-rule="nonzero" />
-            <path d="M3.511,22.315C3.061,22.045 2.915,21.461 3.185,21.011L4.685,18.511C4.955,18.061 5.539,17.916 5.989,18.185C6.439,18.455 6.585,19.039 6.315,19.489L4.815,21.989C4.545,22.439 3.961,22.585 3.511,22.315Z" fill="currentColor" fill-rule="nonzero" />
-            <path d="M3.05,21.5C3.05,20.975 3.475,20.55 4,20.55H12C12.525,20.55 12.95,20.975 12.95,21.5C12.95,22.025 12.525,22.45 12,22.45H4C3.475,22.45 3.05,22.025 3.05,21.5Z" fill="currentColor" fill-rule="nonzero" />
-            <path d="M7.55,12C7.55,11.475 7.975,11.05 8.5,11.05H15.5C16.025,11.05 16.45,11.475 16.45,12C16.45,12.525 16.025,12.95 15.5,12.95H8.5C7.975,12.95 7.55,12.525 7.55,12Z" fill="currentColor" fill-rule="nonzero" />
-            <path d="M12,20.55C17.013,20.55 20.8,16.708 20.8,12H22.7C22.7,17.786 18.033,22.45 12,22.45V20.55Z" fill="currentColor" fill-rule="nonzero" />
-            <path d="M3.2,11.875C3.2,14.505 4.199,16.717 6.099,18.263C6.507,18.594 6.568,19.192 6.237,19.6C5.906,20.007 5.308,20.068 4.901,19.737C2.517,17.798 1.3,15.024 1.3,11.875C1.3,11.35 1.725,10.925 2.25,10.925C2.775,10.925 3.2,11.35 3.2,11.875Z" fill="currentColor" fill-rule="nonzero" />
-            <path d="M12,7.55C12.525,7.55 12.95,7.975 12.95,8.5V15.5C12.95,16.025 12.525,16.45 12,16.45C11.475,16.45 11.05,16.025 11.05,15.5V8.5C11.05,7.975 11.475,7.55 12,7.55Z" fill="currentColor" fill-rule="nonzero" />
+            <path
+              d="M12,3.45C6.988,3.45 3.202,7.292 3.202,12H1.302C1.302,6.215 5.967,1.55 12,1.55C18.033,1.55 22.7,6.214 22.7,12H20.8C20.8,7.292 17.013,3.45 12,3.45Z"
+              fill="currentColor"
+              fill-rule="nonzero"
+            />
+            <path
+              d="M3.511,22.315C3.061,22.045 2.915,21.461 3.185,21.011L4.685,18.511C4.955,18.061 5.539,17.916 5.989,18.185C6.439,18.455 6.585,19.039 6.315,19.489L4.815,21.989C4.545,22.439 3.961,22.585 3.511,22.315Z"
+              fill="currentColor"
+              fill-rule="nonzero"
+            />
+            <path
+              d="M3.05,21.5C3.05,20.975 3.475,20.55 4,20.55H12C12.525,20.55 12.95,20.975 12.95,21.5C12.95,22.025 12.525,22.45 12,22.45H4C3.475,22.45 3.05,22.025 3.05,21.5Z"
+              fill="currentColor"
+              fill-rule="nonzero"
+            />
+            <path
+              d="M7.55,12C7.55,11.475 7.975,11.05 8.5,11.05H15.5C16.025,11.05 16.45,11.475 16.45,12C16.45,12.525 16.025,12.95 15.5,12.95H8.5C7.975,12.95 7.55,12.525 7.55,12Z"
+              fill="currentColor"
+              fill-rule="nonzero"
+            />
+            <path
+              d="M12,20.55C17.013,20.55 20.8,16.708 20.8,12H22.7C22.7,17.786 18.033,22.45 12,22.45V20.55Z"
+              fill="currentColor"
+              fill-rule="nonzero"
+            />
+            <path
+              d="M3.2,11.875C3.2,14.505 4.199,16.717 6.099,18.263C6.507,18.594 6.568,19.192 6.237,19.6C5.906,20.007 5.308,20.068 4.901,19.737C2.517,17.798 1.3,15.024 1.3,11.875C1.3,11.35 1.725,10.925 2.25,10.925C2.775,10.925 3.2,11.35 3.2,11.875Z"
+              fill="currentColor"
+              fill-rule="nonzero"
+            />
+            <path
+              d="M12,7.55C12.525,7.55 12.95,7.975 12.95,8.5V15.5C12.95,16.025 12.525,16.45 12,16.45C11.475,16.45 11.05,16.025 11.05,15.5V8.5C11.05,7.975 11.475,7.55 12,7.55Z"
+              fill="currentColor"
+              fill-rule="nonzero"
+            />
           </svg>
           <span>新对话</span>
         </button>
+        <!-- 聊天历史列表（第1句作为标题） -->
         <div class="chat-list" id="chatList">
           <p>无对话记录</p>
         </div>
       </div>
+      <!-- 侧边栏底部：我的资料 -->
       <div class="sidebar-footer">
         <svg class="profile-pic" viewBox="0 0 28 28">
           <clipPath id="profileClip">
             <path d="M14,0.5A13.5,13.5 0,0 1,27.5 14A13.5,13.5 0,0 1,14 27.5A13.5,13.5 0,0 1,0.5 14A13.5,13.5 0,0 1,14 0.5Z" />
           </clipPath>
           <g clip-path="url(#profileClip)">
-            <path d="M19,10.25C19,13.288 16.761,15.75 14,15.75C11.239,15.75 9,13.288 9,10.25C9,7.212 11.239,4.75 14,4.75C16.761,4.75 19,7.212 19,10.25Z" fill="currentColor" />
-            <path d="M3.53,23.25a10.47,5.25 0,1 0,20.939 0a10.47,5.25 0,1 0,-20.939 0z" fill="currentColor" />
+            <path
+              d="M19,10.25C19,13.288 16.761,15.75 14,15.75C11.239,15.75 9,13.288 9,10.25C9,7.212 11.239,4.75 14,4.75C16.761,4.75 19,7.212 19,10.25Z"
+              fill="currentColor"
+            />
+            <path
+              d="M3.53,23.25a10.47,5.25 0,1 0,20.939 0a10.47,5.25 0,1 0,-20.939 0z"
+              fill="currentColor"
+            />
           </g>
         </svg>
         <div class="profile-name">我的资料</div>
@@ -533,57 +542,85 @@
 
     <!-- 主区域 -->
     <div class="main">
-      <!-- 官网内容 -->
-      <section class="content-section">
-        <h1>欢迎体验 DeepSeek</h1>
-        <p>DeepSeek 是一个强大的 AI 平台，提供高效的自然语言处理和对话功能，助力您的创新与研究。</p>
-        <h2>我们的产品</h2>
-        <p>DeepSeek-R1：高效对话模型，适用于多种场景。</p>
-        <p>DeepSeek-V3：先进的语言生成技术，助力开发者与研究者。</p>
-      </section>
+      <!-- 聊天窗口 -->
       <div class="chat-window" id="chatWindow">
-        <!-- 聊天记录会由 JS 动态插入 -->
+        <!-- 聊天记录会由 JS 动态恢复/插入 -->
       </div>
+      <!-- 输入区域 -->
       <div class="chat-input">
         <input type="text" id="userInput" placeholder="请输入消息" autocomplete="off" />
+        <!-- 深度思考 按钮 -->
         <button class="icon-btn" id="deepThinkBtn" title="深度思考">
           <svg viewBox="0 0 24 24">
-            <path d="M12,4.39C15.777,1.942 19.391,1.236 21.077,2.923C22.764,4.609 22.058,8.223 19.61,12C22.058,15.777 22.764,19.391 21.077,21.077C19.391,22.764 15.777,22.058 12,19.61C8.223,22.058 4.609,22.764 2.923,21.077C1.236,19.391 1.942,15.777 4.39,12C1.942,8.223 1.236,4.609 2.923,2.923C4.609,1.236 8.223,1.942 12,4.39ZM7.896,4.381C5.639,3.549 4.578,3.923 4.25,4.251C3.923,4.578 3.549,5.639 4.381,7.896C4.664,8.665 5.063,9.491 5.571,10.345C6.236,9.489 6.985,8.638 7.812,7.812C8.638,6.986 9.489,6.236 10.345,5.571C9.491,5.063 8.665,4.664 7.896,4.381ZM16.106,19.622C18.364,20.454 19.424,20.08 19.752,19.752C20.079,19.424 20.454,18.364 19.622,16.106C19.338,15.337 18.94,14.512 18.431,13.657C17.766,14.513 17.017,15.365 16.191,16.191C15.365,17.017 14.513,17.766 13.657,18.432C14.511,18.94 15.337,19.339 16.106,19.622ZM4.25,19.752C3.923,19.424 3.549,18.364 4.381,16.106C4.664,15.337 5.063,14.512 5.571,13.657C6.236,14.513 6.985,15.365 7.812,16.191C8.638,17.017 9.489,17.766 10.345,18.432C9.491,18.94 8.665,19.339 7.896,19.622C5.639,20.454 4.578,20.08 4.25,19.752ZM19.622,7.896C20.454,5.639 20.079,4.578 19.752,4.251C19.424,3.923 18.364,3.549 16.106,4.381C15.337,4.664 14.511,5.063 13.657,5.571C14.513,6.236 15.365,6.986 16.191,7.812C17.017,8.638 17.766,9.489 18.431,10.345C18.94,9.491 19.338,8.665 19.622,7.896ZM9.138,9.138C10.08,8.197 11.047,7.372 12.001,6.671C12.956,7.372 13.922,8.197 14.864,9.138C15.806,10.08 16.631,11.047 17.331,12.001C16.631,12.956 15.806,13.922 14.864,14.864C13.922,15.806 12.956,16.631 12.001,17.331C11.047,16.631 10.08,15.806 9.138,14.864C8.197,13.922 7.372,12.956 6.671,12.001C7.372,11.047 8.197,10.08 9.138,9.138Z" fill="currentColor" fill-rule="nonzero" />
-            <path d="M13.728,12C13.728,12.954 12.954,13.728 12,13.728C11.046,13.728 10.272,12.954 10.272,12C10.272,11.046 11.046,10.272 12,10.272C12.954,10.272 13.728,11.046 13.728,12Z" fill="currentColor" />
+            <path
+              d="M12,4.39C15.777,1.942 19.391,1.236 21.077,2.923C22.764,4.609 22.058,8.223 19.61,12C22.058,15.777 22.764,19.391 21.077,21.077C19.391,22.764 15.777,22.058 12,19.61C8.223,22.058 4.609,22.764 2.923,21.077C1.236,19.391 1.942,15.777 4.39,12C1.942,8.223 1.236,4.609 2.923,2.923C4.609,1.236 8.223,1.942 12,4.39ZM7.896,4.381C5.639,3.549 4.578,3.923 4.25,4.251C3.923,4.578 3.549,5.639 4.381,7.896C4.664,8.665 5.063,9.491 5.571,10.345C6.236,9.489 6.985,8.638 7.812,7.812C8.638,6.986 9.489,6.236 10.345,5.571C9.491,5.063 8.665,4.664 7.896,4.381ZM16.106,19.622C18.364,20.454 19.424,20.08 19.752,19.752C20.079,19.424 20.454,18.364 19.622,16.106C19.338,15.337 18.94,14.512 18.431,13.657C17.766,14.513 17.017,15.365 16.191,16.191C15.365,17.017 14.513,17.766 13.657,18.432C14.511,18.94 15.337,19.339 16.106,19.622ZM4.25,19.752C3.923,19.424 3.549,18.364 4.381,16.106C4.664,15.337 5.063,14.512 5.571,13.657C6.236,14.513 6.985,15.365 7.812,16.191C8.638,17.017 9.489,17.766 10.345,18.432C9.491,18.94 8.665,19.339 7.896,19.622C5.639,20.454 4.578,20.08 4.25,19.752ZM19.622,7.896C20.454,5.639 20.079,4.578 19.752,4.251C19.424,3.923 18.364,3.549 16.106,4.381C15.337,4.664 14.511,5.063 13.657,5.571C14.513,6.236 15.365,6.986 16.191,7.812C17.017,8.638 17.766,9.489 18.431,10.345C18.94,9.491 19.338,8.665 19.622,7.896ZM9.138,9.138C10.08,8.197 11.047,7.372 12.001,6.671C12.956,7.372 13.922,8.197 14.864,9.138C15.806,10.08 16.631,11.047 17.331,12.001C16.631,12.956 15.806,13.922 14.864,14.864C13.922,15.806 12.956,16.631 12.001,17.331C11.047,16.631 10.08,15.806 9.138,14.864C8.197,13.922 7.372,12.956 6.671,12.001C7.372,11.047 8.197,10.08 9.138,9.138Z"
+              fill="currentColor"
+              fill-rule="nonzero"
+            />
+            <path
+              d="M13.728,12C13.728,12.954 12.954,13.728 12,13.728C11.046,13.728 10.272,12.954 10.272,12C10.272,11.046 11.046,10.272 12,10.272C12.954,10.272 13.728,11.046 13.728,12Z"
+              fill="currentColor"
+            />
           </svg>
         </button>
+        <!-- 联网搜索 按钮 -->
         <button class="icon-btn" id="networkSearchBtn" title="联网搜索">
           <svg viewBox="0 0 24 24">
-            <path d="M11.951,20.893L11.951,20.844C11.97,20.839 12.144,20.798 12.444,20.424C12.756,20.035 13.091,19.419 13.398,18.589C13.934,17.136 14.336,15.157 14.425,12.929H9.478C9.567,15.157 9.969,17.136 10.505,18.589C10.811,19.419 11.146,20.035 11.458,20.424C11.758,20.798 11.932,20.839 11.951,20.844L11.951,20.893H11.951ZM14.578,20.514C17.947,19.495 20.472,16.531 20.845,12.929H16.283C16.193,15.356 15.757,17.558 15.139,19.232C14.969,19.692 14.782,20.123 14.578,20.514ZM16.283,11.072H20.845C20.472,7.469 17.947,4.505 14.578,3.486C14.782,3.877 14.969,4.308 15.139,4.768C15.757,6.442 16.193,8.644 16.283,11.072ZM14.425,11.072H9.478C9.567,8.843 9.969,6.864 10.505,5.411C10.811,4.581 11.146,3.965 11.458,3.576C11.758,3.202 11.932,3.16 11.951,3.156C11.97,3.16 12.144,3.202 12.444,3.576C12.756,3.965 13.091,4.581 13.398,5.411C13.934,6.864 14.336,8.843 14.425,11.072ZM8.763,19.232C8.927,19.678 9.109,20.097 9.305,20.478C5.995,19.426 3.524,16.489 3.155,12.929H7.619C7.709,15.356 8.145,17.558 8.763,19.232ZM8.763,4.768C8.927,4.322 9.109,3.903 9.305,3.522C5.995,4.574 3.524,7.511 3.155,11.072H7.619C7.709,8.644 8.145,6.442 8.763,4.768ZM22.75,12C22.75,17.937 17.937,22.75 12,22.75C6.063,22.75 1.25,17.937 1.25,12C1.25,6.063 6.063,1.25 12,1.25C17.937,1.25 22.75,6.063 22.75,12Z" fill="currentColor" fill-rule="nonzero" />
+            <path
+              d="M11.951,20.893L11.951,20.844C11.97,20.839 12.144,20.798 12.444,20.424C12.756,20.035 13.091,19.419 13.398,18.589C13.934,17.136 14.336,15.157 14.425,12.929H9.478C9.567,15.157 9.969,17.136 10.505,18.589C10.811,19.419 11.146,20.035 11.458,20.424C11.758,20.798 11.932,20.839 11.951,20.844L11.951,20.893H11.951ZM14.578,20.514C17.947,19.495 20.472,16.531 20.845,12.929H16.283C16.193,15.356 15.757,17.558 15.139,19.232C14.969,19.692 14.782,20.123 14.578,20.514ZM16.283,11.072H20.845C20.472,7.469 17.947,4.505 14.578,3.486C14.782,3.877 14.969,4.308 15.139,4.768C15.757,6.442 16.193,8.644 16.283,11.072ZM14.425,11.072H9.478C9.567,8.843 9.969,6.864 10.505,5.411C10.811,4.581 11.146,3.965 11.458,3.576C11.758,3.202 11.932,3.16 11.951,3.156C11.97,3.16 12.144,3.202 12.444,3.576C12.756,3.965 13.091,4.581 13.398,5.411C13.934,6.864 14.336,8.843 14.425,11.072ZM8.763,19.232C8.927,19.678 9.109,20.097 9.305,20.478C5.995,19.426 3.524,16.489 3.155,12.929H7.619C7.709,15.356 8.145,17.558 8.763,19.232ZM8.763,4.768C8.927,4.322 9.109,3.903 9.305,3.522C5.995,4.574 3.524,7.511 3.155,11.072H7.619C7.709,8.644 8.145,6.442 8.763,4.768ZM22.75,12C22.75,17.937 17.937,22.75 12,22.75C6.063,22.75 1.25,17.937 1.25,12C1.25,6.063 6.063,1.25 12,1.25C17.937,1.25 22.75,6.063 22.75,12Z"
+              fill="currentColor"
+              fill-rule="nonzero"
+            />
           </svg>
         </button>
+        <!-- 上传 按钮 -->
         <button class="icon-btn" id="uploadBtn" title="上传">
           <svg viewBox="0 0 14 16">
-            <path d="M7 14.75V1.25" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            <path d="M1.5 6.75L7 1.25" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            <path d="M12.5 6.75L7 1.25" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path
+              d="M7 14.75V1.25"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <path
+              d="M1.5 6.75L7 1.25"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <path
+              d="M12.5 6.75L7 1.25"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
           </svg>
         </button>
+        <!-- 更多设置 按钮 -->
         <button class="icon-btn" id="moreOptionsBtn" title="更多设置">
           <svg viewBox="0 0 20 20">
-            <path d="M5,10C5,10.92 4.254,11.667 3.333,11.667C2.413,11.667 1.667,10.92 1.667,10C1.667,9.08 2.413,8.333 3.333,8.333C4.254,8.333 5,9.08 5,10ZM11.667,10C11.667,10.921 10.92,11.667 10,11.667C9.08,11.667 8.333,10.921 8.333,10C8.333,9.08 9.08,8.333 10,8.333C10.92,8.333 11.667,9.08 11.667,10ZM16.667,11.667C17.587,11.667 18.333,10.921 18.333,10C18.333,9.08 17.587,8.333 16.667,8.333C15.746,8.333 15,9.08 15,10C15,10.921 15.746,11.667 16.667,11.667Z" fill="currentColor" fill-rule="nonzero" />
+            <path
+              d="M5,10C5,10.92 4.254,11.667 3.333,11.667C2.413,11.667 1.667,10.92 1.667,10C1.667,9.08 2.413,8.333 3.333,8.333C4.254,8.333 5,9.08 5,10ZM11.667,10C11.667,10.921 10.92,11.667 10,11.667C9.08,11.667 8.333,10.921 8.333,10C8.333,9.08 9.08,8.333 10,8.333C10.92,8.333 11.667,9.08 11.667,10ZM16.667,11.667C17.587,11.667 18.333,10.921 18.333,10C18.333,9.08 17.587,8.333 16.667,8.333C15.746,8.333 15,9.08 15,10C15,10.921 15.746,11.667 16.667,11.667Z"
+              fill="currentColor"
+              fill-rule="nonzero"
+            />
           </svg>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- JavaScript -->
+  <!-- 自定义回复映射表 -->
   <script src="responses.js"></script>
+
+  <!-- 前端脚本：菜单控制、主题切换、自动保存/清除记录、消息插入、加载动画、延迟与逐字符显示 -->
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const bodyEl = document.body;
       const sidebar = document.getElementById('sidebar');
-      const menuToggle = document.querySelector('.menu-toggle');
-      const navLinks = document.getElementById('navLinks');
-      const toggleTheme = document.getElementById('toggleTheme');
+      const menuBtn = document.getElementById('menuBtn');
+      const menuPanel = document.getElementById('menuPanel');
       const toggleThemeMenu = document.getElementById('toggleThemeMenu');
-      const clearChat = document.getElementById('clearChat');
       const clearChatMenu = document.getElementById('clearChatMenu');
       const newChatBtn = document.getElementById('newChatBtn');
       const chatList = document.getElementById('chatList');
@@ -594,39 +631,7 @@
       const uploadBtn = document.getElementById('uploadBtn');
       const moreOptionsBtn = document.getElementById('moreOptionsBtn');
 
-      // 菜单切换
-      function toggleMenu() {
-        navLinks.classList.toggle('active');
-        if (window.innerWidth <= 768) {
-          sidebar.classList.toggle('visible');
-        }
-      }
-      menuToggle.addEventListener('click', toggleMenu);
-
-      // 主题初始化
-      function initTheme() {
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-          bodyEl.classList.add('dark');
-        } else {
-          bodyEl.classList.add('light');
-        }
-      }
-      initTheme();
-
-      // 主题切换
-      function switchTheme() {
-        if (bodyEl.classList.contains('light')) {
-          bodyEl.classList.remove('light');
-          bodyEl.classList.add('dark');
-        } else {
-          bodyEl.classList.remove('dark');
-          bodyEl.classList.add('light');
-        }
-      }
-      toggleTheme.addEventListener('click', switchTheme);
-      toggleThemeMenu.addEventListener('click', switchTheme);
-
-      // 加载聊天记录
+      // ===== 自动加载历史聊天记录 =====
       function loadChatHistory() {
         const saved = localStorage.getItem('deepseek_chat_history');
         if (saved) {
@@ -646,27 +651,74 @@
       }
       loadChatHistory();
 
-      // 保存聊天记录
+      // ===== 自动保存当前聊天记录到 localStorage =====
       function saveChatHistory() {
         localStorage.setItem('deepseek_chat_history', chatWindow.innerHTML);
       }
 
-      // 清除聊天记录
-      function clearChatHistory() {
+      // ===== 菜单按钮：点击显示/隐藏菜单面板 =====
+      menuBtn.addEventListener('click', () => {
+        menuPanel.style.display = menuPanel.style.display === 'block' ? 'none' : 'block';
+      });
+      document.addEventListener('click', function(e) {
+        if (!menuBtn.contains(e.target) && !menuPanel.contains(e.target)) {
+          menuPanel.style.display = 'none';
+        }
+      });
+
+      // ===== 主题初始化：根据系统 prefers-color-scheme 设置默认 =====
+      function initTheme() {
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          bodyEl.classList.add('dark');
+        } else {
+          bodyEl.classList.add('light');
+        }
+      }
+      initTheme();
+
+      // ===== 菜单里的“切换浅/深色主题”功能 =====
+      toggleThemeMenu.addEventListener('click', () => {
+        if (bodyEl.classList.contains('light')) {
+          bodyEl.classList.remove('light');
+          bodyEl.classList.add('dark');
+        } else {
+          bodyEl.classList.remove('dark');
+          bodyEl.classList.add('light');
+        }
+        menuPanel.style.display = 'none';
+      });
+
+      // ===== 菜单里的“清除聊天记录”功能 =====
+      clearChatMenu.addEventListener('click', () => {
         chatWindow.innerHTML = '';
         chatList.innerHTML = '<p>无对话记录</p>';
         localStorage.removeItem('deepseek_chat_history');
+        menuPanel.style.display = 'none';
+      });
+
+      // ===== 移动端响应式：折叠/展开侧边栏 =====
+      function updateLayout() {
+        if (window.innerWidth <= 600) {
+          sidebar.classList.remove('visible');
+        } else {
+          sidebar.classList.remove('visible');
+        }
       }
-      clearChat.addEventListener('click', clearChatHistory);
-      clearChatMenu.addEventListener('click', clearChatHistory);
+      updateLayout();
+      window.addEventListener('resize', updateLayout);
 
-      // 新对话
-      newChatBtn.addEventListener('click', clearChatHistory);
+      // ===== 新对话 按钮：清空聊天并重置侧边栏占位 =====
+      newChatBtn.addEventListener('click', () => {
+        chatWindow.innerHTML = '';
+        chatList.innerHTML = '<p>无对话记录</p>';
+        localStorage.removeItem('deepseek_chat_history');
+      });
 
-      // 添加消息
+      // ===== 插入单条消息到聊天窗口，并返回气泡元素 =====
       function addMessage(text, sender) {
         const messageEl = document.createElement('div');
         messageEl.classList.add('message', sender);
+
         if (sender === 'ai') {
           const avatarEl = document.createElement('img');
           avatarEl.src = 'deepseek.png';
@@ -674,6 +726,7 @@
           avatarEl.classList.add('avatar');
           messageEl.appendChild(avatarEl);
         }
+
         const bubbleEl = document.createElement('div');
         bubbleEl.classList.add('bubble');
         if (sender === 'user') {
@@ -681,19 +734,24 @@
         }
         messageEl.appendChild(bubbleEl);
         chatWindow.appendChild(messageEl);
+
         setTimeout(() => {
           messageEl.style.opacity = '1';
           messageEl.style.transform = 'translateY(0)';
         }, 10);
+
         chatWindow.scrollTop = chatWindow.scrollHeight;
+
         if (sender === 'user' && (!chatList.innerHTML || chatList.innerHTML.includes('无对话记录'))) {
           chatList.innerHTML = `<p>${text}</p>`;
         }
+
         saveChatHistory();
+
         return bubbleEl;
       }
 
-      // 获取AI回复
+      // ===== 从 responses.js 获取 AI 回复 =====
       function getResponse(input) {
         const key = input.trim();
         if (window.responses && window.responses[key] !== undefined) {
@@ -703,7 +761,7 @@
         }
       }
 
-      // 逐字符显示
+      // ===== 逐字符滚动显示内容（90ms/字符 ≈ 11–12 字符/秒） =====
       function typeText(element, text, speed = 90) {
         let index = 0;
         element.textContent = '';
@@ -721,15 +779,18 @@
         });
       }
 
-      // 发送消息
+      // ===== 发送消息：用户 → AI =====
       async function sendMessage() {
         const text = userInput.value.trim();
         if (!text) return;
+
         if (chatList.innerHTML.includes('无对话记录')) {
           chatList.innerHTML = '';
         }
+
         addMessage(text, 'user');
         userInput.value = '';
+
         const loadingContainer = document.createElement('div');
         loadingContainer.classList.add('message', 'ai');
         const avatarEl = document.createElement('img');
@@ -743,22 +804,26 @@
         loadingGif.classList.add('loading-gif');
         loadingContainer.appendChild(loadingGif);
         chatWindow.appendChild(loadingContainer);
+
         setTimeout(() => {
           loadingContainer.style.opacity = '1';
           loadingContainer.style.transform = 'translateY(0)';
         }, 10);
         chatWindow.scrollTop = chatWindow.scrollHeight;
+
         const delay = 5000 + Math.random() * 2000;
         await new Promise(res => setTimeout(res, delay));
+
         loadingGif.remove();
+
         const reply = getResponse(text);
+
         const bubbleEl = document.createElement('div');
         bubbleEl.classList.add('bubble');
         loadingContainer.appendChild(bubbleEl);
         await typeText(bubbleEl, reply, 90);
       }
 
-      // 按钮事件
       deepThinkBtn.addEventListener('click', () => {
         deepThinkBtn.classList.toggle('active');
         sendMessage();
@@ -769,33 +834,16 @@
       });
       uploadBtn.addEventListener('click', () => {
         uploadBtn.classList.toggle('active');
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.click();
-        input.addEventListener('change', (e) => {
-          const file = e.target.files[0];
-          if (file) {
-            addMessage(`上传了文件：${file.name}`, 'user');
-          }
-        });
       });
       moreOptionsBtn.addEventListener('click', () => {
         moreOptionsBtn.classList.toggle('active');
       });
+
       userInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
           sendMessage();
         }
       });
-
-      // 响应式布局
-      function updateLayout() {
-        if (window.innerWidth <= 768) {
-          sidebar.classList.remove('visible');
-        }
-      }
-      updateLayout();
-      window.addEventListener('resize', updateLayout);
     });
   </script>
 </body>
