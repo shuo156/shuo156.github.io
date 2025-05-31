@@ -38,6 +38,7 @@ body {
     left: 0;
     height: 100%;
     z-index: 1000;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
 }
 
 .logo {
@@ -63,25 +64,26 @@ body {
     padding: 10px;
     border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
 .new-chat:hover, .save-chat:hover, .load-chat:hover {
     background-color: #3a3a3a;
+    transform: translateY(-2px);
 }
 
 /* Hamburger 菜单 */
 .hamburger {
     display: none;
     position: fixed;
-    top: 10px;
-    left: 10px;
+    top: 15px;
+    left: 15px;
     z-index: 1100;
     padding: 8px;
     background: #fff;
     border-radius: 8px;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .hamburger svg {
@@ -113,10 +115,11 @@ body {
     align-items: flex-start;
     max-width: 80%;
     padding: 12px 16px;
-    border-radius: 8px;
+    border-radius: 12px;
     animation: fadeIn 0.5s ease-in;
     font-size: 16px;
-    gap: 10px;
+    gap: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .message.user {
@@ -140,14 +143,15 @@ body {
     width: 32px;
     height: 32px;
     border-radius: 50%;
+    flex-shrink: 0;
 }
 
 .message.ai .avatar {
-    background: url('ai/deepseek.png') no-repeat center/cover; /* deepseek头像 */
+    background: url('ai/deepseek.png') no-repeat center/cover; /* 替换为实际头像 */
 }
 
 .message.user .avatar {
-    display: none; /* 用户无头像 */
+    display: none;
 }
 
 .message.think, .message.search {
@@ -192,9 +196,10 @@ body {
     height: 60px;
     border: 1px solid #ccc;
     border-radius: 8px;
-    padding: 10px;
+    padding: 12px;
     resize: none;
     font-size: 16px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .input-buttons {
@@ -210,11 +215,12 @@ body {
     cursor: pointer;
     padding: 10px;
     border-radius: 8px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
 .input-buttons button:hover {
     background-color: #e0e0e0;
+    transform: translateY(-2px);
 }
 
 .input-buttons svg {
