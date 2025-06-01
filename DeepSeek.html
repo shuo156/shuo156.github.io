@@ -510,6 +510,11 @@
         width: 20px;
         height: 20px;
       }
+
+      /* 增加对移动端气泡宽度 */
+      .message .bubble {
+        max-width: 80%;
+      }
     }
   </style>
 
@@ -653,7 +658,7 @@
   <!-- 自定义回复映射表 -->
   <script src="responses.js"></script>
 
-  <!-- 前端脚本：菜单控制、主题切换、自动保存/清除记录、消息插入、加载动画、延迟与逐字符显示 -->
+  <!-- 前端脚本：菜单控制、主题切换、自动保存/清除记录、消息插入、加载动画、逐字符显示 -->
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const bodyEl = document.body;
@@ -698,20 +703,22 @@
         localStorage.setItem('deepseek_chat_history', chatWindow.innerHTML);
       }
 
-      // ===== 菜单按钮：点击显示/隐藏菜单面板 =====
+      // ===== 菜单按钮：点击显示/隐藏菜单面板 & 移动端展开侧边栏 =====
       menuBtn.addEventListener('click', () => {
         menuPanel.style.display = menuPanel.style.display === 'block' ? 'none' : 'block';
         menuBtn.classList.toggle('active');
-        // 移动端点击时，若侧边栏是隐藏的，打开它
         if (window.innerWidth <= 600) {
           sidebar.classList.toggle('visible');
         }
       });
-      // 点击页面其他位置关闭菜单
+      // 点击页面其他位置关闭菜单 & 收起侧边栏
       document.addEventListener('click', function(e) {
         if (!menuBtn.contains(e.target) && !menuPanel.contains(e.target)) {
           menuPanel.style.display = 'none';
           menuBtn.classList.remove('active');
+          if (window.innerWidth <= 600) {
+            sidebar.classList.remove('visible');
+          }
         }
       });
 
@@ -783,7 +790,6 @@
 
         const bubbleEl = document.createElement('div');
         bubbleEl.classList.add('bubble');
-        // 修复：确保用户发送的文字正常显示
         bubbleEl.textContent = text;
         messageEl.appendChild(bubbleEl);
         chatWindow.appendChild(messageEl);
@@ -887,8 +893,10 @@
         networkSearchBtn.classList.toggle('active');
         sendMessage();
       });
+      // 上传按钮现在也执行 sendMessage()
       uploadBtn.addEventListener('click', () => {
         uploadBtn.classList.toggle('active');
+        sendMessage();
       });
       moreOptionsBtn.addEventListener('click', () => {
         moreOptionsBtn.classList.toggle('active');
