@@ -29,11 +29,44 @@
       background-color: #18191A;
       color: #E3E5E8;
     }
+
     .container {
       display: flex;
       width: 100%;
       height: 100%;
     }
+
+    /* ===== 顶栏：移动端三条杠按钮 ===== */
+    .hamburger {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 32px;
+      height: 32px;
+      background-color: #CCCCCC;
+      border: none;
+      border-radius: 6px;
+      display: none; /* 仅移动端显示 */
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 20;
+      transition: background 0.2s;
+    }
+    .hamburger svg {
+      width: 20px;
+      height: 20px;
+      stroke: #333333;
+      fill: none;
+      stroke-width: 2;
+    }
+    .hamburger.active {
+      background-color: #E0F2FF;
+    }
+    .hamburger:hover {
+      background-color: #AAAAAA;
+    }
+
     /* ===== 侧边栏 ===== */
     .sidebar {
       flex-shrink: 0;
@@ -44,10 +77,16 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      transition: background-color 0.3s;
+      transition: background-color 0.3s, transform 0.3s;
     }
     body.dark .sidebar {
       background-color: #202225;
+    }
+    .sidebar.visible {
+      transform: translateX(0);
+    }
+    .sidebar-hidden {
+      transform: translateX(-100%);
     }
     .sidebar-header {
       display: flex;
@@ -278,17 +317,22 @@
       }
     }
     @media (max-width: 768px) {
+      .hamburger {
+        display: flex;
+      }
       .sidebar {
         position: absolute;
         top: 0;
         left: 0;
-        width: 100%;
-        transform: translateY(-100%);
+        width: 80%;
+        max-width: none;
+        min-width: 0;
+        transform: translateX(-100%);
         z-index: 10;
         height: 100vh;
       }
       .sidebar.visible {
-        transform: translateY(0);
+        transform: translateX(0);
       }
       .main {
         margin-top: 56px;
@@ -388,9 +432,16 @@
   </style>
 </head>
 <body class="light">
+  <!-- 移动端汉堡按钮 -->
+  <button class="hamburger" id="hamburgerBtn" title="菜单">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 7H21M3 12H21M3 17H21" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </button>
+
   <div class="container">
     <!-- 侧边栏 -->
-    <aside class="sidebar" id="sidebar">
+    <aside class="sidebar sidebar-hidden" id="sidebar">
       <div>
         <!-- 侧边栏头部 -->
         <div class="sidebar-header">
@@ -479,6 +530,7 @@
     document.addEventListener('DOMContentLoaded', function() {
       const bodyEl = document.body;
       const sidebar = document.getElementById('sidebar');
+      const hamburgerBtn = document.getElementById('hamburgerBtn');
       const newChatBtn = document.getElementById('newChatBtn');
       const chatList = document.getElementById('chatList');
       const chatWindow = document.getElementById('chatWindow');
@@ -487,6 +539,25 @@
       const networkSearchBtn = document.getElementById('networkSearchBtn');
       const uploadBtn = document.getElementById('uploadBtn');
       const moreOptionsBtn = document.getElementById('moreOptionsBtn');
+
+      // ===== 初始侧边栏状态 =====
+      function initSidebar() {
+        if (window.innerWidth <= 768) {
+          sidebar.classList.add('sidebar-hidden');
+          hamburgerBtn.style.display = 'flex';
+        } else {
+          sidebar.classList.remove('sidebar-hidden');
+          hamburgerBtn.style.display = 'none';
+        }
+      }
+      initSidebar();
+      window.addEventListener('resize', initSidebar);
+
+      // ===== 移动端汉堡按钮：切换侧边栏可见性 =====
+      hamburgerBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('sidebar-hidden');
+        hamburgerBtn.classList.toggle('active');
+      });
 
       // ===== 加载历史聊天记录 =====
       function loadChatHistory() {
@@ -515,6 +586,10 @@
         chatWindow.innerHTML = '';
         chatList.innerHTML = '<p>无对话记录</p>';
         localStorage.removeItem('deepseek_chat_history');
+        if (window.innerWidth <= 768) {
+          sidebar.classList.add('sidebar-hidden');
+          hamburgerBtn.classList.remove('active');
+        }
       });
 
       // ===== 插入单条消息 =====
@@ -552,10 +627,9 @@
       // ===== 获取自定义回复 =====
       function getResponse(input) {
         const key = input.trim();
-        let respObj = {};
-        if (window.responses) respObj = window.responses;
-        else if (typeof responses !== 'undefined') respObj = responses;
-        if (respObj[key] !== undefined) return respObj[key];
+        if (window.responses && window.responses.hasOwnProperty(key)) {
+          return window.responses[key];
+        }
         return '服务器繁忙，请稍后再试';
       }
 
@@ -645,6 +719,10 @@
           chatWindow.innerHTML = '';
           chatList.innerHTML = '<p>无对话记录</p>';
           localStorage.removeItem('deepseek_chat_history');
+          if (window.innerWidth <= 768) {
+            sidebar.classList.add('sidebar-hidden');
+            hamburgerBtn.classList.remove('active');
+          }
         }
       });
     });
