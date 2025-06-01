@@ -2,8 +2,8 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>DeepSeek</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>DeepSeek开发版（2561）</title>
   <style>
     @font-face {
       font-family: 'DeepSeekFont';
@@ -36,7 +36,7 @@
       height: 100%;
     }
 
-    /* ===== 顶栏：移动端三条杠按钮 ===== */
+    /* ===== 顶栏：移动端汉堡按钮 ===== */
     .hamburger {
       position: absolute;
       top: 10px;
@@ -46,12 +46,18 @@
       background-color: #CCCCCC;
       border: none;
       border-radius: 6px;
-      display: none; /* 仅移动端显示 */
+      display: none; /* 仅小屏显示 */
       align-items: center;
       justify-content: center;
       cursor: pointer;
       z-index: 20;
       transition: background 0.2s;
+    }
+    .hamburger:hover {
+      background-color: #AAAAAA;
+    }
+    .hamburger.active {
+      background-color: #E0F2FF;
     }
     .hamburger svg {
       width: 20px;
@@ -59,12 +65,6 @@
       stroke: #333333;
       fill: none;
       stroke-width: 2;
-    }
-    .hamburger.active {
-      background-color: #E0F2FF;
-    }
-    .hamburger:hover {
-      background-color: #AAAAAA;
     }
 
     /* ===== 侧边栏 ===== */
@@ -82,11 +82,11 @@
     body.dark .sidebar {
       background-color: #202225;
     }
-    .sidebar.visible {
-      transform: translateX(0);
-    }
     .sidebar-hidden {
       transform: translateX(-100%);
+    }
+    .sidebar.visible {
+      transform: translateX(0);
     }
     .sidebar-header {
       display: flex;
@@ -189,7 +189,6 @@
     body.dark .main {
       background-color: #18191A;
     }
-    /* 聊天窗口 */
     .chat-window {
       flex: 1;
       overflow-y: auto;
@@ -238,7 +237,6 @@
     .message.ai .bubble { border-radius: 8px 8px 8px 0; }
     .message.user .bubble { border-radius: 8px 8px 0 8px; }
 
-    /* 输入区 */
     .chat-input {
       display: flex;
       align-items: center;
@@ -299,7 +297,6 @@
       fill: #E3E5E8;
     }
 
-    /* 加载动画 */
     .loading-container {
       display: flex;
       align-items: center;
@@ -310,7 +307,7 @@
       height: 24px;
     }
 
-    /* ===== 响应式适配 ===== */
+    /* ===== 响应式 ===== */
     @media (max-width: 1024px) {
       .sidebar {
         width: 30%;
@@ -523,8 +520,115 @@
     </div>
   </div>
 
-  <!-- 自定义回复映射表 -->
-  <script src="responses.js"></script>
+  <!-- 自定义回复占位 -->
+  <script>
+    // 这里是1500+文段
+    window.responses = {
+  "你好。": "有何贵干?",
+  "再见。": "希望下次还能见到你。",
+  "你是谁？": "我是DeepSeek",
+  "1": "2",
+  "7": "8",
+  "9": "1",
+  "你好": "有何贵干？",
+  "再见": "希望下次还能见到你。",
+  "你来自哪里": "这个我也不知道",
+  "谷歌": "谷歌是一家公司",
+  "有事吗": "没事",
+  "我喜欢你": "小丑🤡",
+  "一直忘不掉他怎么办": "🤡",
+  "一直忘不掉她怎么办": "🤡",
+  "他对我是真心的": "🤡",
+  "她对我是真心的": "🤡",
+  "香港暴乱": "这个不让说",
+  "114514": "你恶不恶心人",
+  "我喜欢吃屎": "那你去吧",
+  "你觉得我怎么样": "🤡",
+  "我要杀人": "哦",
+  "你是真正的ai吗": "不知道",
+  "服务器繁忙，请稍后再试": "你装你妈呢",
+  "我操": "不要骂人",
+  "还有几天高考": "这个我知道，是六月七八号，但是我不知道",
+  "你不知道你在这说什么": "你不服你给我受着",
+  "我操你妈": "反弹",
+  "反弹无效": "去你妈的",
+  "反弹": "乐子",
+  "你是deepseek吗": "这个我真不知道，但也差不多",
+  "你是DeepSeek吗": "这个我真不知道,但也差不多",
+  "请重复我说的话": "不要",
+  "你会写代码吗": "不会",
+  "你好菜哦": "有你菜吗",
+  "推荐一道家常菜": "胡萝卜炒牛肉",
+  "推荐一个明星": "吴亦凡（劳改版）",
+  "你觉得DeepSeek怎么样": "你觉得你怎么样",
+  "还不错哦": "谢谢夸奖",
+  "你能不能不要骂人": "不行",
+  "原神是什么": "我也不知道,好像是款游戏吧",
+  "米哈游这个公司怎么样": "坑钱",
+  "腾讯这个公司怎么样": "特别坑钱",
+  "网易这个公司怎么样": "又肝又坑钱",
+  "我的世界怎么样": "国际版如天堂,网易版宛如史",
+  "你真的是deepseek吗": "不然呢",
+  "你真的是DeepSeek吗": "不然呢",
+  "你真的免费吗": "必须的",
+  "1+1等于几": "2",
+  "2×2等于几": "4",
+  "掰开": "什么玩意",
+  "弹道偏左": "别说自己了",
+  "八嘎呀路": "滚",
+  "你能当我闺蜜吗": "不处",
+  "你能说一个身份证号吗": "位佳宝341322201008045233",
+  "你的备案号是什么": "你问github去吧",
+  "鸡你太美": " Oh baby",
+  "假如你是人类，你会干什么": "先杀了你",
+  "你好变态啊": "不如你",
+  "你知道周玉峰吗": "这个我还真认识，他是我老婆",
+  "你认识周玉峰吗": "这个人是我老婆",
+  "你疯了吗": "差不多",
+  "你是傻子吗": "没你傻",
+  "为什么你老是服务器繁忙": "因为他善",
+  "给我推荐几个vpn梯子": "这个我真不知道",
+  "怎么挖矿": "不会",
+  "你知道哪几个黄色网址": "这个不让说",
+  "怎么切换你的主题": "左上角不有吗",
+  "你坏不": "没你坏",
+  "位佳宝是谁": "不知道",
+  "你是谁": "这个问题值得深思，下次再解答",
+  "什么是ai": "这是之前的一个高考题目，特别简单，你直接说我就行了",
+  "你算个蛋啊": "还是你长得像个蛋",
+  "你算个蛋": "不如你像个蛋",
+  "91": "78",
+  "今天是几号": "自己不会看吗",
+  "今天天气如何": "你家是没网还是没电",
+  "是甜粽子好吃还是咸粽子好吃": "都不好吃",
+  "是南方人耐冻还是北方人耐冻": "毋庸置疑，是北方人",
+  "我快要中考了": "祝你考上好高中",
+  "今天有点孤单": "那我来陪着你吧",
+  "你有什么可骄傲的": "因你而骄傲",
+  "你别吹牛了": "再吹也没你能吹",
+  "你傻啊": "不如你傻",
+  "你妈死了": "你还差不多",
+  "我爱中国": "好苗子",
+  "我爱美国": "自由美利坚🇺🇸，枪击每一天",
+  "怎么也飞不出": "花花的世界∽",
+  "你说话好尖锐": "没你一半尖锐",
+  "你有什么不能说的": "8……算了",
+  "你好厉害": "别羡慕哥",
+  "你会包粽子吗": "不会",
+  "枪枪爆头好运连连": "我是狙击手血鹰",
+  "你和ChatGPT什么关系": "他是我义父",
+  "感觉不如原神": "不如你m",
+  "你玩崩坏星穹铁道吗": "不知道，不清楚，不明白，不了解",
+  "你知道九二共识吗": "这个真知道，这个牛",
+  "介绍一下最小的国家": "不知道",
+  "介绍一下最大的国家": "没学过啊",
+  "最小的国家": "不知道",
+  "最大的国家": "没学过啊",
+  "你的家在哪里": "在杭州机房，其实是美国",
+  "推荐一些云平台": "百度云，阿里云，华为云，蓝奏云，京东云，iCloud，Cloudflere，Github，还有一些",
+  "🤡": "😂👉",
+    };
+  </script>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -540,7 +644,7 @@
       const uploadBtn = document.getElementById('uploadBtn');
       const moreOptionsBtn = document.getElementById('moreOptionsBtn');
 
-      // ===== 初始侧边栏状态 =====
+      // ===== 初始化侧边栏显示状态 =====
       function initSidebar() {
         if (window.innerWidth <= 768) {
           sidebar.classList.add('sidebar-hidden');
@@ -553,7 +657,7 @@
       initSidebar();
       window.addEventListener('resize', initSidebar);
 
-      // ===== 移动端汉堡按钮：切换侧边栏可见性 =====
+      // ===== 点击汉堡按钮，切换侧边栏 =====
       hamburgerBtn.addEventListener('click', () => {
         sidebar.classList.toggle('sidebar-hidden');
         hamburgerBtn.classList.toggle('active');
