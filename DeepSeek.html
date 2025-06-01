@@ -422,8 +422,9 @@
       height: 32px;
     }
 
-    /* ===== 响应式折叠侧边栏 ===== */
+    /* ===== 响应式折叠侧边栏 & 移动端优化 ===== */
     @media (max-width: 600px) {
+      /* 折叠侧边栏 */
       .sidebar {
         position: absolute;
         top: 0;
@@ -431,12 +432,83 @@
         width: 100%;
         transform: translateY(-100%);
         z-index: 10;
+        height: 100vh;
       }
       .sidebar.visible {
         transform: translateY(0);
       }
       .main {
         margin-top: 60px;
+      }
+
+      /* 缩减图标和字体大小 */
+      .menu-btn {
+        width: 32px;
+        height: 32px;
+      }
+      .menu-btn svg {
+        width: 20px;
+        height: 20px;
+      }
+      .new-chat-btn {
+        margin: 8px 16px;
+        padding: 8px 12px;
+        font-size: 0.9rem;
+      }
+      .new-chat-btn svg {
+        width: 20px;
+        height: 20px;
+        margin-right: 6px;
+      }
+      .sidebar-header img {
+        width: 28px;
+        height: 28px;
+      }
+      .sidebar-header span {
+        font-size: 1rem;
+      }
+      .chat-list {
+        padding: 16px;
+        font-size: 0.85rem;
+      }
+      .profile-pic {
+        width: 32px;
+        height: 32px;
+      }
+      .profile-pic svg {
+        width: 24px;
+        height: 24px;
+      }
+      .profile-name {
+        font-size: 0.9rem;
+      }
+
+      /* 聊天窗口和输入区 */
+      .chat-window {
+        padding: 16px 12px;
+      }
+      .chat-input {
+        padding: 8px 12px;
+      }
+      .chat-input input {
+        height: 36px;
+        font-size: 0.95rem;
+      }
+
+      /* 按钮图标缩小 */
+      .icon-btn {
+        width: 32px;
+        height: 32px;
+        margin-left: 8px;
+      }
+      .icon-btn svg {
+        width: 20px;
+        height: 20px;
+      }
+      .new-chat-btn svg,
+      .menu-btn svg {
+        width: 20px;
+        height: 20px;
       }
     }
   </style>
@@ -629,11 +701,17 @@
       // ===== 菜单按钮：点击显示/隐藏菜单面板 =====
       menuBtn.addEventListener('click', () => {
         menuPanel.style.display = menuPanel.style.display === 'block' ? 'none' : 'block';
+        menuBtn.classList.toggle('active');
+        // 移动端点击时，若侧边栏是隐藏的，打开它
+        if (window.innerWidth <= 600) {
+          sidebar.classList.toggle('visible');
+        }
       });
       // 点击页面其他位置关闭菜单
       document.addEventListener('click', function(e) {
         if (!menuBtn.contains(e.target) && !menuPanel.contains(e.target)) {
           menuPanel.style.display = 'none';
+          menuBtn.classList.remove('active');
         }
       });
 
@@ -657,6 +735,7 @@
           bodyEl.classList.add('light');
         }
         menuPanel.style.display = 'none';
+        menuBtn.classList.remove('active');
       });
 
       // ===== 菜单里的“清除聊天记录”功能 =====
@@ -665,6 +744,7 @@
         chatList.innerHTML = '<p>无对话记录</p>';
         localStorage.removeItem('deepseek_chat_history');
         menuPanel.style.display = 'none';
+        menuBtn.classList.remove('active');
       });
 
       // ===== 移动端响应式：折叠/展开侧边栏 =====
@@ -683,6 +763,9 @@
         chatWindow.innerHTML = '';
         chatList.innerHTML = '<p>无对话记录</p>';
         localStorage.removeItem('deepseek_chat_history');
+        sidebar.classList.remove('visible');
+        menuPanel.style.display = 'none';
+        menuBtn.classList.remove('active');
       });
 
       // ===== 插入单条消息到聊天窗口，并返回气泡元素 =====
