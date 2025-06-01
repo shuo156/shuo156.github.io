@@ -175,8 +175,8 @@
       position: absolute;
       top: 10px;
       left: 10px;
-      width: 36px;
-      height: 36px;
+      width: 32px;          /* 缩小宽度 */
+      height: 32px;         /* 缩小高度 */
       background-color: #CCCCCC;
       border: none;
       border-radius: 6px;
@@ -191,8 +191,8 @@
       background-color: #AAAAAA;
     }
     .menu-btn svg {
-      width: 24px;
-      height: 24px;
+      width: 20px;           /* 缩小 SVG 大小 */
+      height: 20px;          /* 缩小 SVG 大小 */
       stroke: #333333;
       fill: none;
       stroke-width: 2;
@@ -204,9 +204,9 @@
     /* ===== 弹出菜单（用于切换主题 & 清除记录） ===== */
     .menu-panel {
       position: absolute;
-      top: 56px;
+      top: 52px;             /* 微调位置 */
       left: 10px;
-      width: 180px;
+      width: 160px;          /* 缩小宽度 */
       border-radius: 6px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       display: none;
@@ -216,8 +216,8 @@
       list-style: none;
     }
     .menu-panel li {
-      padding: 10px;
-      font-size: 0.95rem;
+      padding: 8px;         /* 缩小内边距 */
+      font-size: 0.9rem;    /* 缩小字体 */
       cursor: pointer;
       transition: background 0.2s;
     }
@@ -227,7 +227,7 @@
 
     /* ===== 侧边栏 ===== */
     .sidebar {
-      width: 280px;
+      width: 260px;          /* 缩小宽度 */
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -236,24 +236,24 @@
     .sidebar-header {
       display: flex;
       align-items: center;
-      padding: 20px;
+      padding: 16px;        /* 缩小内边距 */
     }
     .sidebar-header img {
-      width: 32px;
-      height: 32px;
-      margin-right: 10px;
+      width: 28px;          /* 缩小图标 */
+      height: 28px;         /* 缩小图标 */
+      margin-right: 8px;    /* 缩小间距 */
     }
     .sidebar-header span {
-      font-size: 1.2rem;
+      font-size: 1rem;      /* 缩小字体 */
       font-weight: bold;
     }
     .new-chat-btn {
       display: flex;
       align-items: center;
-      margin: 10px 20px;
-      padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 0.95rem;
+      margin: 8px 16px;     /* 缩小外边距 */
+      padding: 8px 12px;    /* 缩小内边距 */
+      border-radius: 6px;   /* 微调圆角 */
+      font-size: 0.9rem;    /* 缩小字体 */
       cursor: pointer;
       transition: background 0.2s, color 0.2s;
     }
@@ -261,9 +261,9 @@
       opacity: 0.85;
     }
     .new-chat-btn svg {
-      width: 24px;
-      height: 24px;
-      margin-right: 8px;
+      width: 20px;          /* 缩小新对话图标 */
+      height: 20px;
+      margin-right: 6px;    /* 缩小间距 */
     }
     .new-chat-btn.active {
       background-color: #E0F2FF;
@@ -271,9 +271,9 @@
     .chat-list {
       flex: 1;
       overflow-y: auto;
-      padding: 20px;
-      font-size: 0.9rem;
-      line-height: 1.5;
+      padding: 16px;        /* 缩小内边距 */
+      font-size: 0.85rem;   /* 缩小字体 */
+      line-height: 1.4;
       text-align: center;
     }
     .chat-list p {
@@ -282,25 +282,25 @@
     .sidebar-footer {
       display: flex;
       align-items: center;
-      padding: 20px;
+      padding: 16px;       /* 缩小内边距 */
       transition: border-color 0.3s;
     }
     .profile-pic {
-      width: 36px;
-      height: 36px;
+      width: 32px;         /* 缩小头像 */
+      height: 32px;
       border-radius: 50%;
       background: transparent;
-      margin-right: 12px;
+      margin-right: 8px;   /* 缩小间距 */
       display: flex;
       align-items: center;
       justify-content: center;
     }
     .profile-pic svg {
-      width: 28px;
-      height: 28px;
+      width: 24px;         /* 缩小内部 SVG */
+      height: 24px;
     }
     .profile-name {
-      font-size: 1rem;
+      font-size: 0.9rem;   /* 缩小字体 */
     }
 
     /* ===== 主区域 ===== */
@@ -313,7 +313,7 @@
     }
     .chat-window {
       flex: 1;
-      padding: 20px 24px;
+      padding: 16px 12px;  /* 缩小 padding */
       overflow-y: auto;
       scrollbar-width: none;
       transition: background-color 0.3s;
@@ -325,7 +325,7 @@
     /* ===== 消息气泡 & 动画 ===== */
     .message {
       display: flex;
-      margin-bottom: 16px;
+      margin-bottom: 12px; /* 缩小行间距 */
       opacity: 0;
       transform: translateY(20px);
       animation: slide-in 0.25s forwards;
@@ -343,43 +343,43 @@
       justify-content: flex-end;
     }
     .message .avatar {
-      width: 32px;
-      height: 32px;
+      width: 28px;         /* 缩小头像 */
+      height: 28px;
       border-radius: 50%;
-      margin-right: 8px;
+      margin-right: 6px;   /* 缩小间距 */
       flex-shrink: 0;
     }
     .message .bubble {
-      max-width: 65%;
-      padding: 10px 14px;
-      font-size: 1rem;
-      line-height: 1.5;
+      max-width: 70%;      /* 缩小宽度（桌面） */
+      padding: 8px 12px;   /* 缩小内边距 */
+      font-size: 0.95rem;  /* 缩小字体 */
+      line-height: 1.4;
       word-break: break-word;
-      border-radius: 12px;
+      border-radius: 10px; /* 微调圆角 */
       transition: background-color 0.3s, color 0.3s;
     }
     .message.ai .bubble {
-      border-radius: 12px 12px 12px 0px;
+      border-radius: 10px 10px 10px 0px;
     }
     .message.user .bubble {
-      border-radius: 12px 12px 0px 12px;
+      border-radius: 10px 10px 0px 10px;
     }
 
     /* ===== 输入区 ===== */
     .chat-input {
       display: flex;
       align-items: center;
-      padding: 10px 20px;
+      padding: 8px 12px;   /* 缩小 padding */
       border-top: 1px solid;
       transition: background-color 0.3s, border-color 0.3s;
     }
     .chat-input input {
       flex: 1;
-      height: 40px;
-      padding: 0 14px;
+      height: 36px;        /* 缩小高度 */
+      padding: 0 10px;     /* 缩小 padding */
       border: none;
-      border-radius: 8px;
-      font-size: 1rem;
+      border-radius: 6px;  /* 缩小圆角 */
+      font-size: 0.95rem;  /* 缩小字体 */
       outline: none;
       transition: background-color 0.3s, color 0.3s;
     }
@@ -388,9 +388,9 @@
       opacity: 0.6;
     }
     .icon-btn {
-      width: 40px;
-      height: 40px;
-      margin-left: 12px;
+      width: 32px;         /* 缩小按钮 */
+      height: 32px;
+      margin-left: 8px;    /* 缩小间距 */
       border: none;
       border-radius: 50%;
       display: flex;
@@ -404,8 +404,8 @@
       opacity: 0.85;
     }
     .icon-btn svg {
-      width: 24px;
-      height: 24px;
+      width: 20px;         /* 缩小内部 SVG */
+      height: 20px;
     }
     .icon-btn.active {
       background-color: #E0F2FF;
@@ -415,11 +415,11 @@
     .loading-container {
       display: flex;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 12px;  /* 缩小间距 */
     }
     .loading-gif {
-      width: 32px;
-      height: 32px;
+      width: 28px;          /* 缩小 GIF */
+      height: 28px;
     }
 
     /* ===== 响应式折叠侧边栏 & 移动端优化 ===== */
@@ -438,82 +438,76 @@
         transform: translateY(0);
       }
       .main {
-        margin-top: 60px;
+        margin-top: 56px;   /* 微调顶部留白 */
       }
 
       /* 缩减图标和字体大小 */
       .menu-btn {
-        width: 32px;
-        height: 32px;
+        width: 30px;
+        height: 30px;
       }
       .menu-btn svg {
-        width: 20px;
-        height: 20px;
+        width: 18px;
+        height: 18px;
       }
       .new-chat-btn {
-        margin: 8px 16px;
-        padding: 8px 12px;
-        font-size: 0.9rem;
-      }
-      .new-chat-btn svg {
-        width: 20px;
-        height: 20px;
-        margin-right: 6px;
-      }
-      .sidebar-header img {
-        width: 28px;
-        height: 28px;
-      }
-      .sidebar-header span {
-        font-size: 1rem;
-      }
-      .chat-list {
-        padding: 16px;
+        margin: 6px 12px;
+        padding: 6px 10px;
         font-size: 0.85rem;
       }
-      .profile-pic {
-        width: 32px;
-        height: 32px;
+      .new-chat-btn svg {
+        width: 18px;
+        height: 18px;
+        margin-right: 4px;
       }
-      .profile-pic svg {
+      .sidebar-header img {
         width: 24px;
         height: 24px;
       }
-      .profile-name {
+      .sidebar-header span {
         font-size: 0.9rem;
+      }
+      .chat-list {
+        padding: 12px;
+        font-size: 0.8rem;
+      }
+      .profile-pic {
+        width: 28px;
+        height: 28px;
+      }
+      .profile-pic svg {
+        width: 20px;
+        height: 20px;
+      }
+      .profile-name {
+        font-size: 0.85rem;
       }
 
       /* 聊天窗口和输入区 */
       .chat-window {
-        padding: 16px 12px;
+        padding: 12px 10px;
       }
       .chat-input {
-        padding: 8px 12px;
+        padding: 6px 10px;
       }
       .chat-input input {
-        height: 36px;
-        font-size: 0.95rem;
+        height: 32px;
+        font-size: 0.9rem;
       }
 
       /* 按钮图标缩小 */
       .icon-btn {
-        width: 32px;
-        height: 32px;
-        margin-left: 8px;
+        width: 28px;
+        height: 28px;
+        margin-left: 6px;
       }
       .icon-btn svg {
-        width: 20px;
-        height: 20px;
+        width: 18px;
+        height: 18px;
       }
-      .new-chat-btn svg,
-      .menu-btn svg {
-        width: 20px;
-        height: 20px;
-      }
-
-      /* 增加对移动端气泡宽度 */
+      /* 移动端气泡宽度提高到 90%，避免裁剪 */
       .message .bubble {
-        max-width: 80%;
+        max-width: 90%;
       }
     }
   </style>
@@ -790,7 +784,7 @@
 
         const bubbleEl = document.createElement('div');
         bubbleEl.classList.add('bubble');
-        bubbleEl.textContent = text;
+        bubbleEl.textContent = text;  // 确保完整显示用户文字
         messageEl.appendChild(bubbleEl);
         chatWindow.appendChild(messageEl);
 
