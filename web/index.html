@@ -4,7 +4,96 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>访问统计 - shuo156</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #f5f7fa;
+            color: #2d3436;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* 主容器 */
+        .app {
+            max-width: 768px;
+            padding: 16px;
+            margin: 0 auto;
+        }
+
+        /* 标题区域 */
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #1a73e8;
+            margin-bottom: 8px;
+        }
+
+        .user-info {
+            color: #5f6368;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .time {
+            font-size: 14px;
+            color: #636e72;
+        }
+
+        /* 计数器样式 */
+        .moe-counter {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .moe-counter img {
+            height: 32px;
+            image-rendering: pixelated;
+            transition: transform 0.3s ease;
+        }
+
+        .moe-counter img:hover {
+            transform: scale(1.1);
+        }
+
+        /* 暗色模式支持 */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #1a1a1a;
+                color: #ffffff;
+            }
+
+            .header {
+                background: #2d2d2d;
+            }
+
+            .time {
+                color: #a0a0a0;
+            }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="app">
@@ -12,31 +101,44 @@
             <h1>访问统计面板</h1>
             <div class="user-info">@shuo156</div>
             <div class="time" id="currentTime"></div>
-            <div id="moeCounter" class="moe-counter"></div>
-        </div>
-
-        <div class="stats-container">
-            <div class="stat-box">
-                <span class="stat-label">今日访问</span>
-                <span class="stat-value" id="todayCount">0</span>
-            </div>
-            <div class="stat-box">
-                <span class="stat-label">总访问量</span>
-                <span class="stat-value" id="totalCount">0</span>
+            <div id="moeCounter" class="moe-counter">
+                <img src="https://count.getloli.com/get/@shuo156?theme=moebooru" alt="访问计数" />
             </div>
         </div>
-
-        <div class="risk-container">
-            <h2>实时监控</h2>
-            <div class="risk-list" id="riskList"></div>
-        </div>
-
-        <footer class="footer">
-            <p>© 2025 shuo156 统计面板</p>
-            <p>最后更新时间: <span id="lastUpdate"></span></p>
-        </footer>
     </div>
 
-    <script src="js/app.js"></script>
+    <script>
+        class VisitorApp {
+            constructor() {
+                this.username = 'shuo156';
+                this.init();
+            }
+
+            init() {
+                this.updateTime();
+                // 每秒更新时间
+                setInterval(() => this.updateTime(), 1000);
+            }
+
+            updateTime() {
+                const now = new Date();
+                document.getElementById('currentTime').textContent = 
+                    now.toLocaleString('zh-CN', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false
+                    });
+            }
+        }
+
+        // 启动应用
+        document.addEventListener('DOMContentLoaded', () => {
+            new VisitorApp();
+        });
+    </script>
 </body>
 </html>
