@@ -1,9 +1,8 @@
 class VisitorApp {
     constructor() {
-        this.username = 'shuo156';
-        this.repo = 'web';
-        // 使用 visitor-badge 作为统计服务
-        this.badgeBaseUrl = 'https://visitor-badge.laobi.icu';
+        // 使用 HitCount API
+        this.hitCountUrl = 'https://hits.seeyoufarm.com/api/count/incr/badge.svg';
+        this.key = `${encodeURIComponent('shuo156/visitor-stats')}`;
         this.init();
     }
 
@@ -34,9 +33,10 @@ class VisitorApp {
 
     async recordVisit() {
         try {
-            // 使用 visitor-badge 记录访问
-            const pageId = `${this.username}-${this.repo}`;
-            const response = await fetch(`${this.badgeBaseUrl}/v1/badge?page_id=${pageId}`);
+            // 记录访问
+            const todayKey = new Date().toISOString().split('T')[0];
+            const response = await fetch(`${this.hitCountUrl}?url=${this.key}&title=${todayKey}`);
+            
             if (response.ok) {
                 this.loadStats();
             }
@@ -48,91 +48,108 @@ class VisitorApp {
     async loadStats() {
         try {
             // 获取访问统计
-            const pageId = `${this.username}-${this.repo}`;
-            const response = await fetch(`${this.badgeBaseUrl}/v1/badge?page_id=${pageId}&json=true`);
+            const todayKey = new Date().toISOString().split('T')[0];
+            const response = await fetch(`${this.hitCountUrl}?url=${this.key}&title=${todayKey}&count_bg=%2379C83D&title_bg=%23555555&icon=&edge_flat=false&json=true`);
             const data = await response.json();
 
-            // 计算今日访问量（使用本地存储来跟踪）
-            const today = new Date().toISOString().split('T')[0];
-            const lastDate = localStorage.getItem('lastVisitDate');
-            const lastCount = parseInt(localStorage.getItem('lastTotalCount')) || 0;
-            
-            if (lastDate !== today) {
-                localStorage.setItem('lastVisitDate', today);
-                localStorage.setItem('lastTotalCount', data.count);
-                localStorage.setItem('todayCount', '1');
-            } else {
-                const todayCount = data.count - lastCount;
-                localStorage.setItem('todayCount', todayCount.toString());
-            }
+            // 处理统计数据
+            const stats = {
+                todayVisits: this.getTodayVisits(data),
+                totalVisits: data.totalHits || 0,
+                weeklyVisits: this.getWeeklyVisits(),
+                monthlyVisits: this.getMonthlyVisits(),
+                recentRisks: this.generateRiskRecords(data.totalHits)
+            };
 
-            const todayCount = parseInt(localStorage.getItem('todayCount')) || 0;
-
-            this.updateUI({
-                todayVisits: todayCount,
-                totalVisits: data.count,
-                recentVisits: this.generateRecentVisits(data.count)
-            });
-
+            this.updateUI(stats);
             document.getElementById('lastUpdate').textContent = new Date().toLocaleString('zh-CN');
+
         } catch (error) {
             console.error('获取统计数据失败:', error);
         }
     }
 
-    generateRecentVisits(totalCount) {
-        const recentVisits = [];
-        const now = new Date();
-        
-        // 生成最近的访问记录
-        for (let i = 0; i < 5; i++) {
-            const time = new Date(now - i * 60000);
-            const status = this.getRandomStatus();
-            
-            recentVisits.push({
-                timestamp: time.toISOString(),
-                count: totalCount - i,
-                status: status
-            });
+    getTodayVisits(data) {
+        const today = new Date().toISOString().split('T')[0];
+        const storedDate = localStorage.getItem('lastDate');
+        const storedCount = parseInt(localStorage.getItem('lastCount')) || 0;
+
+        if (storedDate !== today) {
+            localStorage.setItem('lastDate', today);
+            localStorage.setItem('lastCount', data.totalHits);
+            return 1;
         }
-        
-        return recentVisits;
+
+        return data.totalHits - storedCount || 0;
     }
 
-    getRandomStatus() {
-        const statuses = [
-            { level: 'low', message: '正常访问' },
-            { level: 'medium', message: '访问量适中' },
-            { level: 'high', message: '访问高峰' }
-        ];
-        return statuses[Math.floor(Math.random() * statuses.length)];
+    getWeeklyVisits() {
+        // 简单模拟周访问量
+        return Math.floor(Math.random() * 100) + 50;
+    }
+
+    getMonthlyVisits() {
+        // 简单模拟月访问量
+        return Math.floor(Math.random() * 500) + 200;
+    }
+
+    generateRiskRecords(totalVisits) {
+        const records = [];
+        const now = new Date();
+        
+        // 生成最近5条记录
+        for (let i = 0; i < 5; i++) {
+            const time = new Date(now - i * 60000);
+            const visitors = totalVisits - i;
+            
+            let riskLevel, message;
+            const riskFactor = Math.random();
+            
+            if (riskFactor > 0.95) {
+                riskLevel = 'high';
+                message = '访问高峰';
+            } else if (riskFactor > 0.8) {
+                riskLevel = 'medium';
+                message = '访问量适中';
+            } else {
+                riskLevel = 'low';
+                message = '正常访问';
+            }
+
+            records.push({
+                timestamp: time.toISOString(),
+                level: riskLevel,
+                message: `${message} (${visitors}访问)`,
+                visitors
+            });
+        }
+
+        return records;
     }
 
     updateUI(data) {
-        // 更新访问计数
+        // 更新统计数字
         document.getElementById('todayCount').textContent = data.todayVisits;
         document.getElementById('totalCount').textContent = data.totalVisits;
+        document.getElementById('weeklyCount').textContent = data.weeklyVisits;
+        document.getElementById('monthlyCount').textContent = data.monthlyVisits;
         
-        // 更新实时访问列表
+        // 更新风险列表
         const riskList = document.getElementById('riskList');
-        riskList.innerHTML = data.recentVisits.map(visit => `
+        riskList.innerHTML = data.recentRisks.map(risk => `
             <div class="risk-item">
-                <span>${new Date(visit.timestamp).toLocaleString('zh-CN', {
+                <span>${new Date(risk.timestamp).toLocaleString('zh-CN', {
                     hour: '2-digit',
                     minute: '2-digit',
                     second: '2-digit'
                 })}</span>
-                <div class="visit-info">
-                    <span class="visit-count">访问量: ${visit.count}</span>
-                    <span class="risk-level ${visit.status.level}">${visit.status.message}</span>
-                </div>
+                <span class="risk-level ${risk.level}">${risk.message}</span>
             </div>
         `).join('');
-
-        // 可继续拓展
-        }
     }
 }
 
 // 启动应用
-new VisitorApp();
+document.addEventListener('DOMContentLoaded', () => {
+    new VisitorApp();
+});
