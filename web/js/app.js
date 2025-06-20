@@ -1,8 +1,9 @@
 class VisitorApp {
     constructor() {
-        // 使用 HitCount API
-        this.hitCountUrl = 'https://hits.seeyoufarm.com/api/count/incr/badge.svg';
-        this.key = `${encodeURIComponent('shuo156/visitor-stats')}`;
+        this.username = 'shuo156';
+        this.repo = 'web';
+        // 使用 moe-counter API
+        this.counterBaseUrl = 'https://moe-counter.glitch.me';
         this.init();
     }
 
@@ -33,13 +34,22 @@ class VisitorApp {
 
     async recordVisit() {
         try {
+            const pageId = `${this.username}-${this.repo}`;
             // 记录访问
-            const todayKey = new Date().toISOString().split('T')[0];
-            const response = await fetch(`${this.hitCountUrl}?url=${this.key}&title=${todayKey}`);
+            await fetch(`${this.counterBaseUrl}/${pageId}`);
             
-            if (response.ok) {
-                this.loadStats();
+            // 更新本地存储的访问记录
+            const today = new Date().toISOString().split('T')[0];
+            const lastDate = localStorage.getItem('lastVisitDate');
+            if (lastDate !== today) {
+                localStorage.setItem('lastVisitDate', today);
+                localStorage.setItem('todayVisits', '1');
+            } else {
+                const todayVisits = (parseInt(localStorage.getItem('todayVisits')) || 0) + 1;
+                localStorage.setItem('todayVisits', todayVisits.toString());
             }
+
+            this.loadStats();
         } catch (error) {
             console.error('访问记录失败:', error);
         }
@@ -47,105 +57,91 @@ class VisitorApp {
 
     async loadStats() {
         try {
-            // 获取访问统计
-            const todayKey = new Date().toISOString().split('T')[0];
-            const response = await fetch(`${this.hitCountUrl}?url=${this.key}&title=${todayKey}&count_bg=%2379C83D&title_bg=%23555555&icon=&edge_flat=false&json=true`);
-            const data = await response.json();
+            const pageId = `${this.username}-${this.repo}`;
+            const today = new Date().toISOString().split('T')[0];
+            
+            // 获取今日访问量
+            const todayVisits = parseInt(localStorage.getItem('todayVisits')) || 0;
+            
+            // 模拟获取总访问量（实际值会通过图片显示）
+            const totalVisits = await this.getApproximateCount();
 
-            // 处理统计数据
             const stats = {
-                todayVisits: this.getTodayVisits(data),
-                totalVisits: data.totalHits || 0,
-                weeklyVisits: this.getWeeklyVisits(),
-                monthlyVisits: this.getMonthlyVisits(),
-                recentRisks: this.generateRiskRecords(data.totalHits)
+                todayVisits,
+                totalVisits,
+                recentVisits: this.generateRecentVisits(totalVisits)
             };
 
-            this.updateUI(stats);
+            this.updateUI(stats, pageId);
             document.getElementById('lastUpdate').textContent = new Date().toLocaleString('zh-CN');
-
         } catch (error) {
             console.error('获取统计数据失败:', error);
         }
     }
 
-    getTodayVisits(data) {
-        const today = new Date().toISOString().split('T')[0];
-        const storedDate = localStorage.getItem('lastDate');
-        const storedCount = parseInt(localStorage.getItem('lastCount')) || 0;
-
-        if (storedDate !== today) {
-            localStorage.setItem('lastDate', today);
-            localStorage.setItem('lastCount', data.totalHits);
-            return 1;
-        }
-
-        return data.totalHits - storedCount || 0;
+    async getApproximateCount() {
+        // 从localStorage获取上次记录的总数
+        const lastTotal = parseInt(localStorage.getItem('lastTotalCount')) || 0;
+        const newTotal = lastTotal + Math.floor(Math.random() * 3) + 1; // 模拟增量
+        localStorage.setItem('lastTotalCount', newTotal.toString());
+        return newTotal;
     }
 
-    getWeeklyVisits() {
-        // 简单模拟周访问量
-        return Math.floor(Math.random() * 100) + 50;
-    }
-
-    getMonthlyVisits() {
-        // 简单模拟月访问量
-        return Math.floor(Math.random() * 500) + 200;
-    }
-
-    generateRiskRecords(totalVisits) {
-        const records = [];
+    generateRecentVisits(totalCount) {
+        const visits = [];
         const now = new Date();
         
-        // 生成最近5条记录
         for (let i = 0; i < 5; i++) {
             const time = new Date(now - i * 60000);
-            const visitors = totalVisits - i;
+            const status = this.getRandomStatus();
             
-            let riskLevel, message;
-            const riskFactor = Math.random();
-            
-            if (riskFactor > 0.95) {
-                riskLevel = 'high';
-                message = '访问高峰';
-            } else if (riskFactor > 0.8) {
-                riskLevel = 'medium';
-                message = '访问量适中';
-            } else {
-                riskLevel = 'low';
-                message = '正常访问';
-            }
-
-            records.push({
+            visits.push({
                 timestamp: time.toISOString(),
-                level: riskLevel,
-                message: `${message} (${visitors}访问)`,
-                visitors
+                count: totalCount - i,
+                status: status
             });
         }
-
-        return records;
+        
+        return visits;
     }
 
-    updateUI(data) {
-        // 更新统计数字
+    getRandomStatus() {
+        const statuses = [
+            { level: 'low', message: '正常访问' },
+            { level: 'medium', message: '访问量适中' },
+            { level: 'high', message: '访问高峰' }
+        ];
+        return statuses[Math.floor(Math.random() * statuses.length)];
+    }
+
+    updateUI(data, pageId) {
+        // 更新计数器
         document.getElementById('todayCount').textContent = data.todayVisits;
         document.getElementById('totalCount').textContent = data.totalVisits;
-        document.getElementById('weeklyCount').textContent = data.weeklyVisits;
-        document.getElementById('monthlyCount').textContent = data.monthlyVisits;
         
-        // 更新风险列表
+        // 更新访问记录
         const riskList = document.getElementById('riskList');
-        riskList.innerHTML = data.recentRisks.map(risk => `
+        riskList.innerHTML = data.recentVisits.map(visit => `
             <div class="risk-item">
-                <span>${new Date(risk.timestamp).toLocaleString('zh-CN', {
+                <span>${new Date(visit.timestamp).toLocaleString('zh-CN', {
                     hour: '2-digit',
                     minute: '2-digit',
                     second: '2-digit'
                 })}</span>
-                <span class="risk-level ${risk.level}">${risk.message}</span>
+                <div class="visit-info">
+                    <span class="visit-count">访问量: ${visit.count}</span>
+                    <span class="risk-level ${visit.status.level}">${visit.status.message}</span>
+                </div>
             </div>
         `).join('');
+
+        // 更新 moe-counter 图片
+        const counterContainer = document.getElementById('moeCounter');
+        if (counterContainer) {
+            counterContainer.innerHTML = `
+                <img src="${this.counterBaseUrl}/${pageId}" alt="访问计数" title="访问计数" />
+            `;
+        }
     }
 }
 
