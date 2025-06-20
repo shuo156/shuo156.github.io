@@ -6,8 +6,9 @@
 
 body {
     font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background: #f5f7fa;
+    background: #f0f2f5;
     color: #2d3436;
+    line-height: 1.6;
 }
 
 .app {
@@ -18,11 +19,21 @@ body {
 .header {
     text-align: center;
     margin-bottom: 24px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .header h1 {
     font-size: 24px;
-    color: #2d3436;
+    color: #1a73e8;
+    margin-bottom: 8px;
+}
+
+.user-info {
+    color: #5f6368;
+    font-size: 14px;
     margin-bottom: 8px;
 }
 
@@ -41,29 +52,34 @@ body {
 .stat-box {
     background: white;
     border-radius: 12px;
-    padding: 16px;
+    padding: 20px;
     text-align: center;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.stat-box:hover {
+    transform: translateY(-2px);
 }
 
 .stat-label {
     display: block;
     font-size: 14px;
-    color: #636e72;
+    color: #5f6368;
     margin-bottom: 8px;
 }
 
 .stat-value {
     display: block;
-    font-size: 24px;
+    font-size: 28px;
     font-weight: bold;
-    color: #0984e3;
+    color: #1a73e8;
 }
 
 .risk-container {
     background: white;
     border-radius: 12px;
-    padding: 16px;
+    padding: 20px;
     margin-bottom: 24px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
@@ -92,20 +108,51 @@ body {
 }
 
 .risk-level {
-    padding: 4px 8px;
-    border-radius: 4px;
+    padding: 4px 12px;
+    border-radius: 20px;
     font-size: 12px;
     color: white;
 }
 
 .risk-level.high {
-    background: #ff7675;
+    background: #ff4757;
 }
 
 .risk-level.medium {
-    background: #fdcb6e;
+    background: #ffa502;
 }
 
 .risk-level.low {
-    background: #00b894;
-  }
+    background: #2ed573;
+}
+
+.footer {
+    text-align: center;
+    color: #5f6368;
+    font-size: 12px;
+    margin-top: 30px;
+}
+
+/* 适配暗色模式 */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #1a1a1a;
+        color: #fff;
+    }
+
+    .header, .stat-box, .risk-container {
+        background: #2d2d2d;
+    }
+
+    .stat-label {
+        color: #aaa;
+    }
+
+    .stat-value {
+        color: #4285f4;
+    }
+
+    .risk-item {
+        border-bottom-color: #3d3d3d;
+    }
+}
