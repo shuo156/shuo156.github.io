@@ -1,6 +1,9 @@
 class VisitorApp {
     constructor() {
-        this.counterNamespace = 'shuo156-stats'; // 使用你的用户名作为命名空间
+        this.username = 'shuo156';
+        this.repo = 'web';
+        // 使用 visitor-badge 作为统计服务
+        this.badgeBaseUrl = 'https://visitor-badge.laobi.icu';
         this.init();
     }
 
@@ -31,58 +34,44 @@ class VisitorApp {
 
     async recordVisit() {
         try {
-            // 记录各种统计
-            const today = new Date().toISOString().split('T')[0];
-            const weekStart = this.getWeekStart();
-            const monthStart = new Date().toISOString().slice(0, 7);
-
-            await Promise.all([
-                fetch(`https://api.counterapi.dev/v1/${this.counterNamespace}/total/up`),
-                fetch(`https://api.counterapi.dev/v1/${this.counterNamespace}/daily_${today}/up`),
-                fetch(`https://api.counterapi.dev/v1/${this.counterNamespace}/weekly_${weekStart}/up`),
-                fetch(`https://api.counterapi.dev/v1/${this.counterNamespace}/monthly_${monthStart}/up`)
-            ]);
-
-            this.loadStats();
+            // 使用 visitor-badge 记录访问
+            const pageId = `${this.username}-${this.repo}`;
+            const response = await fetch(`${this.badgeBaseUrl}/v1/badge?page_id=${pageId}`);
+            if (response.ok) {
+                this.loadStats();
+            }
         } catch (error) {
             console.error('访问记录失败:', error);
         }
     }
 
-    getWeekStart() {
-        const now = new Date();
-        const day = now.getDay() || 7;
-        const date = now.getDate() - day + 1;
-        const weekStart = new Date(now.setDate(date));
-        return weekStart.toISOString().split('T')[0];
-    }
-
     async loadStats() {
         try {
+            // 获取访问统计
+            const pageId = `${this.username}-${this.repo}`;
+            const response = await fetch(`${this.badgeBaseUrl}/v1/badge?page_id=${pageId}&json=true`);
+            const data = await response.json();
+
+            // 计算今日访问量（使用本地存储来跟踪）
             const today = new Date().toISOString().split('T')[0];
-            const weekStart = this.getWeekStart();
-            const monthStart = new Date().toISOString().slice(0, 7);
+            const lastDate = localStorage.getItem('lastVisitDate');
+            const lastCount = parseInt(localStorage.getItem('lastTotalCount')) || 0;
+            
+            if (lastDate !== today) {
+                localStorage.setItem('lastVisitDate', today);
+                localStorage.setItem('lastTotalCount', data.count);
+                localStorage.setItem('todayCount', '1');
+            } else {
+                const todayCount = data.count - lastCount;
+                localStorage.setItem('todayCount', todayCount.toString());
+            }
 
-            const [totalResponse, todayResponse, weeklyResponse, monthlyResponse] = await Promise.all([
-                fetch(`https://api.counterapi.dev/v1/${this.counterNamespace}/total/get`),
-                fetch(`https://api.counterapi.dev/v1/${this.counterNamespace}/daily_${today}/get`),
-                fetch(`https://api.counterapi.dev/v1/${this.counterNamespace}/weekly_${weekStart}/get`),
-                fetch(`https://api.counterapi.dev/v1/${this.counterNamespace}/monthly_${monthStart}/get`)
-            ]);
-
-            const [total, today, weekly, monthly] = await Promise.all([
-                totalResponse.json(),
-                todayResponse.json(),
-                weeklyResponse.json(),
-                monthlyResponse.json()
-            ]);
+            const todayCount = parseInt(localStorage.getItem('todayCount')) || 0;
 
             this.updateUI({
-                todayVisits: today.count || 0,
-                totalVisits: total.count || 0,
-                weeklyVisits: weekly.count || 0,
-                monthlyVisits: monthly.count || 0,
-                recentRisks: this.generateRealtimeStatus()
+                todayVisits: todayCount,
+                totalVisits: data.count,
+                recentVisits: this.generateRecentVisits(data.count)
             });
 
             document.getElementById('lastUpdate').textContent = new Date().toLocaleString('zh-CN');
@@ -91,54 +80,57 @@ class VisitorApp {
         }
     }
 
-    generateRealtimeStatus() {
+    generateRecentVisits(totalCount) {
+        const recentVisits = [];
         const now = new Date();
-        const status = [];
         
-        // 生成最近3条状态记录
-        for (let i = 0; i < 3; i++) {
-            const timestamp = new Date(now - i * 60000);
-            const randomValue = Math.random();
-            let level, message;
+        // 生成最近的访问记录
+        for (let i = 0; i < 5; i++) {
+            const time = new Date(now - i * 60000);
+            const status = this.getRandomStatus();
             
-            if (randomValue > 0.9) {
-                level = 'high';
-                message = '检测到异常访问';
-            } else if (randomValue > 0.7) {
-                level = 'medium';
-                message = '访问量略高';
-            } else {
-                level = 'low';
-                message = '正常访问';
-            }
-            
-            status.push({
-                timestamp: timestamp.toISOString(),
-                level,
-                message
+            recentVisits.push({
+                timestamp: time.toISOString(),
+                count: totalCount - i,
+                status: status
             });
         }
         
-        return status;
+        return recentVisits;
+    }
+
+    getRandomStatus() {
+        const statuses = [
+            { level: 'low', message: '正常访问' },
+            { level: 'medium', message: '访问量适中' },
+            { level: 'high', message: '访问高峰' }
+        ];
+        return statuses[Math.floor(Math.random() * statuses.length)];
     }
 
     updateUI(data) {
+        // 更新访问计数
         document.getElementById('todayCount').textContent = data.todayVisits;
         document.getElementById('totalCount').textContent = data.totalVisits;
-        document.getElementById('weeklyCount').textContent = data.weeklyVisits;
-        document.getElementById('monthlyCount').textContent = data.monthlyVisits;
         
+        // 更新实时访问列表
         const riskList = document.getElementById('riskList');
-        riskList.innerHTML = data.recentRisks.map(risk => `
+        riskList.innerHTML = data.recentVisits.map(visit => `
             <div class="risk-item">
-                <span>${new Date(risk.timestamp).toLocaleString('zh-CN', {
+                <span>${new Date(visit.timestamp).toLocaleString('zh-CN', {
                     hour: '2-digit',
                     minute: '2-digit',
                     second: '2-digit'
                 })}</span>
-                <span class="risk-level ${risk.level}">${risk.message}</span>
+                <div class="visit-info">
+                    <span class="visit-count">访问量: ${visit.count}</span>
+                    <span class="risk-level ${visit.status.level}">${visit.status.message}</span>
+                </div>
             </div>
         `).join('');
+
+        // 可继续拓展
+        }
     }
 }
 
