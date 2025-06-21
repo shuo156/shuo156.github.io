@@ -5,18 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>秋语斋</title>
     <style>
-        /* 字体 */
+        /* 字体与样式设计 */
         @font-face {
             font-family: 'CustomFont';
             src: url('https://shuo156.github.io/font/fontmain.ttf') format('truetype');
             font-display: swap;
         }
 
-        /* 应用字体 */
         body {
             font-family: 'CustomFont', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, 
-                         "Helvetica Neue", Arial, "Noto Sans", sans-serif, 
-                         "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+                         "Helvetica Neue", Arial, "Noto Sans", sans-serif;
             background: #fff9f0;
             margin: 0;
             padding: 20px;
@@ -24,100 +22,206 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
-        /* 设计 */
         .header {
             text-align: center;
             margin-bottom: 30px;
             border-bottom: 2px solid #c41e3a;
             padding-bottom: 20px;
         }
-        
+
+        .site-title {
+            color: #c41e3a;
+            font-size: 2.5em;
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+
+        .datetime-container {
+            text-align: center;
+            margin: 15px 0;
+            font-family: 'CustomFont', sans-serif;
+        }
+
+        .datetime {
+            color: #666666;
+            margin: 5px 0;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
         ul {
             list-style: none;
             padding: 0;
-            margin: 0;
+            margin: 20px auto;
+            max-width: 600px;
         }
-        .datetime {
+
+        li {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(196, 30, 58, 0.05);
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        li:hover {
+            background: rgba(196, 30, 58, 0.1);
+            transform: translateX(10px);
+        }
+
+        a {
+            text-decoration: none;
+            color: #c41e3a;
+        }
+
+        .section {
+            margin: 30px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .chinese-elements {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .element {
+            text-align: center;
+            margin: 10px;
+            padding: 15px;
+            background: rgba(196, 30, 58, 0.05);
+            border-radius: 8px;
+            width: 150px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            background: #c41e3a;
+            color: white;
+        }
+
+        .quote {
+            font-style: italic;
+            color: #666;
             text-align: center;
             margin: 20px 0;
-            font-family: 'CustomFont', sans-serif;
-            color: #666666;
-        }
-        .chinese-knot {
-            width: 100px;
-            height: 100px;
-            margin: 20px auto;
-            display: block;
-        }
-        .knot-path {
-            stroke: #c41e3a; /* 中国红 */
-            stroke-width: 2;
-            fill: none;
-            animation: drawKnot 3s ease-in-out infinite;
-        }
-        @keyframes drawKnot {
-            0% {
-                stroke-dashoffset: 1000;
-            }
-            100% {
-                stroke-dashoffset: 0;
-            }
         }
     </style>
 </head>
 <body>
-    <!-- 添加中国结SVG -->
-    <svg class="chinese-knot" viewBox="0 0 100 100">
-        <!-- 中国结的主体结构 -->
-        <path class="knot-path" d="
-            M 50,10 
-            C 30,10 20,25 20,40 
-            C 20,55 30,70 50,70 
-            C 70,70 80,55 80,40 
-            C 80,25 70,10 50,10
-            M 35,40 
-            C 35,45 42,50 50,50
-            C 58,50 65,45 65,40
-            C 65,35 58,30 50,30
-            C 42,30 35,35 35,40
-            M 50,70 
-            L 50,90
-            M 20,40 
-            L 10,40
-            M 80,40 
-            L 90,40
-        "/>
-    </svg>
+    <div class="header">
+        <h1 class="site-title">秋语斋</h1>
+        <div class="subtitle">学而不厌，诲人不倦</div>
+        <div class="datetime-container">
+            <div class="datetime" id="current-time"></div>
+            <div class="datetime" id="current-user">一秋一會，如珪如璋</div>
+        </div>
+    </div>
 
-    <h1>秋语斋</h1>
-    <div class="datetime" id="current-time"></div>
-    <div class="datetime" id="current-user">秋秋欢迎您的到来</div>
-    <a>网站速览</a>
-    <ul>
-        <li><a href="https://shuo156.github.io/">首页</a></li>
-        <li><a href="https://shuo156.github.io/html/daohang">导航</a></li>
-        <li><a href="https://shuo156.github.io/html/2048">2048</a></li>
-        <li><a href="https://shuo156.github.io/html/DeepSeek">DeepSeek?</a></li>
-        <li><a href="https://shuo156.github.io/html/chat">局域网聊天（开发）</a></li>
-        <li><a href="https://shuo156.github.io/html/math">高中数学知识点预习</a></li>
-        <li><a href="https://f-198.github.io">我的网站合集</a></li>
-    </ul>
-    <a>From 秋秋</a><br>
-    <a>🐧194427930(说明来意)</a><br>
-    <a>发邮箱给shuowork155@outlook.com,免费挂网站一周🌈(没事勿扰)</a>
-    <h1>访问次数</h1>
-    <img src="https://count.getloli.com/@shuo156?theme=3d-num" alt="访问次数（通用）" />
-    <h1>本周赞助商：魏雨涛</h1>
-    <img src='images/zanzhu.png' alt="赞助用户" />
-    <h1>扫码支持秋秋</h1>
-    <img src='images/ma.png' alt="微信二维码" />
-    <h1>合作伙伴(bushi)</h1>
-    <img src='images/mi.png' alt="mihoyo" />
+    <div class="section">
+        <h2>兰台别业</h2>
+        <div class="chinese-elements">
+            <div class="element">
+                <h3>五行</h3>
+                <p>金木水火土</p>
+            </div>
+            <div class="element">
+                <h3>传统风气</h3>
+                <p>松烟续古弦</p>
+            </div>
+            <div class="element">
+                <h3>君子之道</h3>
+                <p>温良恭俭让</p>
+            </div>
+            <div class="element">
+                <h3>传统美德</h3>
+                <p>仁义礼智信</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>天元纲</h2>
+        <ul>
+            <li><a href="https://shuo156.github.io/">开宗明义</a></li>
+            <li><a href="https://shuo156.github.io/html/daohang">灵枢指路</a></li>
+            <li><a href="https://shuo156.github.io/html/2048">九九归元</a></li>
+            <li><a href="https://shuo156.github.io/html/DeepSeek">窥天鉴地</a></li>
+            <li><a href="https://shuo156.github.io/html/web/">青蚨过境</a></li>
+            <li><a href="https://shuo156.github.io/html/chat">浮波秘言</a></li>
+            <li><a href="https://shuo156.github.io/html/math">九章新术</a></li>
+            <li><a href="https://f-198.github.io">芸编合璧</a></li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>芸阁点勘</h2>
+        <img src="https://count.getloli.com/@shuo156?theme=3d-num" alt="历数" />
+    </div>
+
+    <div class="section">
+        <h2>河润</h2>
+        <img src='images/zanzhu.png' alt="鼎玉盟主" />
+        <img src='images/ma.png' alt="云笥铜符" />
+        <img src='images/mi.png' alt="璃月天工局" />
+    </div>
+
+    <div class="quote">
+        "读万卷书，行万里路"
+    </div>
+
+    <footer class="footer">
+        <p>鱼雁谱</p>
+        <p>青羽驿：194427930（伏望，赐示来由）</p>
+        <p>来鸿阁：shuowork155@outlook.com</p>
+        <p>今辟云栈一方，广邀九州商贾</p>
+        <div class="quote">
+            "中华传统文化，源远流长"
+        </div>
+    </footer>
 
     <script>
+        var lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+            0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+            0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+            0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+            0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557];
+
+        // 计算农历日期
+        function getLunarDate(date) {
+            var year = date.getFullYear(),
+                month = date.getMonth() + 1,
+                day = date.getDate();
+            
+            var yearData = lunarInfo[year - 1900];
+            var zhiIndex = (year - 1900) % 12;
+            var ganIndex = (year - 1900) % 10;
+            
+            var zhi = "子丑寅卯辰巳午未申酉戌亥".charAt(zhiIndex);
+            var gan = "甲乙丙丁戊己庚辛壬癸".charAt(ganIndex);
+            
+            var lunarMonths = ["正", "二", "三", "四", "五", "六", "七", "八", "九", "十", "冬", "腊"];
+            var lunarDays = ["初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十",
+                           "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十",
+                           "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"];
+            
+            return `农历${gan}${zhi}年 ${lunarMonths[month-1]}月${lunarDays[day-1]}`;
+        }
+
         function updateDateTime() {
             const now = new Date();
-            // 调整为北京时间 (UTC+8)
             const beijingTime = new Date(now.getTime() + (8 * 60 * 60 * 1000));
             
             const year = beijingTime.getUTCFullYear();
@@ -127,12 +231,12 @@
             const minutes = String(beijingTime.getUTCMinutes()).padStart(2, '0');
             const seconds = String(beijingTime.getUTCSeconds()).padStart(2, '0');
 
-            const formatted = `北京时间: ${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-            document.getElementById('current-time').innerHTML = formatted;
+            const formattedTime = `北京时间：${year}年${month}月${day}日 ${hours}:${minutes}:${seconds}\n${getLunarDate(beijingTime)}`;
+            document.getElementById('current-time').innerHTML = formattedTime;
+            document.getElementById('current-user').innerHTML = "Current User's Login: shuo156";
         }
-        // 立即更新一次
+
         updateDateTime();
-        // 每秒更新一次
         setInterval(updateDateTime, 1000);
     </script>
 </body>
