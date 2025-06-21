@@ -11,10 +11,18 @@
             padding: 0;
             margin: 0;
         }
+        /* 时间显示6.21.17.23添加 */
+        .datetime {
+            text-align: center;
+            margin: 20px 0;
+            font-family: 'CustomFont', sans-serif;
+            color: #666666; /* 设置灰色字体 */
+        }
     </style>
 </head>
 <body>
     <h1>秋秋的Github页</h1>
+    <div class="datetime" id="current-time"></div>
     <a>网站速览</a>
     <ul>
         <li><a href="#">首页</a></li>
@@ -36,5 +44,19 @@
     <img src='images/ma.png' alt="微信二维码" />
     <h1>合作伙伴(bushi)</h1>
     <img src='images/mi.png' alt="mihoyo" />
+
+    <!-- JavaScript实时更新时间 -->
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            const formatted = now.toISOString().replace('T', ' ').substring(0, 19);
+            document.getElementById('current-time').innerHTML = 
+                `Current Date and Time (UTC): ${formatted}`;
+        }
+        // 马上更新
+        updateDateTime();
+        // 一秒一次
+        setInterval(updateDateTime, 1000);
+    </script>
 </body>
 </html>
