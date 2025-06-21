@@ -3,12 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>开发中……</title>
-    <link href="https://shuo156.github.io/css/custom-font2.css" rel="stylesheet">
+    <title>秋窗码趣</title>
+    <link rel="stylesheet" href="css/goodstyles.css">
+    <style>
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        /* 时间显示6.21添加 */
+        .datetime {
+            text-align: center;
+            margin: 20px 0;
+            font-family: 'CustomFont', sans-serif;
+            color: #666666; /* 灰色字体 */
+        }
+    </style>
 </head>
 <body>
-      <h1>正在努力开发中……</h1>
-        <img src="https://count.getloli.com/@shuo156?theme=3d-num" alt="历数" />
-</body>
-<html>
+    <h1>星石痕</h1>
+    <div class="datetime" id="current-time"></div>
+    <a>秋閣啟新釀，掃榻候君久</a>
+    <ul>
+        <li><a href="https://shuo156.github.io/">卷首</a></li>
+        <li><a href="https://shuo156.github.io/html/daohang">导引</a></li>
+        <li><a href="https://shuo156.github.io/html/2048">合数之戏</a></li>
+        <li><a href="https://shuo156.github.io/html/DeepSeek">渊思</a></li>
+        <li><a href="https://shuo156.github.io/web/">云踪谱</a></li>
+        <li><a href="https://shuo156.github.io/html/chat">方寸传音</a></li>
+        <li><a href="https://shuo156.github.io/html/math">九章新术</a></li>
+        <li><a href="https://f-198.github.io">万卷琅琊阁</a></li>
+    </ul>
+    <a>秋斋手启</a><br>
+    <a>194427930</a><br>
+    <a>shuowork155@outlook.com</a><br>
+    <a>Github@shuo156</a>
     
+    <!-- 我真是闲的弄这玩意 -->
+    <!-- jsp更新时间 -->
+   <script>
+        function updateDateTime() {
+            const now = new Date();
+            // 北京时间 (UTC+8)
+            const beijingTime = new Date(now.getTime() + (8 * 60 * 60 * 1000));
+            
+            // 格式化时间
+            const year = beijingTime.getUTCFullYear();
+            const month = String(beijingTime.getUTCMonth() + 1).padStart(2, '0');
+            const day = String(beijingTime.getUTCDate()).padStart(2, '0');
+            const hours = String(beijingTime.getUTCHours()).padStart(2, '0');
+            const minutes = String(beijingTime.getUTCMinutes()).padStart(2, '0');
+            const seconds = String(beijingTime.getUTCSeconds()).padStart(2, '0');
+
+            const formatted = `北京时间: ${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            document.getElementById('current-time').innerHTML = formatted;
+        }
+        // 立即更新一次
+        updateDateTime();
+        // 每秒更新一次
+        setInterval(updateDateTime, 1000);
+    </script>
+</body>
+</html>
+<!-- 还没做完，没找到合适的字体，会更新，除jsp外其他都是自己写的，一点点摸索的好吧，在次感谢Github与DeepSeek（你说谁会看到这个注释呢？），背景配色抄的duckduckgo，css文件有，现字体是Github安装包里的。别看了，睡觉 -->
