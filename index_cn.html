@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>秋秋雅阁</title>
+    <title>秋语斋</title>
     <link href="https://shuo156.github.io/css/custom-font2.css" rel="stylesheet">
     <style>
         ul {
@@ -13,69 +13,85 @@
         }
         .datetime {
             text-align: center;
-            margin: 10px 0;
+            margin: 20px 0;
             font-family: 'CustomFont', sans-serif;
             color: #666666;
         }
-        .chinese-style {
-            color: #b22222; /* 中国红 */
+        .chinese-knot {
+            width: 100px;
+            height: 100px;
+            margin: 20px auto;
+            display: block;
         }
-        .blessing {
-            color: #d4af37; /* 金色 */
-            font-size: 1.2em;
-            margin: 15px 0;
+        .knot-path {
+            stroke: #c41e3a; /* 中国红 */
+            stroke-width: 2;
+            fill: none;
+            animation: drawKnot 3s ease-in-out infinite;
+        }
+        @keyframes drawKnot {
+            0% {
+                stroke-dashoffset: 1000;
+            }
+            100% {
+                stroke-dashoffset: 0;
+            }
         }
     </style>
 </head>
 <body>
-    <h1 class="chinese-style">欢迎来到秋秋雅阁</h1>
-    
-    <!-- 时间显示区域 -->
-    <div class="datetime" id="current-time"></div>
-    <div class="datetime" id="lunar-date"></div>
-    <div class="blessing">祝您今日事事顺遂</div>
+    <!-- 添加中国结SVG -->
+    <svg class="chinese-knot" viewBox="0 0 100 100">
+        <!-- 中国结的主体结构 -->
+        <path class="knot-path" d="
+            M 50,10 
+            C 30,10 20,25 20,40 
+            C 20,55 30,70 50,70 
+            C 70,70 80,55 80,40 
+            C 80,25 70,10 50,10
+            M 35,40 
+            C 35,45 42,50 50,50
+            C 58,50 65,45 65,40
+            C 65,35 58,30 50,30
+            C 42,30 35,35 35,40
+            M 50,70 
+            L 50,90
+            M 20,40 
+            L 10,40
+            M 80,40 
+            L 90,40
+        "/>
+    </svg>
 
-    <!-- 导航区域 -->
-    <div class="chinese-style">网站导航</div>
+    <h1>秋语斋</h1>
+    <div class="datetime" id="current-time"></div>
+    <div class="datetime" id="current-user">Current User's Login: shuo156</div>
+    <a>网站速览</a>
     <ul>
         <li><a href="#">首页</a></li>
         <li><a href="https://shuo156.github.io/html/daohang">导航</a></li>
-        <li><a href="https://shuo156.github.io/html/2048">2048小游戏</a></li>
-        <li><a href="https://shuo156.github.io/html/DeepSeek">DeepSeek智能</a></li>
-        <li><a href="https://shuo156.github.io/html/chat">局域网聊天室（开发中）</a></li>
-        <li><a href="https://shuo156.github.io/html/math">高中数学知识宝库</a></li>
-        <li><a href="https://f-198.github.io">🌐 网站合集</a></li>
+        <li><a href="https://shuo156.github.io/html/2048">2048</a></li>
+        <li><a href="https://shuo156.github.io/html/DeepSeek">DeepSeek?</a></li>
+        <li><a href="https://shuo156.github.io/html/chat">局域网聊天（开发）</a></li>
+        <li><a href="https://shuo156.github.io/html/math">高中数学知识点预习</a></li>
+        <li><a href="https://f-198.github.io">我的网站合集</a></li>
     </ul>
-
-    <!-- 联系方式 -->
-    <div style="margin-top: 20px;">
-        <p>寄语：分享知识，传递快乐</p>
-        <p>联系方式：</p>
-        <p>QQ：194427930 (请注明来意)</p>
-        <p>邮箱：shuowork155@outlook.com</p>
-        <p>免费提供一周网站托管服务（请说明用途）</p>
-    </div>
-
-    <!-- 访问统计 -->
-    <h2 class="chinese-style">访问统计</h2>
-    <img src="https://count.getloli.com/@shuo156?theme=3d-num" alt="访问次数" />
-
-    <!-- 赞助商区域 -->
-    <h2 class="chinese-style">本周赞助</h2>
-    <img src='images/weiyut.png' alt="赞助商：魏雨涛" />
-
-    <!-- 支持区域 -->
-    <h2 class="chinese-style">支持我们</h2>
-    <img src='images/ma.png' alt="微信赞赏码" />
-
-    <!-- 合作伙伴 -->
-    <h2 class="chinese-style">合作伙伴(bushi)</h2>
-    <img src='images/mi.png' alt="米哈游" />
+    <a>From 秋秋</a><br>
+    <a>🐧194427930(说明来意)</a><br>
+    <a>发邮箱给shuowork155@outlook.com,免费挂网站一周🌈(没事勿扰)</a>
+    <h1>访问次数</h1>
+    <img src="https://count.getloli.com/@shuo156?theme=3d-num" alt="访问次数（通用）" />
+    <h1>本周赞助商：魏雨涛</h1>
+    <img src='images/zanzhu.png' alt="赞助用户" />
+    <h1>扫码支持秋秋</h1>
+    <img src='images/ma.png' alt="微信二维码" />
+    <h1>合作伙伴(bushi)</h1>
+    <img src='images/mi.png' alt="mihoyo" />
 
     <script>
         function updateDateTime() {
             const now = new Date();
-            // 调整为北京时间
+            // 调整为北京时间 (UTC+8)
             const beijingTime = new Date(now.getTime() + (8 * 60 * 60 * 1000));
             
             const year = beijingTime.getUTCFullYear();
@@ -85,16 +101,12 @@
             const minutes = String(beijingTime.getUTCMinutes()).padStart(2, '0');
             const seconds = String(beijingTime.getUTCSeconds()).padStart(2, '0');
 
-            // 格式化日期时间
-            const formatted = `当前时间：${year}年${month}月${day}日 ${hours}:${minutes}:${seconds}`;
+            const formatted = `北京时间: ${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
             document.getElementById('current-time').innerHTML = formatted;
-
-            // 显示用户信息
-            document.getElementById('lunar-date').innerHTML = "欢迎您：shuo156";
         }
-        
-        // 启动时间更新
+        // 立即更新一次
         updateDateTime();
+        // 每秒更新一次
         setInterval(updateDateTime, 1000);
     </script>
 </body>
