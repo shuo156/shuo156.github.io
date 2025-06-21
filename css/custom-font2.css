@@ -5,61 +5,24 @@
     font-display: swap;
 }
 
-/* 基础样式和现代渐变背景 */
+/* 基础样式和渐变背景 */
 body {
-    font-family: 'CustomFont', -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: 'CustomFont', sans-serif;
     margin: 0;
     padding: 0;
     min-height: 100vh;
-    background: linear-gradient(135deg,
-        #de5833 0%,       /* 深橙色 */
-        #e17451 20%,      /* 珊瑚色 */
-        #e0115f 40%,      /* 深玫瑰红 */
-        #702963 60%,      /* 深紫色 */
-        #483d8b 80%,      /* 暗蓝色石板 */
-        #4b0082 100%      /* 靛青色 */
+    background: linear-gradient(to bottom,
+        #87CEFA,    /* 浅蓝色 */
+        #A1D6FA,    /* 过渡色1 */
+        #BBE2FB,    /* 过渡色2 */
+        #D5EEFB,    /* 过渡色3 */
+        #FFFFFF     /* 白色 */
     );
-    background-size: 300% 300%;
-    animation: gradientShift 15s ease infinite;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-}
-
-/* 渐变动画 */
-@keyframes gradientShift {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
 }
 
 /* 文本样式 */
 h1, h2, h3, h4, h5, h6 {
     font-family: 'CustomFont', sans-serif;
-}
-
-/* 优化动画性能 */
-@media (prefers-reduced-motion: reduce) {
-    body {
-        animation: none;
-    }
-}
-
-/* 暗色模式调整 */
-@media (prefers-color-scheme: dark) {
-    body {
-        background: linear-gradient(135deg,
-            #2c1810 0%,    /* 深褐色 */
-            #3d1f1a 20%,   /* 深红褐色 */
-            #401122 40%,   /* 深红色 */
-            #2a1024 60%,   /* 深紫色 */
-            #1a1432 80%,   /* 深蓝紫色 */
-            #1a0033 100%   /* 深靛青色 */
-        );
-    }
 }
