@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网络安全警示</title>
+    <style>
+        body {
+            background-color: #0a0a2a; /* 深蓝背景增强警示感 */
+            color: #ff3b3b; /* 红色强调 */
+            font-family: 'Microsoft YaHei', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        .warning-container {
+            max-width: 800px;
+            padding: 2rem;
+            border: 3px solid #ff3b3b;
+            border-radius: 15px;
+            background: rgba(10, 10, 42, 0.85);
+            box-shadow: 0 0 30px rgba(255, 59, 59, 0.5);
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 15px rgba(255, 59, 59, 0.8);
+            line-height: 1.3;
+            animation: pulse 2s infinite;
+        }
+        
+        .counter {
+            font-size: 5rem;
+            font-weight: bold;
+            margin: 2rem 0;
+            color: #ffde59; /* 黄色数字更醒目 */
+            text-shadow: 0 0 20px rgba(255, 222, 89, 0.9);
+        }
+        
+        .footer {
+            margin-top: 2rem;
+            font-size: 1.2rem;
+            color: #ccc;
+            line-height: 1.6;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.9; }
+            50% { opacity: 1; }
+            100% { opacity: 0.9; }
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .counter { font-size: 4rem; }
+        }
+    </style>
+    
+    <!-- 使用开源计数器API（Vercount） -->
+    <script defer src="https://vercount.one/js"></script>
+</head>
+<body>
+    <div class="warning-container">
+        <h1>不要点击陌生链接</h1>
+        <h1>谨防网络诈骗</h1>
+        <h1>保护个人信息安全</h1>
+        
+        <div class="counter">
+            你是第 <span id="busuanzi_site_pv">000000</span> 位访客
+        </div>
+        
+        <div class="footer">
+            <p>任何索要密码、验证码的行为都是诈骗！</p>
+            <p>遇到可疑情况请立即拨打110报警</p>
+        </div>
+    </div>
+
+    <!-- 备用计数器方案（Moe-Counter） -->
+    <script>
+        // Moe-Counter备用方案
+        document.addEventListener('DOMContentLoaded', function() {
+            const counterEl = document.getElementById('busuanzi_site_pv');
+            if(!counterEl.innerText || counterEl.innerText === '000000') {
+                // 如果主计数器失效则使用备用方案
+                const img = document.createElement('img');
+                img.src = 'https://count.getloli.com/get/@antiscam?theme=3d-num';
+                img.alt = '访客计数';
+                img.style.height = '80px';
+                counterEl.parentNode.replaceChild(img, counterEl);
+            }
+        });
+    </script>
+</body>
+</html>

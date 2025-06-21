@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>秋秋的Github页</title>
+    <style>
+        /* 自定义字体 */
+        @font-face {
+            font-family: 'FontMain';
+            src: url('../font/fontmain.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'FontMain', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin-top: 30px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+        
+        header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #ff8a00, #e52e71);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #ddd;
+            margin-bottom: 30px;
+        }
+        
+        .nav-container {
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        .nav-links {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .nav-links li a {
+            display: block;
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .nav-links li a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .intro {
+            font-size: 1.1rem;
+            margin: 25px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            line-height: 1.8;
+        }
+        
+        .contact-section {
+            margin: 30px 0;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+        }
+        
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+        }
+        
+        .qrcode-container {
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+        }
+        
+        .qrcode {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        .highlight {
+            color: #ff8a00;
+            font-weight: bold;
+        }
+        
+        .animation-text {
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-links li {
+                width: 100%;
+            }
+            
+            .nav-links li a {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>秋秋的Github页</h1>
+            <p class="subtitle">探索、学习与分享的旅程</p>
+        </header>
+        
+        <div class="intro">
+            <p>此页面是纯手搓，以后会更新更多游戏和实用工具！</p>
+            <p>不断学习，不断进步，创造更多有趣的内容！</p>
+        </div>
+        
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="#">首页</a></li>
+                <li><a href="https://shuo156.github.io/html/daohang">导航</a></li>
+                <li><a href="https://shuo156.github.io/html/2048">2048</a></li>
+                <li><a href="https://shuo156.github.io/html/math">高中数学知识点预习</a></li>
+                <li><a href="https://f-198.github.io">我的网站合集</a></li>
+            </ul>
+        </div>
+        
+        <div class="contact-section">
+            <h2>联系秋秋</h2>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <span>🐧</span>
+                    <span>QQ: 194427930 (说明来意)</span>
+                </div>
+                <div class="contact-item">
+                    <span>📧</span>
+                    <span>邮箱: shuowork155@outlook.com</span>
+                </div>
+            </div>
+            <p style="margin-top: 20px; font-size: 1.1rem;">
+                发邮箱给我，免费挂网站一周 <span class="highlight animation-text">🌈(没事勿扰)</span>
+            </p>
+        </div>
+        
+        <div class="qrcode-container">
+            <h3>扫码关注秋秋</h3>
+            <div class="qrcode">
+                <p>二维码区域</p>
+            </div>
+            <p style="margin-top: 15px;">扫一扫了解更多项目</p>
+        </div>
+        
+        <footer>
+            <p>From 秋秋</p>
+            <p>© 2023 秋秋的Github页 | 用心创造每一行代码</p>
+        </footer>
+    </div>
+    
+    <script>
+        // 添加简单的动画效果
+        document.addEventListener('DOMContentLoaded', function() {
+            const links = document.querySelectorAll('.nav-links li a');
+            
+            links.forEach(link => {
+                link.addEventListener('mouseenter', function() {
+                    this.style.background = getRandomGradient();
+                });
+            });
+            
+            function getRandomGradient() {
+                const colors = [
+                    'linear-gradient(90deg, #ff8a00, #e52e71)',
+                    'linear-gradient(90deg, #00c6ff, #0072ff)',
+                    'linear-gradient(90deg, #1d976c, #93f9b9)',
+                    'linear-gradient(90deg, #ff0084, #33001b)',
+                    'linear-gradient(90deg, #5433ff, #20bdff, #a5fecb)'
+                ];
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+            
+            // 背景动画增强
+            const body = document.querySelector('body');
+            let angle = 0;
+            
+            setInterval(() => {
+                angle = (angle + 0.5) % 360;
+                body.style.background = `linear-gradient(${angle}deg, #1a2a6c, #b21f1f, #1a2a6c)`;
+            }, 100);
+        });
+    </script>
+</body>
+</html>
