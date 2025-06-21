@@ -4,8 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>秋语斋</title>
-    <link href="https://shuo156.github.io/css/custom-font2.css" rel="stylesheet">
     <style>
+        /* 字体 */
+        @font-face {
+            font-family: 'CustomFont';
+            src: url('https://shuo156.github.io/font/fontmain.ttf') format('truetype');
+            font-display: swap;
+        }
+
+        /* 应用字体 */
+        body {
+            font-family: 'CustomFont', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, 
+                         "Helvetica Neue", Arial, "Noto Sans", sans-serif, 
+                         "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            background: #fff9f0;
+            margin: 0;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* 设计 */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #c41e3a;
+            padding-bottom: 20px;
+        }
+        
         ul {
             list-style: none;
             padding: 0;
@@ -65,10 +91,10 @@
 
     <h1>秋语斋</h1>
     <div class="datetime" id="current-time"></div>
-    <div class="datetime" id="current-user">Current User's Login: shuo156</div>
+    <div class="datetime" id="current-user">秋秋欢迎您的到来</div>
     <a>网站速览</a>
     <ul>
-        <li><a href="#">首页</a></li>
+        <li><a href="https://shuo156.github.io/">首页</a></li>
         <li><a href="https://shuo156.github.io/html/daohang">导航</a></li>
         <li><a href="https://shuo156.github.io/html/2048">2048</a></li>
         <li><a href="https://shuo156.github.io/html/DeepSeek">DeepSeek?</a></li>
