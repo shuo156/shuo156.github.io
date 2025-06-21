@@ -3,86 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>秋语斋</title>
-    <link href="https://shuo156.github.io/css/custom-font3.css" rel="stylesheet">
-    <style>
-        ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        /* 时间显示6.21.19.55添加,农历以后做 */
-        .datetime {
-            text-align: center;
-            margin: 20px 0;
-            font-family: 'CustomFont', sans-serif;
-            color: #666666; /* 灰色字体 */
-        }
-    </style>
+    <title>开发中……</title>
+    <link href="https://shuo156.github.io/css/custom-font2.css" rel="stylesheet">
 </head>
 <body>
-    <div class="section">
-        <h2>天元纲</h2>
-        <ul>
-            <li><a href="https://shuo156.github.io/">开宗明义</a></li>
-            <li><a href="https://shuo156.github.io/html/daohang">灵枢指路</a></li>
-            <li><a href="https://shuo156.github.io/html/2048">九九归元</a></li>
-            <li><a href="https://shuo156.github.io/html/DeepSeek">窥天鉴地</a></li>
-            <li><a href="https://shuo156.github.io/html/web/">青蚨过境</a></li>
-            <li><a href="https://shuo156.github.io/html/chat">浮波秘言</a></li>
-            <li><a href="https://shuo156.github.io/html/math">九章新术</a></li>
-            <li><a href="https://f-198.github.io">芸编合璧</a></li>
-        </ul>
-    </div>
-
-    <div class="section">
-        <h2>芸阁点勘</h2>
+      <h1>正在努力开发中……</h1>
         <img src="https://count.getloli.com/@shuo156?theme=3d-num" alt="历数" />
-    </div>
-
-    <div class="section">
-        <h2>河润</h2>
-        <img src='images/zanzhu.png' alt="鼎玉盟主" />
-        <img src='images/ma.png' alt="云笥铜符" />
-        <img src='images/mi.png' alt="璃月天工局" />
-    </div>
-
-    <div class="quote">
-        "读万卷书，行万里路"
-    </div>
-
-    <footer class="footer">
-        <h2>鱼雁谱</h2>
-        <p>青羽驿：194427930（伏望，赐示来由）</p>
-        <p>来鸿阁：shuowork155@outlook.com</p>
-        <p>今辟云栈一方，广邀九州商贾</p>
-        <div class="quote">
-            "中华传统文化，源远流长"
-        </div>
-    </footer>
-
-    <!-- JavaScript实时更新时间 -->
-   <script>
-        function updateDateTime() {
-            const now = new Date();
-            // 北京时间 (UTC+8)
-            const beijingTime = new Date(now.getTime() + (8 * 60 * 60 * 1000));
-            
-            // 格式化时间
-            const year = beijingTime.getUTCFullYear();
-            const month = String(beijingTime.getUTCMonth() + 1).padStart(2, '0');
-            const day = String(beijingTime.getUTCDate()).padStart(2, '0');
-            const hours = String(beijingTime.getUTCHours()).padStart(2, '0');
-            const minutes = String(beijingTime.getUTCMinutes()).padStart(2, '0');
-            const seconds = String(beijingTime.getUTCSeconds()).padStart(2, '0');
-
-            const formatted = `北京时间: ${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-            document.getElementById('current-time').innerHTML = formatted;
-        }
-        // 立即更新一次
-        updateDateTime();
-        // 每秒更新一次
-        setInterval(updateDateTime, 1000);
-    </script>
 </body>
-</html>
+<html>
+    
