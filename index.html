@@ -16,7 +16,7 @@
             text-align: center;
             margin: 20px 0;
             font-family: 'CustomFont', sans-serif;
-            color: #666666; /* 设置灰色字体 */
+            color: #666666; /* 灰色字体 */
         }
     </style>
 </head>
@@ -29,6 +29,7 @@
         <li><a href="https://shuo156.github.io/html/daohang">导航</a></li>
         <li><a href="https://shuo156.github.io/html/2048">2048</a></li>
         <li><a href="https://shuo156.github.io/html/DeepSeek">DeepSeek?</a></li>
+        <li><a href="https://shuo156.github.io/web/">访问测试</a></li>
         <li><a href="https://shuo156.github.io/html/chat">局域网聊天（开发）</a></li>
         <li><a href="https://shuo156.github.io/html/math">高中数学知识点预习</a></li>
         <li><a href="https://f-198.github.io">我的网站合集</a></li>
@@ -60,7 +61,7 @@
             const minutes = String(beijingTime.getUTCMinutes()).padStart(2, '0');
             const seconds = String(beijingTime.getUTCSeconds()).padStart(2, '0');
 
-            const formatted = `时间: ${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            const formatted = `北京时间: ${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
             document.getElementById('current-time').innerHTML = formatted;
         }
         // 立即更新一次
