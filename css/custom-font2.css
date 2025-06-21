@@ -1,0 +1,8 @@
+@font-face {
+    font-family: 'CustomFont';
+    src: url('https://shuo156.github.io/font/fontmain.ttf') format('truetype');
+}
+
+body, h1 {
+    font-family: 'CustomFont', sans-serif;
+}
