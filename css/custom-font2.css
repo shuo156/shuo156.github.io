@@ -12,17 +12,31 @@ body {
     padding: 0;
     min-height: 100vh;
     background: linear-gradient(to bottom,
-        #87CEFA,    /* 浅蓝色 */
-        #A1D6FA,    /* 过渡色1 */
-        #BBE2FB,    /* 过渡色2 */
-        #D5EEFB,    /* 过渡色3 */
+        #F0F8FF,    /* 爱丽丝蓝 */
         #FFFFFF     /* 白色 */
     );
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* 添加文本居中 */
+    text-align: center;
 }
 
 /* 文本样式 */
 h1, h2, h3, h4, h5, h6 {
     font-family: 'CustomFont', sans-serif;
+    text-align: center;
+}
+
+/* 图片居中 */
+img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
+}
+
+/* 日期时间显示样式 */
+.datetime {
+    text-align: center;
+    margin: 20px 0;
 }
