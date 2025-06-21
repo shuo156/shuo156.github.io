@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>秋秋雅阁</title>
+    <link href="https://shuo156.github.io/css/custom-font2.css" rel="stylesheet">
+    <style>
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .datetime {
+            text-align: center;
+            margin: 10px 0;
+            font-family: 'CustomFont', sans-serif;
+            color: #666666;
+        }
+        .chinese-style {
+            color: #b22222; /* 中国红 */
+        }
+        .blessing {
+            color: #d4af37; /* 金色 */
+            font-size: 1.2em;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="chinese-style">欢迎来到秋秋雅阁</h1>
+    
+    <!-- 时间显示区域 -->
+    <div class="datetime" id="current-time"></div>
+    <div class="datetime" id="lunar-date"></div>
+    <div class="blessing">祝您今日事事顺遂</div>
+
+    <!-- 导航区域 -->
+    <div class="chinese-style">网站导航</div>
+    <ul>
+        <li><a href="#">首页</a></li>
+        <li><a href="https://shuo156.github.io/html/daohang">导航</a></li>
+        <li><a href="https://shuo156.github.io/html/2048">2048小游戏</a></li>
+        <li><a href="https://shuo156.github.io/html/DeepSeek">DeepSeek智能</a></li>
+        <li><a href="https://shuo156.github.io/html/chat">局域网聊天室（开发中）</a></li>
+        <li><a href="https://shuo156.github.io/html/math">高中数学知识宝库</a></li>
+        <li><a href="https://f-198.github.io">🌐 网站合集</a></li>
+    </ul>
+
+    <!-- 联系方式 -->
+    <div style="margin-top: 20px;">
+        <p>寄语：分享知识，传递快乐</p>
+        <p>联系方式：</p>
+        <p>QQ：194427930 (请注明来意)</p>
+        <p>邮箱：shuowork155@outlook.com</p>
+        <p>免费提供一周网站托管服务（请说明用途）</p>
+    </div>
+
+    <!-- 访问统计 -->
+    <h2 class="chinese-style">访问统计</h2>
+    <img src="https://count.getloli.com/@shuo156?theme=3d-num" alt="访问次数" />
+
+    <!-- 赞助商区域 -->
+    <h2 class="chinese-style">本周赞助</h2>
+    <img src='images/weiyut.png' alt="赞助商：魏雨涛" />
+
+    <!-- 支持区域 -->
+    <h2 class="chinese-style">支持我们</h2>
+    <img src='images/ma.png' alt="微信赞赏码" />
+
+    <!-- 合作伙伴 -->
+    <h2 class="chinese-style">合作伙伴(bushi)</h2>
+    <img src='images/mi.png' alt="米哈游" />
+
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            // 调整为北京时间
+            const beijingTime = new Date(now.getTime() + (8 * 60 * 60 * 1000));
+            
+            const year = beijingTime.getUTCFullYear();
+            const month = String(beijingTime.getUTCMonth() + 1).padStart(2, '0');
+            const day = String(beijingTime.getUTCDate()).padStart(2, '0');
+            const hours = String(beijingTime.getUTCHours()).padStart(2, '0');
+            const minutes = String(beijingTime.getUTCMinutes()).padStart(2, '0');
+            const seconds = String(beijingTime.getUTCSeconds()).padStart(2, '0');
+
+            // 格式化日期时间
+            const formatted = `当前时间：${year}年${month}月${day}日 ${hours}:${minutes}:${seconds}`;
+            document.getElementById('current-time').innerHTML = formatted;
+
+            // 显示用户信息
+            document.getElementById('lunar-date').innerHTML = "欢迎您：shuo156";
+        }
+        
+        // 启动时间更新
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+    </script>
+</body>
+</html>
