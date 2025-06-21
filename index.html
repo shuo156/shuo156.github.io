@@ -46,16 +46,26 @@
     <img src='images/mi.png' alt="mihoyo" />
 
     <!-- JavaScript实时更新时间 -->
-    <script>
+   <script>
         function updateDateTime() {
             const now = new Date();
-            const formatted = now.toISOString().replace('T', ' ').substring(0, 19);
-            document.getElementById('current-time').innerHTML = 
-                `Current Date and Time (UTC): ${formatted}`;
+            // 北京时间 (UTC+8)
+            const beijingTime = new Date(now.getTime() + (8 * 60 * 60 * 1000));
+            
+            // 格式化时间
+            const year = beijingTime.getUTCFullYear();
+            const month = String(beijingTime.getUTCMonth() + 1).padStart(2, '0');
+            const day = String(beijingTime.getUTCDate()).padStart(2, '0');
+            const hours = String(beijingTime.getUTCHours()).padStart(2, '0');
+            const minutes = String(beijingTime.getUTCMinutes()).padStart(2, '0');
+            const seconds = String(beijingTime.getUTCSeconds()).padStart(2, '0');
+
+            const formatted = `时间: ${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            document.getElementById('current-time').innerHTML = formatted;
         }
-        // 马上更新
+        // 立即更新一次
         updateDateTime();
-        // 一秒一次
+        // 每秒更新一次
         setInterval(updateDateTime, 1000);
     </script>
 </body>
