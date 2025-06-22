@@ -1,7 +1,7 @@
 /* 自定义字体 */
 @font-face {
     font-family: 'CustomFont';
-    src: url("../font/fontmain.ttf") format('truetype');
+    src: url("../font/kaishu.ttf") format('truetype');
     font-display: swap;
 }
 
