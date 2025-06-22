@@ -1,0 +1,76 @@
+<!-- 2506220928 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>秋秋Github页</title>
+    <link href="https://shuo156.github.io/css/custom-font2.css" rel="stylesheet">
+    <style>
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        /* 时间显示6.21.17.23添加 */
+        .datetime {
+            text-align: center;
+            margin: 20px 0;
+            font-family: 'CustomFont', sans-serif;
+            color: #666666; /* 朱辉 */
+        }
+    </style>
+</head>
+<body>
+<!-- 新芳  朱文丽  -->
+    <h1>秋秋的Github页</h1>
+    <div class="datetime" id="current-time"></div>
+    <a>网站速览</a>
+    <ul>
+        <li><a href="https://shuo156.github.io/index_cn">中国特供页面</a></li>
+        <li><a href="https://shuo156.github.io/html/daohang">导航</a></li>
+        <li><a href="https://shuo156.github.io/html/2048">2048</a></li>
+        <li><a href="https://shuo156.github.io/html/DeepSeek">DeepSeek?</a></li>
+        <li><a href="https://shuo156.github.io/web/">访问测试</a></li>
+        <li><a href="https://shuo156.github.io/html/chat">局域网聊天（开发）</a></li>
+        <li><a href="https://shuo156.github.io/html/math">高中数学知识点预习</a></li>
+        <li><a href="https://f-198.github.io">我的网站合集</a></li>
+    </ul>
+    <a>From 秋秋</a><br>
+    <a>🐧194427930(说明来意)</a><br>
+    <a>发邮箱给shuowork155@outlook.com,免费挂网站一周🌈(没事勿扰)</a>
+    <h1>访问次数</h1>
+    <img src="https://count.getloli.com/@shuo156?theme=3d-num" alt="访问次数（通用）" />
+    <h1>本周赞助商：魏雨涛</h1>
+    <img src='images/zanzhu.png' alt="赞助用户" />
+    <h1>扫码支持秋秋</h1>
+    <img src='images/ma.png' alt="微信二维码" />
+    <h1>合作伙伴(bushi)</h1>
+    <img src='images/mi.png' alt="mihoyo" />
+
+    <!-- JavaScript实时更新时间 -->
+    <!-- 李影韩彬舍天地 -->
+   <script>
+        function updateDateTime() {
+            const now = new Date();
+            // 北京时间 (UTC+8)
+            const beijingTime = new Date(now.getTime() + (8 * 60 * 60 * 1000));
+            
+            // 格式化时间
+            const year = beijingTime.getUTCFullYear();
+            const month = String(beijingTime.getUTCMonth() + 1).padStart(2, '0');
+            const day = String(beijingTime.getUTCDate()).padStart(2, '0');
+            const hours = String(beijingTime.getUTCHours()).padStart(2, '0');
+            const minutes = String(beijingTime.getUTCMinutes()).padStart(2, '0');
+            const seconds = String(beijingTime.getUTCSeconds()).padStart(2, '0');
+
+            const formatted = `北京时间: ${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            document.getElementById('current-time').innerHTML = formatted;
+        }
+        // 立即更新一次
+        updateDateTime();
+        // 每秒更新一次
+        setInterval(updateDateTime, 1000);
+    </script>
+</body>
+</html>

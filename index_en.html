@@ -1,0 +1,76 @@
+<!-- 2506220945 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qiuqiu Github Page</title>
+    <link href="https://shuo156.github.io/css/custom-font2.css" rel="stylesheet">
+    <style>
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        /* Time Display 6.21.17.23 Add */
+        .datetime {
+            text-align: center;
+            margin: 20px 0;
+            font-family: 'CustomFont', sans-serif;
+            color: #666666; /* Zhu Hui */
+        }
+    </style>
+</head>
+<body>
+<!-- Xinfang Zhu Wenli  -->
+    <h1>Qiuqiu's Github page</h1>
+    <div class="datetime" id="current-time"></div>
+    <a>Website Quick View</a>
+    <ul>
+        <li><a href="https://shuo156.github.io/index_cn">China Special Page</a></li>
+        <li><a href="https://shuo156.github.io/html/daohang">navigation</a></li>
+        <li><a href="https://shuo156.github.io/html/2048">2048</a></li>
+        <li><a href="https://shuo156.github.io/html/DeepSeek">DeepSeek?</a></li>
+        <li><a href="https://shuo156.github.io/web/">Access Test</a></li>
+        <li><a href="https://shuo156.github.io/html/chat">LAN Chat (Development)</a></li>
+        <li><a href="https://shuo156.github.io/html/math">High school mathematics knowledge point preview</a></li>
+        <li><a href="https://f-198.github.io">My Website Collection</a></li>
+    </ul>
+    <a>From Qiuqiu</a><br>
+    <a>194427930 (explain the purpose of your visit)</a><br>
+    <a>Email to the shuowork155@outlook.com, free website for a week (nothing to disturb)</a><br>
+    <a>Because of the time, many web pages do not have English support.</a>
+    <h1>Number of visits</h1>
+    <img src="https://count.getloli.com/@shuo156?theme=3d-num" alt="Number of visits (general)" />
+    <h1>Sponsor of the week: Wei Yutao</h1>
+    <img src='images/zanzhu.png' alt="Sponsored User" />
+    <h1>Scan code to support Qiuqiu</h1>
+    <img src='images/ma.png' alt="WeChat QR code" />
+    <h1>Partner (No.)</h1>
+    <img src='images/mi.png' alt="mihoyo" />
+
+    <!-- JavaScript-Real time update time -->
+    <!-- Li Ying, Han Bin, She Tian Di -->
+   <script>
+        function updateDateTime() {
+    const now = new Date();
+    
+    const year = now.getUTCFullYear();
+    const month = String(now.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(now.getUTCDate()).padStart(2, '0');
+    const hours = String(now.getUTCHours()).padStart(2, '0');
+    const minutes = String(now.getUTCMinutes()).padStart(2, '0');
+    const seconds = String(now.getUTCSeconds()).padStart(2, '0');
+
+    const formattedTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    
+    document.getElementById('current-time').innerHTML = formattedTime;
+}
+
+// Update once now
+updateDateTime();
+// Updated every second
+setInterval(updateDateTime, 1000);
+    </script>
+</body>
+</html>
