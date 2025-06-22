@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>秋秋Github页</title>
-    <link rel="stylesheet" href="css/custom-font2.css">
+    <link href="https://shuo156.github.io/css/custom-font2.css" rel="stylesheet">
     <style>
         ul {
             list-style: none;
@@ -16,11 +16,36 @@
             text-align: center;
             margin: 20px 0;
             font-family: 'CustomFont', sans-serif;
-            color: #666666; /* 灰色字体 */
+            color: #666666; /* 朱 */
+        }
+        .profile {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        
+        /* 图标样式 */
+        .github-icon {
+            width: 20px;       /* 宽度 */
+            height: 20px;      /* 高度 */
+            vertical-align: middle; /* 垂直对齐 */
+            margin-right: 8px; /* 图标和文字间距 */
+        }
+        
+        /* 行间距 */
+        .line {
+            margin: 8px 0;
+        }
+        
+        /* 页脚灰字 */
+        .profile .line:first-child,
+        .profile .line:last-child {
+            color: #666666; /* 辉 */
         }
     </style>
 </head>
 <body>
+<!-- 新芳  朱文丽  -->
     <h1>秋秋的Github页</h1>
     <div class="datetime" id="current-time"></div>
     <a>网站速览</a>
@@ -45,8 +70,21 @@
     <img src='images/ma.png' alt="微信二维码" />
     <h1>合作伙伴(bushi)</h1>
     <img src='images/mi.png' alt="mihoyo" />
+        <div class="profile">
+        <div class="line">
+            <!-- GitHub -->
+            <img src="https://github.githubassets.com/favicons/favicon.png" 
+                 alt="GitHub" 
+                 class="github-icon">
+            shuo156
+        </div>
+        <div class="line">
+            秋秋
+        </div>
+    </div>
 
-    <!-- jsp实时更新时间 -->
+    <!-- JavaScript实时更新时间 -->
+    <!-- 李影韩彬舍天地 -->
    <script>
         function updateDateTime() {
             const now = new Date();
@@ -71,4 +109,3 @@
     </script>
 </body>
 </html>
-<!-- 中国特供就是复制粘贴这个代码 -->
