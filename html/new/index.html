@@ -1,1 +1,258 @@
-new
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WebCat文件管理器</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- 自定义字体加载 -->
+    <style>
+        @font-face {
+            font-family: 'CustomFont';
+            src: url('font/main.ttf') format('truetype');
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 7L12 3L4 7M20 7L12 11M20 7V17L12 21M12 11L4 7M12 11V21M4 7V17L12 21"></path>
+            </svg>
+            <h1>WebCat文件管理器</h1>
+        </div>
+        <div class="user-info">
+            <div class="theme-toggle" onclick="toggleTheme()">
+                <svg class="icon sun" viewBox="0 0 24 24">
+                    <path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42m12.72-12.72l1.42-1.42M12 6a6 6 0 0 0-6 6 6 6 0 0 0 6 6 6 6 0 0 0 6-6 6 6 0 0 0-6-6z"/>
+                </svg>
+                <svg class="icon moon" viewBox="0 0 24 24">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            </div>
+            <span id="currentTime">2025-06-22 09:03:21</span>
+            <span id="currentUser">用户: shuo156</span>
+            <div class="settings-button" onclick="toggleSettings()">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="sidebar">
+            <div class="button-group">
+                <button class="button" onclick="requestFileAccess()">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    请求权限
+                </button>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="fileSearch" placeholder="搜索文件...">
+                <svg class="search-icon" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </div>
+            <div class="file-tree">
+                <ul class="file-list" id="fileList">
+                    <!-- 文件列表将通过JavaScript动态生成 -->
+                </ul>
+            </div>
+            <div class="quick-access">
+                <h3>快速访问</h3>
+                <div class="quick-access-items">
+                    <div class="quick-item" onclick="openQuickAccess('documents')">
+                        <svg class="icon"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg>
+                        文档
+                    </div>
+                    <div class="quick-item" onclick="openQuickAccess('downloads')">
+                        <svg class="icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path></svg>
+                        下载
+                    </div>
+                    <div class="quick-item" onclick="openQuickAccess('pictures')">
+                        <svg class="icon"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path></svg>
+                        图片
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="file-explorer">
+                <div class="path-navigator">
+                    <button class="nav-button" onclick="navigateBack()">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M15 18l-6-6 6-6"/>
+                        </svg>
+                    </button>
+                    <button class="nav-button" onclick="navigateForward()">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M9 18l6-6-6-6"/>
+                        </svg>
+                    </button>
+                    <button class="nav-button" onclick="navigateUp()">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        </svg>
+                    </button>
+                    <div id="currentPath" class="current-path">/storage/emulated/0/</div>
+                </div>
+
+                <div class="toolbar">
+                    <div class="button-group">
+                        <button class="button" onclick="createNewFile()">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="12" y1="18" x2="12" y2="12"/>
+                                <line x1="9" y1="15" x2="15" y2="15"/>
+                            </svg>
+                            新建
+                        </button>
+                        <button class="button" onclick="openFile()">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                            </svg>
+                            打开
+                        </button>
+                        <button class="button" onclick="saveFile()">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                                <polyline points="17 21 17 13 7 13 7 21"/>
+                                <polyline points="7 3 7 8 15 8"/>
+                            </svg>
+                            保存
+                        </button>
+                        <button class="button secondary" onclick="runCode()">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <polygon points="5 3 19 12 5 21 5 3"/>
+                            </svg>
+                            运行
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="editor-container">
+                <div class="editor-tabs" id="editorTabs">
+                    <!-- 标签页将通过JavaScript动态生成 -->
+                </div>
+                <div class="editor-wrapper">
+                    <textarea id="editor" class="editor" placeholder="在这里输入或粘贴代码..."></textarea>
+                    <div class="editor-line-numbers" id="lineNumbers"></div>
+                </div>
+                <div class="output" id="output">
+                    <div class="output-header">
+                        <span>输出结果</span>
+                        <button class="clear-output" onclick="clearOutput()">清除</button>
+                    </div>
+                    <div class="output-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="context-menu" id="contextMenu">
+        <div class="context-menu-item" onclick="copyFile()">
+            <svg class="icon" viewBox="0 0 24 24">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            复制
+        </div>
+        <div class="context-menu-item" onclick="cutFile()">
+            <svg class="icon" viewBox="0 0 24 24">
+                <circle cx="6" cy="6" r="3"/>
+                <circle cx="6" cy="18" r="3"/>
+                <line x1="20" y1="4" x2="8.12" y2="15.88"/>
+                <line x1="14.47" y1="14.48" x2="20" y2="20"/>
+                <line x1="8.12" y1="8.12" x2="12" y2="12"/>
+            </svg>
+            剪切
+        </div>
+        <div class="context-menu-item" onclick="pasteFile()">
+            <svg class="icon" viewBox="0 0 24 24">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+            </svg>
+            粘贴
+        </div>
+        <div class="context-menu-item" onclick="deleteFile()">
+            <svg class="icon" viewBox="0 0 24 24">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+            删除
+        </div>
+        <div class="context-menu-item" onclick="renameFile()">
+            <svg class="icon" viewBox="0 0 24 24">
+                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+            </svg>
+            重命名
+        </div>
+    </div>
+
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-header">
+            <h2>设置</h2>
+            <button class="close-settings" onclick="toggleSettings()">×</button>
+        </div>
+        <div class="settings-content">
+            <div class="settings-group">
+                <h3>编辑器设置</h3>
+                <div class="setting-item">
+                    <label for="fontSize">字体大小</label>
+                    <input type="range" id="fontSize" min="12" max="24" value="14">
+                    <span class="value">14px</span>
+                </div>
+                <div class="setting-item">
+                    <label for="theme">主题</label>
+                    <select id="theme">
+                        <option value="light">浅色</option>
+                        <option value="dark">深色</option>
+                        <option value="custom">自定义</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <label for="fontFamily">字体</label>
+                    <select id="fontFamily">
+                        <option value="CustomFont">Main Font</option>
+                        <option value="monospace">等宽字体</option>
+                        <option value="sans-serif">无衬线字体</option>
+                    </select>
+                </div>
+            </div>
+            <div class="settings-group">
+                <h3>自动保存</h3>
+                <div class="setting-item">
+                    <label class="switch">
+                        <input type="checkbox" id="autoSave">
+                        <span class="slider"></span>
+                    </label>
+                    <span>启用自动保存</span>
+                </div>
+                <div class="setting-item">
+                    <label for="autoSaveInterval">自动保存间隔（分钟）</label>
+                    <input type="number" id="autoSaveInterval" min="1" max="30" value="5">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/syntax-completion.js"></script>
+    <script src="js/file-manager.js"></script>
+    <script src="js/editor.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/color.js"></script>
+    <script src="js/mobile.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/file-handler.js"></script>
+</body>
+</html>
