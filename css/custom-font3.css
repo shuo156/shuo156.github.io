@@ -1,7 +1,7 @@
 /* 自定义字体 */
 @font-face {
     font-family: 'CustomFont';
-    src: url('https://shuo156.github.io/font/fontmain.ttf') format('truetype');
+    src: url("../font/kaishu.ttf") format('truetype');
     font-display: swap;
 }
 
@@ -12,8 +12,11 @@ body {
     padding: 0;
     min-height: 100vh;
     background: linear-gradient(to bottom,
-        #FFF9F0,    /* 米色 */
-        #FFFFFF     /* 白色 */
+        #FDC0B4,     /* 说不上来，不打注释了 */
+        #FBCACA,
+        #F3E7FF,
+        #EAE8FF,
+        #E2E9FF    /* 哟西，大大的好看 */
     );
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
