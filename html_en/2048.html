@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>2048game</title>
+    <title>2048 Game</title>
     <style>
         @font-face {
             font-family: 'CustomFont';
@@ -180,7 +180,7 @@
 
         .overlay input[type="text"], .overlay input[type="color"] {
             background: #fff;
-            color: #000;
+            color dios color: #000;
             padding: 10px;
         }
 
@@ -260,7 +260,7 @@
             color: #776e65;
         }
 
-        /* Square color (default) */
+        /* Tile colors (default) */
         .tile-2 { background: #eee4da; }
         .tile-4 { background: #ede0c8; }
         .tile-8 { background: #f2b179; }
@@ -278,7 +278,7 @@
         .tile-32768 { background: #00cc00; }
         .tile-65536 { background: #009900; }
 
-        /* Full Screen Mode */
+        /* Fullscreen mode */
         body.fullscreen #game-container {
             max-width: min(90vw, 90vh);
         }
@@ -294,7 +294,7 @@
             }
         }
 
-        /* Mobile end adaptation */
+        /* Mobile adaptation */
         @media (max-width: 500px) {
             h1 {
                 font-size: 36px;
@@ -331,11 +331,11 @@
         <h1>2048</h1>
         <div class="score-container">
             <div class="score">
-                <span>Fraction</span>
+                <span>Score</span>
                 <span id="score">0</span>
             </div>
             <div class="best-score">
-                <span>Highest Score</span>
+                <span>Best Score</span>
                 <span id="best-score">0</span>
             </div>
             <div class="timer">
@@ -344,76 +344,76 @@
             </div>
         </div>
         <div class="controls">
-            <select id="theme-selector" aria-label="Select a topic">
+            <select id="theme-selector" aria-label="Select Theme">
                 <option value="default">Default Theme</option>
-                <option value="dark">Diablo Theme</option>
-                <option value="retro">Retro theme</option>
-                <option value="custom">Customize</option>
+                <option value="dark">Dark Theme</option>
+                <option value="retro">Retro Theme</option>
+                <option value="custom">Custom</option>
             </select>
-            <select id="difficulty-selector" aria-label="Choice Difficulty">
-                <option value="3">3x3 (Simple)</option>
+            <select id="difficulty-selector" aria-label="Select Difficulty">
+                <option value="3">3x3 (Easy)</option>
                 <option value="4">4x4 (Standard)</option>
-                <option value="5">5x5 (Difficulty)</option>
+                <option value="5">5x5 (Hard)</option>
             </select>
-            <button id="new-game" aria-label="Start a new game">New Games</button>
-            <button id="undo-button" aria-label="Undo the previous step" disabled>Revoke (0/10)</button>
+            <button id="new-game" aria-label="Start New Game">New Game</button>
+            <button id="undo-button" aria-label="Undo Last Move" disabled>Undo (0/10)</button>
             <button id="leaderboard-button" aria-label="View Leaderboard">Leaderboard</button>
-            <button id="settings-button" aria-label="Open Settings">set</button>
+            <button id="settings-button" aria-label="Open Settings">Settings</button>
         </div>
         <div id="game-container">
             <div id="game-over" class="overlay">
-                <p>Game over!</p>
-                <input id="nickname-over" type="text" placeholder="Enter a nickname" maxlength="20" aria-label="Enter a nickname">
+                <p>Game Over!</p>
+                <input id="nickname-over" type="text" placeholder="Enter Nickname" maxlength="20" aria-label="Enter Nickname">
                 <button onclick="submitNickname('over')">Submit Score</button>
                 <button onclick="shareScore('over')">Share</button>
-                <button onclick="startNewGame()">One more round.</button>
+                <button onclick="startNewGame()">Play Again</button>
             </div>
             <div id="game-win" class="overlay">
-                <p>Congratulations! Achieve the goal of victory!</p>
-                <input id="nickname-win" type="text" placeholder="Enter a nickname" maxlength="20" aria-label="Enter a nickname">
+                <p>Congratulations! You reached the victory goal!</p>
+                <input id="nickname-win" type="text" placeholder="Enter Nickname" maxlength="20" aria-label="Enter Nickname">
                 <button onclick="submitNickname('win')">Submit Score</button>
                 <button onclick="shareScore('win')">Share</button>
-                <button onclick="startNewGame()">One more round.</button>
+                <button onclick="startNewGame()">Play Again</button>
             </div>
             <div id="new-game-confirm" class="overlay">
-                <p>Are you sure you want to start a new game? The current progress will be lost.</p>
-                <button onclick="closeNewGameConfirm()">cancel</button>
+                <p>Are you sure you want to start a new game? Current progress will be lost.</p>
+                <button onclick="closeNewGameConfirm()">Cancel</button>
                 <button onclick="startNewGame()">Continue</button>
             </div>
             <div id="leaderboard-overlay" class="overlay">
                 <h2>Leaderboard</h2>
-                <select id="sort-selector" aria-label="Sort by">
-                    <option value="score">Sort by scores</option>
-                    <option value="time">Sort by time</option>
+                <select id="sort-selector" aria-label="Sort By">
+                    <option value="score">Sort by Score</option>
+                    <option value="time">Sort by Time</option>
                 </select>
                 <ul id="leaderboard-list"></ul>
-                <button onclick="closeLeaderboard()">shut</button>
+                <button onclick="closeLeaderboard()">Close</button>
             </div>
             <div id="settings-overlay" class="overlay">
                 <div class="settings-content">
-                    <h2>set</h2>
+                    <h2>Settings</h2>
                     <div class="settings-item">
-                        <label><input type="checkbox" id="timer-toggle" checked>Enable Timer</label>
+                        <label><input type="checkbox" id="timer-toggle" checked> Enable Timer</label>
                     </div>
                     <div class="settings-item">
-                        <label>Chessboard background color:<input type="color" id="grid-bg-color"></label>
+                        <label>Grid Background Color: <input type="color" id="grid-bg-color"></label>
                     </div>
                     <div class="settings-item">
-                        <label>Block background color:<input type="color" id="tile-bg-color"></label>
+                        <label>Tile Background Color: <input type="color" id="tile-bg-color"></label>
                     </div>
                     <div class="settings-item">
-                        <label>Button color:<input type="color" id="button-bg-color"></label>
+                        <label>Button Color: <input type="color" id="button-bg-color"></label>
                     </div>
                     <div class="settings-item">
-                        <label>Full screen mode:<button id="fullscreen-toggle">Go to full screen</button></label>
+                        <label>Fullscreen Mode: <button id="fullscreen-toggle">Enter Fullscreen</button></label>
                     </div>
                     <div class="settings-item">
-                        <label>Game background image:<input type="file" id="bg-image" accept="image/*"></label>
+                        <label>Game Background Image: <input type="file" id="bg-image" accept="image/*"></label>
                     </div>
                     <div class="settings-item">
-                        <button onclick="clearBgImage()">Clear Background Picture</button>
+                        <button onclick="clearBgImage()">Clear Background Image</button>
                     </div>
-                    <h3>Square background picture</h3>
+                    <h3>Tile Background Images</h3>
                     <div class="settings-item"><label>2: <input type="file" id="tile-2-img" accept="image/*"></label></div>
                     <div class="settings-item"><label>4: <input type="file" id="tile-4-img" accept="image/*"></label></div>
                     <div class="settings-item"><label>8: <input type="file" id="tile-8-img" accept="image/*"></label></div>
@@ -431,7 +431,7 @@
                     <div class="settings-item"><label>32768: <input type="file" id="tile-32768-img" accept="image/*"></label></div>
                     <div class="settings-item"><label>65536: <input type="file" id="tile-65536-img" accept="image/*"></label></div>
                     <div class="settings-item">
-                        <button onclick="clearTileImages()">Clear all square pictures</button>
+                        <button onclick="clearTileImages()">Clear All Tile Images</button>
                     </div>
                     <div class="settings-item">
                         <button onclick="saveSettings()">Save and Close</button>
@@ -524,33 +524,33 @@
             }
         });
 
-        // Sharing Function
+        // Share function
         async function shareScore(type) {
             const nicknameInput = document.getElementById(`nickname-${type}`);
             const nickname = nicknameInput.value.trim() || 'Anonymous';
-            const shareText = `I got ${ score } in 2048 games ( ${ GRID _ SIZE } X ${ GRID _ SIZE })! Nickname: ${ nickname } Time: ${ timerDisplay. TextContent } Come and challenge!`;
+            const shareText = `I scored ${score} points in 2048 (${GRID_SIZE}x${GRID_SIZE})! Nickname: ${nickname} Time: ${timerDisplay.textContent} Come and challenge!`;
             try {
                 if (navigator.share) {
                     await navigator.share({
-                        title: '2048 Game Scores',
+                        title: '2048 Game Score',
                         text: shareText
                     });
-                    alert('Share the success!');
+                    alert('Shared successfully!');
                 } else {
                     await navigator.clipboard.writeText(shareText);
-                    alert('Scores copied to clipboard!');
+                    alert('Score copied to clipboard!');
                 }
             } catch (e) {
-                console.error('Failed to share:', e);
-                alert('Sharing failed. Please try again later.');
+                console.error('Share failed:', e);
+                alert('Share failed, please try again later.');
             }
         }
 
-        // Leaderboard Management
+        // Leaderboard management
         function updateLeaderboard(nickname) {
             try {
                 let leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
-                const timestamp = new Date().toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                const timestamp = new Date().toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
                 const duration = timerDisplay.textContent;
                 leaderboard.push({ nickname: nickname || 'Anonymous', score, timestamp, duration });
                 leaderboard = leaderboard.sort((a, b) => b.score - a.score).slice(0, 5);
@@ -597,7 +597,7 @@
         leaderboardButton.addEventListener('click', showLeaderboard);
         sortSelector.addEventListener('change', displayLeaderboard);
 
-        // New Game Confirmation
+        // New game confirmation
         function showNewGameConfirm() {
             newGameConfirmOverlay.classList.add('show');
         }
@@ -608,7 +608,7 @@
 
         newGameButton.addEventListener('click', showNewGameConfirm);
 
-        // Settings Management
+        // Settings management
         function loadSettings() {
             try {
                 const customColors = JSON.parse(localStorage.getItem('customColors') || '{}');
@@ -661,7 +661,7 @@
                 updateGrid();
             } catch (e) {
                 console.error('Failed to save settings:', e);
-                alert('Failed to save settings. There may not be enough storage space.');
+                alert('Failed to save settings, possibly due to insufficient storage space.');
             }
         }
 
@@ -694,12 +694,12 @@
                         localStorage.setItem('bgImage', reader.result);
                     } catch (e) {
                         console.error('Failed to save background image:', e);
-                        alert('Failed to save the background picture. There may be insufficient storage space.');
+                        alert('Failed to save background image, possibly due to insufficient storage space.');
                     }
                 };
                 reader.readAsDataURL(file);
             } else {
-                alert('Image size needs to be less than 1MB');
+                alert('Image size must be less than 1MB');
             }
         });
 
@@ -724,17 +724,17 @@
                             updateGrid();
                         } catch (e) {
                             console.error('Failed to save tile image:', e);
-                            alert('Failed to save the square image. There may be insufficient storage space.');
+                            alert('Failed to save tile image, possibly due to insufficient storage space.');
                         }
                     };
                     reader.readAsDataURL(file);
                 } else {
-                    alert('Image size needs to be less than 500KB');
+                    alert('Image size must be less than 500KB');
                 }
             });
         });
 
-        // Color Selector Live Preview
+        // Color picker live preview
         [gridBgColor, tileBgColor, buttonBgColor].forEach(input => {
             input.addEventListener('input', () => {
                 if (themeSelector.value === 'custom') {
@@ -746,7 +746,7 @@
             });
         });
 
-        // Full Screen Mode
+        // Fullscreen mode
         fullscreenToggle.addEventListener('click', () => {
             if (!isFullscreen) {
                 const elem = document.documentElement;
@@ -756,7 +756,7 @@
                     elem.webkitRequestFullscreen();
                 }
                 document.body.classList.add('fullscreen');
-                fullscreenToggle.textContent = 'Exit Full Screen';
+                fullscreenToggle.textContent = 'Exit Fullscreen';
                 isFullscreen = true;
             } else {
                 if (document.exitFullscreen) {
@@ -765,7 +765,7 @@
                     document.webkitExitFullscreen();
                 }
                 document.body.classList.remove('fullscreen');
-                fullscreenToggle.textContent = 'Go to full screen';
+                fullscreenToggle.textContent = 'Enter Fullscreen';
                 isFullscreen = false;
             }
         });
@@ -773,7 +773,7 @@
         document.addEventListener('fullscreenchange', () => {
             if (!document.fullscreenElement && !document.webkitFullscreenElement) {
                 document.body.classList.remove('fullscreen');
-                fullscreenToggle.textContent = 'Go to full screen';
+                fullscreenToggle.textContent = 'Enter Fullscreen';
                 isFullscreen = false;
             }
         });
@@ -781,12 +781,12 @@
         document.addEventListener('webkitfullscreenchange', () => {
             if (!document.fullscreenElement && !document.webkitFullscreenElement) {
                 document.body.classList.remove('fullscreen');
-                fullscreenToggle.textContent = 'Go to full screen';
+                fullscreenToggle.textContent = 'Enter Fullscreen';
                 isFullscreen = false;
             }
         });
 
-        // Theme Switching
+        // Theme switching
         themeSelector.addEventListener('change', () => {
             document.body.className = themeSelector.value;
             if (themeSelector.value === 'custom') {
@@ -798,7 +798,7 @@
             updateGrid();
         });
 
-        // Settings Panel
+        // Settings panel
         settingsButton.addEventListener('click', () => {
             settingsOverlay.classList.add('show');
         });
@@ -810,7 +810,7 @@
             moveCount = 0;
             undoHistory = [];
             scoreDisplay.textContent = score;
-            undoButton.textContent = `Revoke (${moveCount}/${UNDO_INTERVAL})`;
+            undoButton.textContent = `Undo (${moveCount}/${UNDO_INTERVAL})`;
             undoButton.disabled = true;
             grid.innerHTML = '';
             grid.style.gridTemplateColumns = `repeat(${GRID_SIZE}, 1fr)`;
@@ -824,7 +824,7 @@
             saveGame();
         }
 
-        // Add a new square
+        // Add new tile
         function addNewTile() {
             const emptyCells = [];
             for (let i = 0; i < GRID_SIZE; i++) {
@@ -838,7 +838,7 @@
             }
         }
 
-        // Update Grid Display
+        // Update grid display
         function updateGrid() {
             grid.innerHTML = '';
             for (let i = 0; i < GRID_SIZE; i++) {
@@ -862,14 +862,14 @@
                     console.error('Failed to save best score:', e);
                 }
             }
-            undoButton.textContent = `Revoke (${moveCount}/${UNDO_INTERVAL})`;
+            undoButton.textContent = `Undo (${moveCount}/${UNDO_INTERVAL})`;
             undoButton.disabled = moveCount < UNDO_INTERVAL || undoHistory.length === 0;
             timerDisplay.style.display = isTimerEnabled ? 'block' : 'none';
             checkGameOver();
             checkWin();
         }
 
-        // Check Game Wins
+        // Check for game win
         function checkWin() {
             for (let i = 0; i < GRID_SIZE; i++) {
                 for (let j = 0; j < GRID_SIZE; j++) {
@@ -882,7 +882,7 @@
             }
         }
 
-        // Check Game Over
+        // Check for game over
         function checkGameOver() {
             for (let i = 0; i < GRID_SIZE; i++) {
                 for (let j = 0; j < GRID_SIZE; j++) {
@@ -895,7 +895,7 @@
             gameOverOverlay.classList.add('show');
         }
 
-        // Check that the overlay is visible
+        // Check if overlay is visible
         function isOverlayVisible() {
             return gameOverOverlay.classList.contains('show') ||
                    gameWinOverlay.classList.contains('show') ||
@@ -904,7 +904,7 @@
                    settingsOverlay.classList.contains('show');
         }
 
-        // Save Game State
+        // Save game state
         function saveGame() {
             try {
                 localStorage.setItem('board', JSON.stringify(board));
@@ -920,7 +920,7 @@
         // Load game state
         function loadGame() {
             try {
-                const savedBoard = localStorage.getItem('board');
+                const savedBoard = localStorage.getItem('boardigraf');
                 const savedScore = localStorage.getItem('score');
                 const savedMoveCount = localStorage.getItem('moveCount');
                 const savedGameTime = localStorage.getItem('gameTime');
@@ -949,7 +949,7 @@
             }
         }
 
-        // Undo Operation
+        // Undo operation
         function undo() {
             if (moveCount >= UNDO_INTERVAL && undoHistory.length > 0) {
                 const lastState = undoHistory.pop();
@@ -963,7 +963,7 @@
 
         undoButton.addEventListener('click', undo);
 
-        // Move Logic
+        // Move logic
         function move(direction) {
             if (isOverlayVisible()) return;
             let moved = false;
@@ -1044,7 +1044,7 @@
             return [[...newLine, ...Array(GRID_SIZE - newLine.length).fill(0)], merged, moves];
         }
 
-        // Keyboard Event
+        // Keyboard events
         document.addEventListener('keydown', (e) => {
             if (isOverlayVisible()) return;
             switch (e.key) {
@@ -1055,7 +1055,7 @@
             }
         });
 
-        // Touch support (with anti-shake)
+        // Touch support (with debouncing)
         let touchStartX, touchStartY, isProcessing = false;
         document.addEventListener('touchstart', (e) => {
             touchStartX = e.touches[0].clientX;
@@ -1086,7 +1086,7 @@
             showNewGameConfirm();
         });
 
-        // New Games
+        // New game
         function startNewGame() {
             gameOverOverlay.classList.remove('show');
             gameWinOverlay.classList.remove('show');
@@ -1096,10 +1096,9 @@
             initGame();
         }
 
-        // Initialization
+        // Initialize
         difficultySelector.value = GRID_SIZE;
         loadGame();
     </script>
 </body>
 </html>
-<!-- 呜呜，翻译了半天，最后才想起来可以交给的😅 -->
