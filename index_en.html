@@ -80,7 +80,7 @@
     const minutes = String(now.getUTCMinutes()).padStart(2, '0');
     const seconds = String(now.getUTCSeconds()).padStart(2, '0');
 
-    const formattedTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    const formattedTime = `UTC:${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     
     document.getElementById('current-time').innerHTML = formattedTime;
 }
