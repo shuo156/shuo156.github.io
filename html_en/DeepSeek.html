@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>DeepSeek Development Version (2561)</title>
+  <title>DeepSeek Development Edition（2561）</title>
   <style>
     @font-face {
       font-family: 'DeepSeekFont';
@@ -36,7 +36,7 @@
       height: 100%;
     }
 
-    /* ===== Header Bar: Mobile Hamburger Button ===== */
+    /* ===== 顶栏：移动端汉堡按钮 ===== */
     .hamburger {
       position: absolute;
       top: 10px;
@@ -46,7 +46,7 @@
       background-color: #CCCCCC;
       border: none;
       border-radius: 6px;
-      display: none; /* Only shown on small screens */
+      display: none; /* 仅小屏显示 */
       align-items: center;
       justify-content: center;
       cursor: pointer;
@@ -67,7 +67,7 @@
       stroke-width: 2;
     }
 
-    /* ===== Sidebar ===== */
+    /* ===== 侧边栏 ===== */
     .sidebar {
       flex-shrink: 0;
       background-color: #F5F5F5;
@@ -178,7 +178,7 @@
       fill: #E3E5E8;
     }
 
-    /* ===== Main Area ===== */
+    /* ===== 主区域 ===== */
     .main {
       flex: 1;
       display: flex;
@@ -307,7 +307,7 @@
       height: 24px;
     }
 
-    /* ===== Responsive ===== */
+    /* ===== 响应式 ===== */
     @media (max-width: 1024px) {
       .sidebar {
         width: 30%;
@@ -429,23 +429,23 @@
   </style>
 </head>
 <body class="light">
-  <!-- Mobile Hamburger Button -->
-  <button class="hamburger" id="hamburgerBtn" title="Menu">
+  <!-- 移动端汉堡按钮 -->
+  <button class="hamburger" id="hamburgerBtn" title="menu">
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <path d="M3 7H21M3 12H21M3 17H21" stroke="#333" stroke-width="2" stroke-linecap="round"/>
     </svg>
   </button>
 
   <div class="container">
-    <!-- Sidebar -->
+    <!-- 侧边栏 -->
     <aside class="sidebar sidebar-hidden" id="sidebar">
       <div>
-        <!-- Sidebar Header -->
+        <!-- 侧边栏头部 -->
         <div class="sidebar-header">
-          <img src="../images/deepseek.png" alt="DeepSeek Icon" />
+          <img src="../images/deepseek.png" alt="DeepSeek 图标" />
           <span>DeepSeek</span>
         </div>
-        <!-- New Chat Button -->
+        <!-- 新对话按钮 -->
         <button class="new-chat-btn" id="newChatBtn">
           <!-- inline SVG from new.xml -->
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -457,14 +457,14 @@
             <path fill="#0F0F0F" d="M3.2,11.875C3.2,14.505 4.199,16.717 6.099,18.263C6.507,18.594 6.568,19.192 6.237,19.6C5.906,20.007 5.308,20.068 4.901,19.737C2.517,17.798 1.3,15.024 1.3,11.875C1.3,11.35 1.725,10.925 2.25,10.925C2.775,10.925 3.2,11.35 3.2,11.875Z"/>
             <path fill="#0F0F0F" d="M12,7.55C12.525,7.55 12.95,7.975 12.95,8.5V15.5C12.95,16.025 12.525,16.45 12,16.45C11.475,16.45 11.05,16.025 11.05,15.5V8.5C11.05,7.975 11.475,7.55 12,7.55Z"/>
           </svg>
-          <span>New Chat</span>
+          <span>New Conversation</span>
         </button>
-        <!-- Chat History List -->
+        <!-- 聊天历史列表 -->
         <div class="chat-list" id="chatList">
-          <p>No chat records</p>
+          <p>No conversation record</p>
         </div>
       </div>
-      <!-- Sidebar Footer: My Profile + More Settings (Three Dots) -->
+      <!-- 侧边栏底部：我的资料 + 更多设置（三点） -->
       <div class="sidebar-footer">
         <div class="profile-pic">
           <!-- inline SVG from profile.xml -->
@@ -472,59 +472,57 @@
             <g>
               <clipPath id="cp1"><path d="M14,0.5L14,0.5A13.5,13.5 0,0 1,27.5 14L27.5,14A13.5,13.5 0,0 1,14 27.5L14,27.5A13.5,13.5 0,0 1,0.5 14L0.5,14A13.5,13.5 0,0 1,14 0.5z"/></clipPath>
               <path clip-path="url(#cp1)" fill="#A3A3A3" d="M19,10.25C19,13.288 16.761,15.75 14,15.75C11.239,15.75 9,13.288 9,10.25C9,7.212 11.239,4.75 14,4.75C16.761,4.75 19,7.212 19,10.25Z"/>
-              <path clip-path="url(#cp1)" fill="#A3A3A3"/>
+              <path clip-path="url(#cp1)" fill="#A3A3A3" d="M3.53,23.25a10.47,5.25 0,1 0,20.939 0a10.47,5.25 0,1 0,-20.939 0z"/>
             </g>
           </svg>
         </div>
-        <div class="profile-name">My Profile</div>
+        <div class="profile-name">My information</div>
         <!-- inline SVG from duo.xml -->
-        <div class="more-options" id="moreOptionsBtn" title="Settings">
+        <div class="more-options" id="moreOptionsBtn" title="set">
           <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-            <path fill="#8B8B8B" d="M5,10C5,10.92 4.254,11.667 3.333,11.667C2.413,11.55 1.667,10.55 1.667,10C1.667,9.55 2.413,8.55 3.333,8.333C4.254,8.333 5,9.55 5,10ZM11.55,10C11.55,10.55 10.55,11.55 10,11.55C9.55,11.55 8.55,10.55 8.55,10C8.55,9.55 9.55,8.55 10,8.55C10.55,8.55 11.55,9.55 11.55,10ZM16.55,11.55C17.55,11.55 18.55,10.55 18.55,10C18.55,9.55 17.55,8.55 16.55,8.55C15.75,8.55 15,9.55 15,10C15,10.55 15.75,11.55 16.55,11.55Z"/>
-</svg>
+            <path fill="#8B8B8B" d="M5,10C5,10.92 4.254,11.667 3.333,11.667C2.413,11.667 1.667,10.92 1.667,10C1.667,9.08 2.413,8.333 3.333,8.333C4.254,8.333 5,9.08 5,10ZM11.667,10C11.667,10.921 10.92,11.667 10,11.667C9.08,11.667 8.333,10.921 8.333,10C8.333,9.08 9.08,8.333 10,8.333C10.92,8.333 11.667,9.08 11.667,10ZM16.667,11.667C17.587,11.667 18.333,10.921 18.333,10C18.333,9.08 17.587,8.333 16.667,8.333C15.746,8.333 15,9.08 15,10C15,10.921 15.746,11.667 16.667,11.667Z"/>
+          </svg>
         </div>
       </div>
     </aside>
 
-    <!-- Main Area -->
+    <!-- 主区域 -->
     <div class="main">
-      <!-- Chat Window -->
+      <!-- 聊天窗口 -->
       <div class="chat-window" id="chatWindow">
-        <!-- JavaScript dynamically inserts messages -->
+        <!-- JS 动态插入消息 -->
       </div>
-      <!-- Input Area -->
+      <!-- 输入区 -->
       <div class="chat-input">
-        <input type="text" id="userInput" placeholder="Type a message" autocomplete="off" />
-        <!-- Deep Think Button, inline SVG from think.xml -->
-        <button class="icon-btn" id="deepThinkBtn" title="Deep Think">
-          <svg viewBox="0 24 24" xmlns="http://www.w3.org/2000">
-            <path fill="#000000" d="M12,4.39C15.777,1.942 19.391,1.236 21.077,2.923C22.764,4.609 22.045,8.223 19.622,12C22.777,15.777 22.045,19.391 21.077,21.077C19.391,22.764 15.777,22.058 12,19.61C8.223,22.058 4.609,22.391 14.077,21.077C1.236,19.777 1.942,15.777 4.39,12C1.942,8.223 1.236,4.609 2.923,2.923C4.609,1.236 8.223,1.942 12,4.39ZM7.896,4.381C5.639,3.549 4.578,3.923 4.25,4.251C3.923,4.578 3.549,5.639 4.381,7.896C4.896,8.665 5.063,9.491 5.571,10.345C6.236,9.489 6.985,8.638 7.812,7.812C8.638,6.986 9.489,6.236 10.345,5.571C9.491,5.063 8.665,4.664 7.896,4.381ZM16.106,19.896 19.622C18.364,20.454 19.424,20.08 19.752,19.752C20.079,19.424 19.364,18.106,19.622,16.106C19.338,15.337 18.94,14.512 18.431,13.657C17.766,14.513 17.017,15.365 16.017,16.365,16.191,16.192C15.365,17.017 14.513,17.766 13.657,18.432C14.511,18.94 15.337,19.339 16.106,19.622ZM4.252,19.752C4,19.424 4.381,16.364,18.106C4.664,15.337 5.063,14.512 5.571,13.657C6.236,14.513 6.985,15.365 7.812,16.191C8.638,17.017 9.489,17.25 10,766C14.432C9.491,18.94 8.664,19.339 7.896,19.622C5.639,20.454 4.578,20.08 4.25,19.752ZM19.752C20.454,19.05,5.639 20.079,4.578 19.752,4.251C19.424,3.923 18.364,3.549 16.106,4.381C15.337,4.664 14.511,5.063 13.657,5.571C14.513,6.236 15.365,6.986 16.191,7.812C17.638,8.638 17.766,9.489 18.431,10.345C18.94,9.491 19.338,8.665 19.622,7.896ZM9.138,9.138C10.08,8.197 11.047,7.372 12.001,6.671C12.956,7.372 13.922,8.197 14.864,9.138C15.806,10.08 16.631,11.047 17.331,12.001C16.631,12.956 15.806,13.922 14.864,14.864C13.922,15.806 12.956,16.631,12.631,12.331C17,16.631,11.047,15.806 10.08,15.864C9.138,14.863 8.197,13.922 7.372,12.956 12.001C7.372,11.047 8.197,10.08 9.138,9.138Z"/>
-<path fill="#0C0C0C" d="M13.728,12C13.728,12.954 12.954,13.728 12,13.728C11.046,13.728 10.272,12.954 10.272,12C10.272,12.046 11.046,12.272 12,10.272 12,C10.272,10.954 11.046,11.272 12,12.272C12.954,12.272 13.728,12.272 13,12Z"/>
-</svg>
-</button>
-        <!-- Network Search Button, inline SVG from wifis.xml -->
-        <button class="icon-btn" id="networkSearchBtn" title="Network Search">
-          <svg viewBox="0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path fill="#0C0F0C" d="M11.951,20.494C11.951,20.951C11.951,12.844 12.944,12.798 12.444C12,20.755,20.035 12,13.091C13,19.419 13,12.398,18.12C13,9.934,17.136 14,12.336,15.157 14,12.424 12,C14.425,12.929 9,C9.478 12,C9.929C9.567 12,C15.157,9.969 9.969,17.136 10,12,18.12C10.811,19.12,11.419 12,20.146 11,12.458 C12,20.798 12,20.932,12.951C12,20.844 12,20.951C14.578,12,20.12C17.947 12,19.12,19,20.472 12,16.531 20,16,12.845 12,16.283,C12H16.283C16.193 12,C17.356 16,15.757 15,12,19.17,12,C15.139,19,12.232 14,C15.969,12,20,19.12,12,C20.514,21,0ZM16.283,C12H20,C16.845,C0,C20.471,7.469 17,12,16.578 14,C17,3.478C14.782 14,17,3C14.969,3.877 15,14,4.15,16.139,C12,C15.356,15,16,17,16.283,C12,C17.072,C17,M14,C16,11,H9,C14.478,C2,C14,C11.072,C15,14,C15,16,12,C16,C15,16,12,C14,14,C15,16,11,C16,C15,14,C16,C15,14,16,C12,C15,C14,C15,16,C15,C14,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C17,C17,C17,C19,C18,C19,C19,C19,C20,C20,C20,C20,C20,C20,C20,C20,C20,C20,C20,C20,C20,C20,C20,C20,C20,C20,C21,C21,C21,C22.750,2,C12,C0,17,C21,C21,C17,C21,C21,C2,C21,6,C21,1,C21,17,C21,22,750,1,C2,250,C0,C2,6,21,1,C2,C21,C17,C21,C21,C21,C22,750"/>
-</svg>
-</button>
-        <!-- Send Button, inline SVG from send.xml -->
-        <button class="icon-btn" id="uploadBtn" title="Send">
-          <svg viewBox="0 14 16" xmlns="http://www.w3.org/2000/svg">
-            <path stroke="#svg#FFFFFF" stroke-width="2px" stroke-linecap="round" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
-<path stroke="#FFFFFF" strokeWidth="2" d="M7 14L7 1.25"/>
-<path stroke="#FFFFFF" strokeWidth="2" stroke-linecap="round" d="M1.5 6.75L7 6.25"/>
-<path stroke="#FFFFFF" strokeWidth="2" stroke="#2" stroke-linecap="round"/>
-<path stroke="#FFFFFF" strokeWidth="2" d="M12.25 6.25L7 1.25"/>
-</svg>
-</button>
+        <input type="text" id="userInput" placeholder="Please enter a message" autocomplete="off" />
+        <!-- 深度思考按钮，inline SVG from think.xml -->
+        <button class="icon-btn" id="deepThinkBtn" title="Deep Thinking">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#000000" d="M12,4.39C15.777,1.942 19.391,1.236 21.077,2.923C22.764,4.609 22.058,8.223 19.61,12C22.058,15.777 22.764,19.391 21.077,21.077C19.391,22.764 15.777,22.058 12,19.61C8.223,22.058 4.609,22.764 2.923,21.077C1.236,19.391 1.942,15.777 4.39,12C1.942,8.223 1.236,4.609 2.923,2.923C4.609,1.236 8.223,1.942 12,4.39ZM7.896,4.381C5.639,3.549 4.578,3.923 4.25,4.251C3.923,4.578 3.549,5.639 4.381,7.896C4.664,8.665 5.063,9.491 5.571,10.345C6.236,9.489 6.985,8.638 7.812,7.812C8.638,6.986 9.489,6.236 10.345,5.571C9.491,5.063 8.665,4.664 7.896,4.381ZM16.106,19.622C18.364,20.454 19.424,20.08 19.752,19.752C20.079,19.424 20.454,18.364 19.622,16.106C19.338,15.337 18.94,14.512 18.431,13.657C17.766,14.513 17.017,15.365 16.191,16.191C15.365,17.017 14.513,17.766 13.657,18.432C14.511,18.94 15.337,19.339 16.106,19.622ZM4.25,19.752C3.923,19.424 3.549,18.364 4.381,16.106C4.664,15.337 5.063,14.512 5.571,13.657C6.236,14.513 6.985,15.365 7.812,16.191C8.638,17.017 9.489,17.766 10.345,18.432C9.491,18.94 8.665,19.339 7.896,19.622C5.639,20.454 4.578,20.08 4.25,19.752ZM19.622,7.896C20.454,5.639 20.079,4.578 19.752,4.251C19.424,3.923 18.364,3.549 16.106,4.381C15.337,4.664 14.511,5.063 13.657,5.571C14.513,6.236 15.365,6.986 16.191,7.812C17.017,8.638 17.766,9.489 18.431,10.345C18.94,9.491 19.338,8.665 19.622,7.896ZM9.138,9.138C10.08,8.197 11.047,7.372 12.001,6.671C12.956,7.372 13.922,8.197 14.864,9.138C15.806,10.08 16.631,11.047 17.331,12.001C16.631,12.956 15.806,13.922 14.864,14.864C13.922,15.806 12.956,16.631 12.001,17.331C11.047,16.631 10.08,15.806 9.138,14.864C8.197,13.922 7.372,12.956 6.671,12.001C7.372,11.047 8.197,10.08 9.138,9.138Z"/>
+            <path fill="#000000" d="M13.728,12C13.728,12.954 12.954,13.728 12,13.728C11.046,13.728 10.272,12.954 10.272,12C10.272,11.046 11.046,10.272 12,10.272C12.954,10.272 13.728,11.046 13.728,12Z"/>
+          </svg>
+        </button>
+        <!-- 联网搜索按钮，inline SVG from wifis.xml -->
+        <button class="icon-btn" id="networkSearchBtn" title="Networked Search">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#000000" d="M11.951,20.893L11.951,20.844C11.97,20.839 12.144,20.798 12.444,20.424C12.756,20.035 13.091,19.419 13.398,18.589C13.934,17.136 14.336,15.157 14.425,12.929H9.478C9.567,15.157 9.969,17.136 10.505,18.589C10.811,19.419 11.146,20.035 11.458,20.424C11.758,20.798 11.932,20.839 11.951,20.844L11.951,20.893H11.951ZM14.578,20.514C17.947,19.495 20.472,16.531 20.845,12.929H16.283C16.193,15.356 15.757,17.558 15.139,19.232C14.969,19.692 14.782,20.123 14.578,20.514ZM16.283,11.072H20.845C20.472,7.469 17.947,4.505 14.578,3.486C14.782,3.877 14.969,4.308 15.139,4.768C15.757,6.442 16.193,8.644 16.283,11.072ZM14.425,11.072H9.478C9.567,8.843 9.969,6.864 10.505,5.411C10.811,4.581 11.146,3.965 11.458,3.576C11.758,3.202 11.932,3.16 11.951,3.156C11.97,3.16 12.144,3.202 12.444,3.576C12.756,3.965 13.091,4.581 13.398,5.411C13.934,6.864 14.336,8.843 14.425,11.072ZM8.763,19.232C8.927,19.678 9.109,20.097 9.305,20.478C5.995,19.426 3.524,16.489 3.155,12.929H7.619C7.709,15.356 8.145,17.558 8.763,19.232ZM8.763,4.768C8.927,4.322 9.109,3.903 9.305,3.522C5.995,4.574 3.524,7.511 3.155,11.072H7.619C7.709,8.644 8.145,6.442 8.763,4.768ZM22.75,12C22.75,17.937 17.937,22.75 12,22.75C6.063,22.75 1.25,17.937 1.25,12C1.25,6.063 6.063,1.25 12,1.25C17.937,1.25 22.75,6.063 22.75,12Z"/>
+          </svg>
+        </button>
+        <!-- 发送按钮，inline SVG from send.xml -->
+        <button class="icon-btn" id="uploadBtn" title="发送">
+          <svg viewBox="0 0 14 16" xmlns="http://www.w3.org/2000/svg">
+            <path stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" d="M7 14.75L7 1.25"/>
+            <path stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" d="M1.5 6.75L7 1.25"/>
+            <path stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" d="M12.5 6.75L7 1.25"/>
+          </svg>
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- Custom Response Placeholder -->
+  <!-- 自定义回复占位 -->
   <script>
-    // Here is the 1500+ lines of responses
+    // 回复文段
     window.responses = {
       "hello.": "What's up?",
       "goodbye.": "Hope to see you again next time.",
@@ -646,7 +644,7 @@
       const uploadBtn = document.getElementById('uploadBtn');
       const moreOptionsBtn = document.getElementById('moreOptionsBtn');
 
-      // ===== Initialize Sidebar Display ====
+      // ===== 初始化侧边栏显示状态 =====
       function initSidebar() {
         if (window.innerWidth <= 768) {
           sidebar.classList.add('sidebar-hidden');
@@ -655,16 +653,17 @@
           sidebar.classList.remove('sidebar-hidden');
           hamburgerBtn.style.display = 'none';
         }
-      .initSidebar();
+      }
+      initSidebar();
       window.addEventListener('resize', initSidebar);
 
-      // === Click Hamburger Button to Toggle Sidebar ===
+      // ===== 点击汉堡按钮，切换侧边栏 =====
       hamburgerBtn.addEventListener('click', () => {
         sidebar.classList.toggle('sidebar-hidden');
         hamburgerBtn.classList.toggle('active');
       });
 
-      // === Load Chat History ===
+      // ===== 加载历史聊天记录 =====
       function loadChatHistory() {
         const saved = localStorage.getItem('deepseek_chat_history');
         if (saved) {
@@ -675,159 +674,162 @@
           if (firstBubble) {
             chatList.innerHTML = `<p>${firstBubble.textContent}</p>`;
           } else {
-            chatList.innerHTML = '<p>No chat records</p>';
+            chatList.innerHTML = '<p>No conversation record</p>';
           }
-      .loadChatHistory();
+        }
+      }
+      loadChatHistory();
 
-      // === Save Chat History ===
+      // ===== 保存聊天记录 =====
       function saveChatHistory() {
         localStorage.setItem('deepseek_chat_history', chatWindow.innerHTML);
       }
 
-      // === New Chat ===
+      // ===== 新对话 =====
       newChatBtn.addEventListener('click', () => {
         chatWindow.innerHTML = '';
-        chatList.innerHTML = '<p>No chat records</p>';
+        chatList.innerHTML = '<p>无对话记录</p>';
         localStorage.removeItem('deepseek_chat_history');
         if (window.innerWidth <= 768) {
           sidebar.classList.add('sidebar-hidden');
           hamburgerBtn.classList.remove('active');
-        });
-
-        // === Insert Single Message ===
-        function addMessage(text, sender) {
-          const messageEl = document.createElement('div');
-          messageEl.classList.add('message', sender);
-
-          if (sender === 'ai') {
-            const avatarEl = document.createElement('img');
-            avatarEl.src = './images/deepseek.png';
-            avatarEl.alt = 'DeepSeek avatar';
-            avatarEl.classList.add('avatar');
-            messageEl.appendChild(avatarEl);
-          }
-
-          const bubbleEl = document.createElement('div');
-          bubbleEl.classList.add('bubble');
-          bubbleEl.textContent = text;
-          messageEl.appendChild(bubbleEl);
-          chatWindow.appendChild(messageEl);
-
-          setTimeout(() => {
-            messageEl.style.opacity = '1';
-            messageEl.style.transform = 'translateY(0)';
-          }, 10);
-
-          chatWindow.scrollTop = chatWindow.scrollHeight;
-          if (sender === 'user' && senderBubble.innerHTML.includes('No chat records')) {
-            chatList.innerHTML = `<p>${text}</p>`;
-          }
-          saveChatHistory();
-          return bubbleEl;
         }
-
-        // === Get Custom Response ===
-        function getResponse(input) {
-          const key = input.trim();
-          if (window.responses && window.responses.hasOwnProperty(key)) {
-            return window.responses[key];
-          }
-          return 'Server busy, please try again later';
-        }
-
-        // === Display Text Character by Character ===
-        function typeText(el, text, speed = 90) {
-          let i = 0;
-          el.textContent = '';
-          return new Promise(resolve => {
-            const id = setInterval(() => {
-              if (i < text.length) {
-                el.textContent += text.charAt(i);
-                i++;
-              } else {
-                clearInterval(id);
-                saveChatHistory();
-                resolve();
-              }
-            }, speed);
-          });
-        }
-
-        // === Send Message ===
-        async function sendMessage() {
-          const text = userInput.value.trim();
-          if (!text) return;
-          if (chatList.innerHTML.includes('No chat records')) chatList.innerHTML = '';
-          addMessage(text, 'user');
-          userInput.value = '';
-
-          const loadingContainer = document.createElement('div');
-          loadingContainer.classList.add('message', 'ai');
-          const avatarEl = document.createElement('img');
-          avatarEl.src = './images/deepseek.png';
-          avatarEl.alt = 'DeepSeek avatar';
-          avatarEl.classList.add('avatar');
-          loadingContainer.appendChild(avatarEl);
-          const loadingGif = document.createElement('img');
-          loadingContainer.src = './images/jz.gif';
-          loadingContainer.alt = 'Loading...';
-          loadingContainer.classList.add('loading-gif');
-          loadingContainer.appendChild(loadingContainer);
-          chatWindow.appendChild(loadingContainer);
-          setTimeout(() => {
-            loadingContainer.style.opacity = '1';
-            loadingContainer.style.transform = 'translateY(0)';
-          }, 10);
-          chatWindow.scrollTop = chatWindow.scrollHeight;
-
-          await new Promise(res => setTimeout(res, 5000 + Math.random() * 2000));
-          loadingContainer.removeChild(gif);
-
-          const reply = getResponse(text);
-          const bubbleEl = document.createElement('div');
-          bubbleEl.classList.add('bubble');
-          loadingContainer.appendChild(bubbleEl);
-          await typeText(bubbleEl, reply, 90);
-        }
-
-        deepThinkBtn.addEventListener('click', () => {
-          deepThinkBtn.classList.toggle('active');
-          sendMessage();
-        });
-        networkSearchBtn.addEventListener('click', () => {
-          networkSearchBtn.classList.toggle('active');
-          sendMessage();
-        });
-        uploadBtn.addEventListener('click', () => {
-          uploadBtn.classList.toggle('active');
-          sendMessage();
-        });
-        userInput.addEventListener('keypress', e => {
-          if (e.key === 'Enter') sendMessage();
-        });
-
-        // === More Settings (Three Dots) ===
-        moreOptionsBtn.addEventListener('click', () => {
-          const choice = prompt('Enter 1 to switch light/dark theme, 2 to clear chat history');
-          if (choice === '1') {
-            if (bodyEl.classList.contains('light')) {
-              bodyEl.classList.remove('light');
-              bodyEl.classList.add('dark');
-            } else {
-              bodyEl.classList.remove('dark');
-              bodyEl.classList.add('light');
-            }
-          } else if (choice === '2') {
-            chatWindow.innerHTML = '';
-            chatList.innerHTML = '<p>No chat records</p>';
-            localStorage.removeItem('deepseek_chat_history');
-            if (window.innerWidth <= 768') {
-              sidebar.classList.add('sidebar-hidden');
-              hamburgerBtn.classList.remove('active');
-            }
-          });
-        });
       });
+
+      // ===== 插入单条消息 =====
+      function addMessage(text, sender) {
+        const messageEl = document.createElement('div');
+        messageEl.classList.add('message', sender);
+
+        if (sender === 'ai') {
+          const avatarEl = document.createElement('img');
+          avatarEl.src = '../images/deepseek.png';
+          avatarEl.alt = 'DeepSeek Profile photo';
+          avatarEl.classList.add('avatar');
+          messageEl.appendChild(avatarEl);
+        }
+
+        const bubbleEl = document.createElement('div');
+        bubbleEl.classList.add('bubble');
+        bubbleEl.textContent = text;
+        messageEl.appendChild(bubbleEl);
+        chatWindow.appendChild(messageEl);
+
+        setTimeout(() => {
+          messageEl.style.opacity = '1';
+          messageEl.style.transform = 'translateY(0)';
+        }, 10);
+
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+        if (sender === 'user' && chatList.innerHTML.includes('No conversation record')) {
+          chatList.innerHTML = `<p>${text}</p>`;
+        }
+        saveChatHistory();
+        return bubbleEl;
+      }
+
+      // ===== 获取自定义回复 =====
+      function getResponse(input) {
+        const key = input.trim();
+        if (window.responses && window.responses.hasOwnProperty(key)) {
+          return window.responses[key];
+        }
+        return 'The server is busy, please try again later';
+      }
+
+      // ===== 逐字符显示 =====
+      function typeText(el, text, speed = 90) {
+        let i = 0;
+        el.textContent = '';
+        return new Promise(resolve => {
+          const id = setInterval(() => {
+            if (i < text.length) {
+              el.textContent += text.charAt(i);
+              i++;
+            } else {
+              clearInterval(id);
+              saveChatHistory();
+              resolve();
+            }
+          }, speed);
+        });
+      }
+
+      // ===== 发送消息 =====
+      async function sendMessage() {
+        const text = userInput.value.trim();
+        if (!text) return;
+        if (chatList.innerHTML.includes('No conversation record')) chatList.innerHTML = '';
+        addMessage(text, 'user');
+        userInput.value = '';
+
+        const loadingContainer = document.createElement('div');
+        loadingContainer.classList.add('message', 'ai');
+        const avatarEl = document.createElement('img');
+        avatarEl.src = '../images/deepseek.png';
+        avatarEl.alt = 'DeepSeek Profile photo';
+        avatarEl.classList.add('avatar');
+        loadingContainer.appendChild(avatarEl);
+        const loadingGif = document.createElement('img');
+        loadingGif.src = '../images/jz.gif';
+        loadingGif.alt = 'Loading';
+        loadingGif.classList.add('loading-gif');
+        loadingContainer.appendChild(loadingGif);
+        chatWindow.appendChild(loadingContainer);
+        setTimeout(() => {
+          loadingContainer.style.opacity = '1';
+          loadingContainer.style.transform = 'translateY(0)';
+        }, 10);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+
+        await new Promise(res => setTimeout(res, 5000 + Math.random() * 2000));
+        loadingGif.remove();
+
+        const reply = getResponse(text);
+        const bubbleEl = document.createElement('div');
+        bubbleEl.classList.add('bubble');
+        loadingContainer.appendChild(bubbleEl);
+        await typeText(bubbleEl, reply, 90);
+      }
+
+      deepThinkBtn.addEventListener('click', () => {
+        deepThinkBtn.classList.toggle('active');
+        sendMessage();
+      });
+      networkSearchBtn.addEventListener('click', () => {
+        networkSearchBtn.classList.toggle('active');
+        sendMessage();
+      });
+      uploadBtn.addEventListener('click', () => {
+        uploadBtn.classList.toggle('active');
+        sendMessage();
+      });
+      userInput.addEventListener('keypress', e => {
+        if (e.key === 'Enter') sendMessage();
+      });
+
+      // ===== 更多设置（三点）功能 =====
+      moreOptionsBtn.addEventListener('click', () => {
+        const choice = prompt('Enter 1 to toggle light/dark theme, 2 to clear chat history');
+        if (choice === '1') {
+          if (bodyEl.classList.contains('light')) {
+            bodyEl.classList.remove('light');
+            bodyEl.classList.add('dark');
+          } else {
+            bodyEl.classList.remove('dark');
+            bodyEl.classList.add('light');
+          }
+        } else if (choice === '2') {
+          chatWindow.innerHTML = '';
+          chatList.innerHTML = '<p>No conversation record</p>';
+          localStorage.removeItem('deepseek_chat_history');
+          if (window.innerWidth <= 768) {
+            sidebar.classList.add('sidebar-hidden');
+            hamburgerBtn.classList.remove('active');
+          }
+        }
+      });
+    });
   </script>
 </body>
 </html>
