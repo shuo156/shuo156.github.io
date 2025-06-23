@@ -48,9 +48,26 @@
     <h1>合作伙伴(bushi)</h1>
     <img src='images/mi.png' alt="mihoyo" />
 
+    <!--  评论区 - Cusdis（GPT推荐） -->
+    <h1>留言板</h1>
+    <div id="cusdis_thread"
+        data-host="https://cusdis.com"
+        data-app-id="96e7f43c-b20e-43e4-b4eb-4e697bf57f2e"
+        data-page-id="zh"
+        data-page-url="shuo156.github.io/index_zh.html"
+        data-page-title="评论">
+    </div>
+    <script>
+        const thread = document.getElementById('cusdis_thread');
+        thread.dataset.pageId = location.pathname;
+        thread.dataset.pageUrl = location.href;
+        thread.dataset.pageTitle = document.title;
+    </script>
+    <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
+
     <!-- JavaScript实时更新时间 -->
     <!-- 李影韩彬舍天地 -->
-   <script>
+    <script>
         function updateDateTime() {
             const now = new Date();
             // 北京时间 (UTC+8)
