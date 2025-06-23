@@ -49,21 +49,26 @@
     <img src='images/mi.png' alt="mihoyo" />
 
     <!--  评论区 - Cusdis（GPT推荐） -->
-    <h1>留言板</h1>
+<h1>留言板</h1>
+<div style="border: 1px solid #ddd; border-radius: 8px; padding: 10px; margin: 20px 0; max-width: 1000px;">
+    <p style="font-size: 16px; font-weight: bold; color: #333;">评论区：</p>
     <div id="cusdis_thread"
         data-host="https://cusdis.com"
         data-app-id="96e7f43c-b20e-43e4-b4eb-4e697bf57f2e"
         data-page-id="zh"
         data-page-url="shuo156.github.io/index_zh.html"
-        data-page-title="评论">
+        data-page-title="评论"
+        style="min-height: 600px;"> <!-- 设置最低高度，放大输入区域 -->
     </div>
-    <script>
-        const thread = document.getElementById('cusdis_thread');
-        thread.dataset.pageId = location.pathname;
-        thread.dataset.pageUrl = location.href;
-        thread.dataset.pageTitle = document.title;
-    </script>
-    <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
+</div>
+
+<script>
+    const thread = document.getElementById('cusdis_thread');
+    thread.dataset.pageId = location.pathname;
+    thread.dataset.pageUrl = location.href;
+    thread.dataset.pageTitle = document.title;
+</script>
+<script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
 
     <!-- JavaScript实时更新时间 -->
     <!-- 李影韩彬舍天地 -->
