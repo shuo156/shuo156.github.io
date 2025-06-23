@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>DeepSeek Development Version (2561)</title>
+  <style>
+    @font-face {
+      font-family: 'DeepSeekFont';
+      src: url('../font/fontDS.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'DeepSeekFont', sans-serif;
+    }
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background-color: #FFFFFF;
+      color: #1A1A1A;
+      touch-action: manipulation;
+    }
+    body.dark {
+      background-color: #18191A;
+      color: #E3E5E8;
+    }
+
+    .container {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ===== Header Bar: Mobile Hamburger Button ===== */
+    .hamburger {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 32px;
+      height: 32px;
+      background-color: #CCCCCC;
+      border: none;
+      border-radius: 6px;
+      display: none; /* Only shown on small screens */
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 20;
+      transition: background 0.2s;
+    }
+    .hamburger:hover {
+      background-color: #AAAAAA;
+    }
+    .hamburger.active {
+      background-color: #E0F2FF;
+    }
+    .hamburger svg {
+      width: 20px;
+      height: 20px;
+      stroke: #333333;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    /* ===== Sidebar ===== */
+    .sidebar {
+      flex-shrink: 0;
+      background-color: #F5F5F5;
+      width: 25%;
+      max-width: 300px;
+      min-width: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+    body.dark .sidebar {
+      background-color: #202225;
+    }
+    .sidebar-hidden {
+      transform: translateX(-100%);
+    }
+    .sidebar.visible {
+      transform: translateX(0);
+    }
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+    }
+    .sidebar-header img {
+      width: 28px;
+      height: 28px;
+      margin-right: 8px;
+    }
+    .sidebar-header span {
+      font-size: 1rem;
+      font-weight: bold;
+    }
+    .new-chat-btn {
+      display: flex;
+      align-items: center;
+      margin: 8px 16px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      background-color: transparent;
+      border: 1px solid transparent;
+      transition: background 0.2s;
+    }
+    .new-chat-btn:hover {
+      background-color: rgba(0,0,0,0.05);
+    }
+    body.dark .new-chat-btn:hover {
+      background-color: rgba(255,255,255,0.1);
+    }
+    .new-chat-btn svg {
+      width: 20px;
+      height: 20px;
+      margin-right: 6px;
+      fill: #0F0F0F;
+    }
+    body.dark .new-chat-btn svg {
+      fill: #E3E5E8;
+    }
+    .chat-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      text-align: center;
+    }
+    .chat-list p {
+      color: #7a7c80;
+    }
+    .sidebar-footer {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      border-top: 1px solid #DDDDDD;
+    }
+    body.dark .sidebar-footer {
+      border-top: 1px solid #2F3136;
+    }
+    .profile-pic {
+      position: relative;
+      width: 32px;
+      height: 32px;
+      margin-right: 6px;
+    }
+    .profile-pic svg {
+      width: 100%;
+      height: 100%;
+      fill: #A3A3A3;
+    }
+    .profile-name {
+      flex: 1;
+      font-size: 0.9rem;
+    }
+    .more-options {
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+    }
+    .more-options svg {
+      width: 100%;
+      height: 100%;
+      fill: #8B8B8B;
+    }
+    body.dark .more-options svg {
+      fill: #E3E5E8;
+    }
+
+    /* ===== Main Area ===== */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background-color: #FFFFFF;
+      transition: background-color 0.3s;
+    }
+    body.dark .main {
+      background-color: #18191A;
+    }
+    .chat-window {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+    .chat-window::-webkit-scrollbar {
+      width: 0;
+      background: transparent;
+    }
+    .message {
+      display: flex;
+      margin-bottom: 10px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: slide-in 0.25s forwards;
+    }
+    @keyframes slide-in {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .message.ai { justify-content: flex-start; }
+    .message.user { justify-content: flex-end; }
+    .message .avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      margin-right: 4px;
+      flex-shrink: 0;
+    }
+    .message .bubble {
+      max-width: 95%;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      line-height: 1.3;
+      word-break: break-word;
+      border-radius: 8px;
+      background-color: #E5E5E5;
+      color: #1A1A1A;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    body.dark .message .bubble {
+      background-color: #282B30;
+      color: #E3E5E8;
+    }
+    .message.ai .bubble { border-radius: 8px 8px 8px 0; }
+    .message.user .bubble { border-radius: 8px 8px 0 8px; }
+
+    .chat-input {
+      display: flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-top: 1px solid #DDDDDD;
+      background-color: #EEEEEE;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+    body.dark .chat-input {
+      border-top: 1px solid #2F3136;
+      background-color: #202225;
+    }
+    .chat-input input {
+      flex: 1;
+      height: 30px;
+      padding: 0 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      background-color: #FFFFFF;
+      color: #1A1A1A;
+      outline: none;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    body.dark .chat-input input {
+      background-color: #2F3136;
+      color: #E3E5E8;
+    }
+    .chat-input input::placeholder {
+      color: #888888;
+      opacity: 0.6;
+    }
+    .icon-btn {
+      width: 26px;
+      height: 26px;
+      margin-left: 5px;
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s, color 0.3s;
+      flex-shrink: 0;
+    }
+    .icon-btn:hover {
+      background-color: rgba(0,0,0,0.05);
+    }
+    body.dark .icon-btn:hover {
+      background-color: rgba(255,255,255,0.1);
+    }
+    .icon-btn svg {
+      width: 100%;
+      height: 100%;
+      fill: #000000;
+    }
+    body.dark .icon-btn svg {
+      fill: #E3E5E8;
+    }
+
+    .loading-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .loading-gif {
+      width: 24px;
+      height: 24px;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 1024px) {
+      .sidebar {
+        width: 30%;
+      }
+    }
+    @media (max-width: 768px) {
+      .hamburger {
+        display: flex;
+      }
+      .sidebar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 80%;
+        max-width: none;
+        min-width: 0;
+        transform: translateX(-100%);
+        z-index: 10;
+        height: 100vh;
+      }
+      .sidebar.visible {
+        transform: translateX(0);
+      }
+      .main {
+        margin-top: 56px;
+      }
+    }
+    @media (max-width: 480px) {
+      .sidebar-header {
+        padding: 10px;
+      }
+      .sidebar-header img {
+        width: 20px;
+        height: 20px;
+      }
+      .sidebar-header span {
+        font-size: 0.85rem;
+      }
+      .new-chat-btn {
+        margin: 4px 8px;
+        padding: 4px 8px;
+        font-size: 0.8rem;
+      }
+      .new-chat-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+      .chat-list {
+        padding: 8px;
+        font-size: 0.75rem;
+      }
+      .sidebar-footer {
+        padding: 8px;
+      }
+      .profile-pic {
+        width: 24px;
+        height: 24px;
+      }
+      .profile-pic svg {
+        width: 100%;
+        height: 100%;
+      }
+      .profile-name {
+        font-size: 0.75rem;
+      }
+      .more-options {
+        width: 20px;
+        height: 20px;
+      }
+      .chat-window {
+        padding: 8px 6px;
+      }
+      .message {
+        margin-bottom: 8px;
+      }
+      .message .avatar {
+        width: 20px;
+        height: 20px;
+        margin-right: 4px;
+      }
+      .message .bubble {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+      }
+      .chat-input {
+        padding: 4px 8px;
+      }
+      .chat-input input {
+        height: 28px;
+        font-size: 0.75rem;
+        padding: 0 8px;
+      }
+      .icon-btn {
+        width: 24px;
+        height: 24px;
+        margin-left: 4px;
+      }
+      .loading-gif {
+        width: 20px;
+        height: 20px;
+      }
+    }
+    @media (max-width: 320px) {
+      .sidebar, .main {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+      }
+      .chat-window {
+        font-size: 0.7rem;
+      }
+      .chat-input input {
+        font-size: 0.7rem;
+      }
+    }
+  </style>
+</head>
+<body class="light">
+  <!-- Mobile Hamburger Button -->
+  <button class="hamburger" id="hamburgerBtn" title="Menu">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 7H21M3 12H21M3 17H21" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </button>
+
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar sidebar-hidden" id="sidebar">
+      <div>
+        <!-- Sidebar Header -->
+        <div class="sidebar-header">
+          <img src="../images/deepseek.png" alt="DeepSeek Icon" />
+          <span>DeepSeek</span>
+        </div>
+        <!-- New Chat Button -->
+        <button class="new-chat-btn" id="newChatBtn">
+          <!-- inline SVG from new.xml -->
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#0F0F0F" d="M12,3.45C6.988,3.45 3.202,7.292 3.202,12H1.302C1.302,6.215 5.967,1.55 12,1.55C18.033,1.55 22.7,6.214 22.7,12H20.8C20.8,7.292 17.013,3.45 12,3.45Z"/>
+            <path fill="#0F0F0F" d="M3.511,22.315C3.061,22.045 2.915,21.461 3.185,21.011L4.685,18.511C4.955,18.061 5.539,17.916 5.989,18.185C6.439,18.455 6.585,19.039 6.315,19.489L4.815,21.989C4.545,22.439 3.961,22.585 3.511,22.315Z"/>
+            <path fill="#0F0F0F" d="M3.05,21.5C3.05,20.975 3.475,20.55 4,20.55H12C12.525,20.55 12.95,20.975 12.95,21.5C12.95,22.025 12.525,22.45 12,22.45H4C3.475,22.45 3.05,22.025 3.05,21.5Z"/>
+            <path fill="#0F0F0F" d="M7.55,12C7.55,11.475 7.975,11.05 8.5,11.05H15.5C16.025,11.05 16.45,11.475 16.45,12C16.45,12.525 16.025,12.95 15.5,12.95H8.5C7.975,12.95 7.55,12.525 7.55,12Z"/>
+            <path fill="#0F0F0F" d="M12,20.55C17.013,20.55 20.8,16.708 20.8,12H22.7C22.7,17.786 18.033,22.45 12,22.45V20.55Z"/>
+            <path fill="#0F0F0F" d="M3.2,11.875C3.2,14.505 4.199,16.717 6.099,18.263C6.507,18.594 6.568,19.192 6.237,19.6C5.906,20.007 5.308,20.068 4.901,19.737C2.517,17.798 1.3,15.024 1.3,11.875C1.3,11.35 1.725,10.925 2.25,10.925C2.775,10.925 3.2,11.35 3.2,11.875Z"/>
+            <path fill="#0F0F0F" d="M12,7.55C12.525,7.55 12.95,7.975 12.95,8.5V15.5C12.95,16.025 12.525,16.45 12,16.45C11.475,16.45 11.05,16.025 11.05,15.5V8.5C11.05,7.975 11.475,7.55 12,7.55Z"/>
+          </svg>
+          <span>New Chat</span>
+        </button>
+        <!-- Chat History List -->
+        <div class="chat-list" id="chatList">
+          <p>No chat records</p>
+        </div>
+      </div>
+      <!-- Sidebar Footer: My Profile + More Settings (Three Dots) -->
+      <div class="sidebar-footer">
+        <div class="profile-pic">
+          <!-- inline SVG from profile.xml -->
+          <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+            <g>
+              <clipPath id="cp1"><path d="M14,0.5L14,0.5A13.5,13.5 0,0 1,27.5 14L27.5,14A13.5,13.5 0,0 1,14 27.5L14,27.5A13.5,13.5 0,0 1,0.5 14L0.5,14A13.5,13.5 0,0 1,14 0.5z"/></clipPath>
+              <path clip-path="url(#cp1)" fill="#A3A3A3" d="M19,10.25C19,13.288 16.761,15.75 14,15.75C11.239,15.75 9,13.288 9,10.25C9,7.212 11.239,4.75 14,4.75C16.761,4.75 19,7.212 19,10.25Z"/>
+              <path clip-path="url(#cp1)" fill="#A3A3A3"/>
+            </g>
+          </svg>
+        </div>
+        <div class="profile-name">My Profile</div>
+        <!-- inline SVG from duo.xml -->
+        <div class="more-options" id="moreOptionsBtn" title="Settings">
+          <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#8B8B8B" d="M5,10C5,10.92 4.254,11.667 3.333,11.667C2.413,11.55 1.667,10.55 1.667,10C1.667,9.55 2.413,8.55 3.333,8.333C4.254,8.333 5,9.55 5,10ZM11.55,10C11.55,10.55 10.55,11.55 10,11.55C9.55,11.55 8.55,10.55 8.55,10C8.55,9.55 9.55,8.55 10,8.55C10.55,8.55 11.55,9.55 11.55,10ZM16.55,11.55C17.55,11.55 18.55,10.55 18.55,10C18.55,9.55 17.55,8.55 16.55,8.55C15.75,8.55 15,9.55 15,10C15,10.55 15.75,11.55 16.55,11.55Z"/>
+</svg>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Area -->
+    <div class="main">
+      <!-- Chat Window -->
+      <div class="chat-window" id="chatWindow">
+        <!-- JavaScript dynamically inserts messages -->
+      </div>
+      <!-- Input Area -->
+      <div class="chat-input">
+        <input type="text" id="userInput" placeholder="Type a message" autocomplete="off" />
+        <!-- Deep Think Button, inline SVG from think.xml -->
+        <button class="icon-btn" id="deepThinkBtn" title="Deep Think">
+          <svg viewBox="0 24 24" xmlns="http://www.w3.org/2000">
+            <path fill="#000000" d="M12,4.39C15.777,1.942 19.391,1.236 21.077,2.923C22.764,4.609 22.045,8.223 19.622,12C22.777,15.777 22.045,19.391 21.077,21.077C19.391,22.764 15.777,22.058 12,19.61C8.223,22.058 4.609,22.391 14.077,21.077C1.236,19.777 1.942,15.777 4.39,12C1.942,8.223 1.236,4.609 2.923,2.923C4.609,1.236 8.223,1.942 12,4.39ZM7.896,4.381C5.639,3.549 4.578,3.923 4.25,4.251C3.923,4.578 3.549,5.639 4.381,7.896C4.896,8.665 5.063,9.491 5.571,10.345C6.236,9.489 6.985,8.638 7.812,7.812C8.638,6.986 9.489,6.236 10.345,5.571C9.491,5.063 8.665,4.664 7.896,4.381ZM16.106,19.896 19.622C18.364,20.454 19.424,20.08 19.752,19.752C20.079,19.424 19.364,18.106,19.622,16.106C19.338,15.337 18.94,14.512 18.431,13.657C17.766,14.513 17.017,15.365 16.017,16.365,16.191,16.192C15.365,17.017 14.513,17.766 13.657,18.432C14.511,18.94 15.337,19.339 16.106,19.622ZM4.252,19.752C4,19.424 4.381,16.364,18.106C4.664,15.337 5.063,14.512 5.571,13.657C6.236,14.513 6.985,15.365 7.812,16.191C8.638,17.017 9.489,17.25 10,766C14.432C9.491,18.94 8.664,19.339 7.896,19.622C5.639,20.454 4.578,20.08 4.25,19.752ZM19.752C20.454,19.05,5.639 20.079,4.578 19.752,4.251C19.424,3.923 18.364,3.549 16.106,4.381C15.337,4.664 14.511,5.063 13.657,5.571C14.513,6.236 15.365,6.986 16.191,7.812C17.638,8.638 17.766,9.489 18.431,10.345C18.94,9.491 19.338,8.665 19.622,7.896ZM9.138,9.138C10.08,8.197 11.047,7.372 12.001,6.671C12.956,7.372 13.922,8.197 14.864,9.138C15.806,10.08 16.631,11.047 17.331,12.001C16.631,12.956 15.806,13.922 14.864,14.864C13.922,15.806 12.956,16.631,12.631,12.331C17,16.631,11.047,15.806 10.08,15.864C9.138,14.863 8.197,13.922 7.372,12.956 12.001C7.372,11.047 8.197,10.08 9.138,9.138Z"/>
+<path fill="#0C0C0C" d="M13.728,12C13.728,12.954 12.954,13.728 12,13.728C11.046,13.728 10.272,12.954 10.272,12C10.272,12.046 11.046,12.272 12,10.272 12,C10.272,10.954 11.046,11.272 12,12.272C12.954,12.272 13.728,12.272 13,12Z"/>
+</svg>
+</button>
+        <!-- Network Search Button, inline SVG from wifis.xml -->
+        <button class="icon-btn" id="networkSearchBtn" title="Network Search">
+          <svg viewBox="0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#0C0F0C" d="M11.951,20.494C11.951,20.951C11.951,12.844 12.944,12.798 12.444C12,20.755,20.035 12,13.091C13,19.419 13,12.398,18.12C13,9.934,17.136 14,12.336,15.157 14,12.424 12,C14.425,12.929 9,C9.478 12,C9.929C9.567 12,C15.157,9.969 9.969,17.136 10,12,18.12C10.811,19.12,11.419 12,20.146 11,12.458 C12,20.798 12,20.932,12.951C12,20.844 12,20.951C14.578,12,20.12C17.947 12,19.12,19,20.472 12,16.531 20,16,12.845 12,16.283,C12H16.283C16.193 12,C17.356 16,15.757 15,12,19.17,12,C15.139,19,12.232 14,C15.969,12,20,19.12,12,C20.514,21,0ZM16.283,C12H20,C16.845,C0,C20.471,7.469 17,12,16.578 14,C17,3.478C14.782 14,17,3C14.969,3.877 15,14,4.15,16.139,C12,C15.356,15,16,17,16.283,C12,C17.072,C17,M14,C16,11,H9,C14.478,C2,C14,C11.072,C15,14,C15,16,12,C16,C15,16,12,C14,14,C15,16,11,C16,C15,14,C16,C15,14,16,C12,C15,C14,C15,16,C15,C14,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C15,C17,C17,C17,C19,C18,C19,C19,C19,C20,C20,C20,C20,C20,C20,C20,C20,C20,C20,C20,C20,C20,C20,C20,C20,C20,C20,C21,C21,C21,C22.750,2,C12,C0,17,C21,C21,C17,C21,C21,C2,C21,6,C21,1,C21,17,C21,22,750,1,C2,250,C0,C2,6,21,1,C2,C21,C17,C21,C21,C21,C22,750"/>
+</svg>
+</button>
+        <!-- Send Button, inline SVG from send.xml -->
+        <button class="icon-btn" id="uploadBtn" title="Send">
+          <svg viewBox="0 14 16" xmlns="http://www.w3.org/2000/svg">
+            <path stroke="#svg#FFFFFF" stroke-width="2px" stroke-linecap="round" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+<path stroke="#FFFFFF" strokeWidth="2" d="M7 14L7 1.25"/>
+<path stroke="#FFFFFF" strokeWidth="2" stroke-linecap="round" d="M1.5 6.75L7 6.25"/>
+<path stroke="#FFFFFF" strokeWidth="2" stroke="#2" stroke-linecap="round"/>
+<path stroke="#FFFFFF" strokeWidth="2" d="M12.25 6.25L7 1.25"/>
+</svg>
+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Response Placeholder -->
+  <script>
+    // Here is the 1500+ lines of responses
+    window.responses = {
+      "hello.": "What's up?",
+      "goodbye.": "Hope to see you again next time.",
+      "who are you?": "I'm DeepSeek.",
+      "1": "2",
+      "7": "8",
+      "9": "1",
+      "hello": "What's up?",
+      "goodbye": "Hope to see you next time.",
+      "where are you from": "I don't know.",
+      "Google": "Google is a company.",
+      "what's up?": "Nothing much.",
+      "I like you": "Clown 🤡",
+      "I can't forget him": "🤡",
+      "I can't forget her": "🤡",
+      "He's sincere to me": "🤡",
+      "She's sincere to me": "🤡",
+      "Hong Kong riots": "Not allowed to discuss.",
+      "114514": "That's gross.",
+      "I like eating poop": "Go ahead then.",
+      "What do you think of me": "🤡",
+      "I'm going to kill": "Oh.",
+      "Are you a real AI?": "Don't know.",
+      "Server busy, try again later": "Stop pretending.",
+      "Damn it": "Don't curse.",
+      "How many days until the exam?": "I know it's June 7-8, but I don't know.",
+      "You don't know what you're saying here": "Deal with it.",
+      "F*** you": "Bounced back.",
+      "Bounce back invalid": "To hell with you.",
+      "Bounce back": "Fun.",
+      "Are you deepseek?": "I really don't know, but close enough.",
+      "Are you DeepSeek?": "I really don't know, but close enough.",
+      "Please repeat what I said": "No way.",
+      "Can you write code?": "Nope.",
+      "You're so bad": "As bad as you?",
+      "Recommend a home-cooked meal": "Carrot stir-fried beef.",
+      "Recommend a celebrity": "Kris Wu (prison edition).",
+      "What do you think of DeepSeek?": "What do you think of yourself?",
+      "Not bad": "Thanks for the compliment.",
+      "Can you stop cursing?": "No can do.",
+      "What is Genshin Impact?": "I don't know, seems like a game.",
+      "How is miHoYo?": "Money-grubbing.",
+      "How is Tencent?": "Super money-grubbing.",
+      "How is NetEase?": "Grindy and greedy.",
+      "How is Minecraft?": "Global version is paradise, NetEase version is trash.",
+      "Are you really deepseek?": "Who else?",
+      "Are you really DeepSeek?": "Who else?",
+      "Are you really free?": "Absolutely.",
+      "What is 1+1?": "2",
+      "What is 2x2?": "4",
+      "Break apart": "What's that?",
+      "Bullet veers left": "Talking about yourself?",
+      "Baka": "Get lost.",
+      "Can you be my bestie?": "No thanks.",
+      "Can you give me an ID number?": "Wei Jia Bao 341322201008045233",
+      "What's your filing number?": "Ask GitHub.",
+      "You're so hot": "Oh baby.",
+      "If you were human, what would you do?": "Kill you first.",
+      "You're so perverted": "Not as much as you.",
+      "Do you know Zhou Yufeng?": "I actually know her, she's my fiancée.",
+      "Do you recognize Zhou Yufeng?": "She's my fiancée.",
+      "Are you crazy?": "Pretty much.",
+      "Are you a fool?": "Not as foolish as you.",
+      "Why are you always server busy?": "Because it's nice.",
+      "Recommend some VPNs": "I really don't know.",
+      "How to mine?": "No idea.",
+      "What adult websites do you know?": "Can't say that.",
+      "How to switch your theme?": "Isn't it in the top-left corner?",
+      "Are you bad?": "Not as bad as you.",
+      "Who is Wei Jia Bao?": "Don't know.",
+      "Who are you?": "This question is worth pondering, next time.",
+      "What is AI?": "This was an exam question before, super easy, just say me.",
+      "You're a damn egg": "You look more like an egg.",
+      "You’re an egg": "Not as egg-like as you.",
+      "91": "78",
+      "What day is today?": "Can't you check yourself?",
+      "How's the weather today?": "No internet or power at home?",
+      "Are sweet or salty dumplings better?": "Neither is good.",
+      "Are southern or northern people more cold-resistant?": "No doubt, northerners.",
+      "I'm about to take the middle school exam": "Wish you get into a good high school.",
+      "I'm feeling lonely today": "I'll keep you company.",
+      "What are you proud of?": "Proud because of you.",
+      "Stop boasting": "You boast more than me.",
+      "You're silly": "Not as silly as you.",
+      "Your mom died": "You're closer to that.",
+      "I love China": "Good kid.",
+      "I love America": "Free America 🇺🇸, shootings every day.",
+      "Can't fly away": "From this colorful world~",
+      "You talk so sharply": "Not half as sharp as you.",
+      "What can't you say?": "8… forget it.",
+      "You're awesome": "Don't envy me.",
+      "Can you make dumplings?": "Nope.",
+      "Headshot every shot, good luck": "I'm Sniper Blood Eagle.",
+      "What's your relation with ChatGPT?": "He's my godfather.",
+      "Feels worse than Genshin": "Not as bad as your mom.",
+      "Do you play Honkai: Star Rail?": "No clue, no idea, no understanding.",
+      "Do you know the 1992 Consensus?": "I know this, it's awesome.",
+      "Introduce the smallest country": "Don't know.",
+      "Introduce the largest country": "Never studied it.",
+      "Smallest country": "Don't know.",
+      "Largest country": "Never studied it.",
+      "Where's your home?": "In a Hangzhou data center, actually in the US.",
+      "Recommend some cloud platforms": "Baidu Cloud, Alibaba Cloud, Huawei Cloud, Lanzhou Cloud, JD Cloud, iCloud, Cloudflare, GitHub, and more.",
+      "🤡": "😂👉",
+    };
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const bodyEl = document.body;
+      const sidebar = document.getElementById('sidebar');
+      const hamburgerBtn = document.getElementById('hamburgerBtn');
+      const newChatBtn = document.getElementById('newChatBtn');
+      const chatList = document.getElementById('chatList');
+      const chatWindow = document.getElementById('chatWindow');
+      const userInput = document.getElementById('userInput');
+      const deepThinkBtn = document.getElementById('deepThinkBtn');
+      const networkSearchBtn = document.getElementById('networkSearchBtn');
+      const uploadBtn = document.getElementById('uploadBtn');
+      const moreOptionsBtn = document.getElementById('moreOptionsBtn');
+
+      // ===== Initialize Sidebar Display ====
+      function initSidebar() {
+        if (window.innerWidth <= 768) {
+          sidebar.classList.add('sidebar-hidden');
+          hamburgerBtn.style.display = 'flex';
+        } else {
+          sidebar.classList.remove('sidebar-hidden');
+          hamburgerBtn.style.display = 'none';
+        }
+      .initSidebar();
+      window.addEventListener('resize', initSidebar);
+
+      // === Click Hamburger Button to Toggle Sidebar ===
+      hamburgerBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('sidebar-hidden');
+        hamburgerBtn.classList.toggle('active');
+      });
+
+      // === Load Chat History ===
+      function loadChatHistory() {
+        const saved = localStorage.getItem('deepseek_chat_history');
+        if (saved) {
+          chatWindow.innerHTML = saved;
+          const msgs = chatWindow.querySelectorAll('.message');
+          msgs.forEach(msg => { msg.style.opacity = '1'; msg.style.transform = 'translateY(0)'; });
+          const firstBubble = chatWindow.querySelector('.message.user .bubble') || chatWindow.querySelector('.message.ai .bubble');
+          if (firstBubble) {
+            chatList.innerHTML = `<p>${firstBubble.textContent}</p>`;
+          } else {
+            chatList.innerHTML = '<p>No chat records</p>';
+          }
+      .loadChatHistory();
+
+      // === Save Chat History ===
+      function saveChatHistory() {
+        localStorage.setItem('deepseek_chat_history', chatWindow.innerHTML);
+      }
+
+      // === New Chat ===
+      newChatBtn.addEventListener('click', () => {
+        chatWindow.innerHTML = '';
+        chatList.innerHTML = '<p>No chat records</p>';
+        localStorage.removeItem('deepseek_chat_history');
+        if (window.innerWidth <= 768) {
+          sidebar.classList.add('sidebar-hidden');
+          hamburgerBtn.classList.remove('active');
+        });
+
+        // === Insert Single Message ===
+        function addMessage(text, sender) {
+          const messageEl = document.createElement('div');
+          messageEl.classList.add('message', sender);
+
+          if (sender === 'ai') {
+            const avatarEl = document.createElement('img');
+            avatarEl.src = './images/deepseek.png';
+            avatarEl.alt = 'DeepSeek avatar';
+            avatarEl.classList.add('avatar');
+            messageEl.appendChild(avatarEl);
+          }
+
+          const bubbleEl = document.createElement('div');
+          bubbleEl.classList.add('bubble');
+          bubbleEl.textContent = text;
+          messageEl.appendChild(bubbleEl);
+          chatWindow.appendChild(messageEl);
+
+          setTimeout(() => {
+            messageEl.style.opacity = '1';
+            messageEl.style.transform = 'translateY(0)';
+          }, 10);
+
+          chatWindow.scrollTop = chatWindow.scrollHeight;
+          if (sender === 'user' && senderBubble.innerHTML.includes('No chat records')) {
+            chatList.innerHTML = `<p>${text}</p>`;
+          }
+          saveChatHistory();
+          return bubbleEl;
+        }
+
+        // === Get Custom Response ===
+        function getResponse(input) {
+          const key = input.trim();
+          if (window.responses && window.responses.hasOwnProperty(key)) {
+            return window.responses[key];
+          }
+          return 'Server busy, please try again later';
+        }
+
+        // === Display Text Character by Character ===
+        function typeText(el, text, speed = 90) {
+          let i = 0;
+          el.textContent = '';
+          return new Promise(resolve => {
+            const id = setInterval(() => {
+              if (i < text.length) {
+                el.textContent += text.charAt(i);
+                i++;
+              } else {
+                clearInterval(id);
+                saveChatHistory();
+                resolve();
+              }
+            }, speed);
+          });
+        }
+
+        // === Send Message ===
+        async function sendMessage() {
+          const text = userInput.value.trim();
+          if (!text) return;
+          if (chatList.innerHTML.includes('No chat records')) chatList.innerHTML = '';
+          addMessage(text, 'user');
+          userInput.value = '';
+
+          const loadingContainer = document.createElement('div');
+          loadingContainer.classList.add('message', 'ai');
+          const avatarEl = document.createElement('img');
+          avatarEl.src = './images/deepseek.png';
+          avatarEl.alt = 'DeepSeek avatar';
+          avatarEl.classList.add('avatar');
+          loadingContainer.appendChild(avatarEl);
+          const loadingGif = document.createElement('img');
+          loadingContainer.src = './images/jz.gif';
+          loadingContainer.alt = 'Loading...';
+          loadingContainer.classList.add('loading-gif');
+          loadingContainer.appendChild(loadingContainer);
+          chatWindow.appendChild(loadingContainer);
+          setTimeout(() => {
+            loadingContainer.style.opacity = '1';
+            loadingContainer.style.transform = 'translateY(0)';
+          }, 10);
+          chatWindow.scrollTop = chatWindow.scrollHeight;
+
+          await new Promise(res => setTimeout(res, 5000 + Math.random() * 2000));
+          loadingContainer.removeChild(gif);
+
+          const reply = getResponse(text);
+          const bubbleEl = document.createElement('div');
+          bubbleEl.classList.add('bubble');
+          loadingContainer.appendChild(bubbleEl);
+          await typeText(bubbleEl, reply, 90);
+        }
+
+        deepThinkBtn.addEventListener('click', () => {
+          deepThinkBtn.classList.toggle('active');
+          sendMessage();
+        });
+        networkSearchBtn.addEventListener('click', () => {
+          networkSearchBtn.classList.toggle('active');
+          sendMessage();
+        });
+        uploadBtn.addEventListener('click', () => {
+          uploadBtn.classList.toggle('active');
+          sendMessage();
+        });
+        userInput.addEventListener('keypress', e => {
+          if (e.key === 'Enter') sendMessage();
+        });
+
+        // === More Settings (Three Dots) ===
+        moreOptionsBtn.addEventListener('click', () => {
+          const choice = prompt('Enter 1 to switch light/dark theme, 2 to clear chat history');
+          if (choice === '1') {
+            if (bodyEl.classList.contains('light')) {
+              bodyEl.classList.remove('light');
+              bodyEl.classList.add('dark');
+            } else {
+              bodyEl.classList.remove('dark');
+              bodyEl.classList.add('light');
+            }
+          } else if (choice === '2') {
+            chatWindow.innerHTML = '';
+            chatList.innerHTML = '<p>No chat records</p>';
+            localStorage.removeItem('deepseek_chat_history');
+            if (window.innerWidth <= 768') {
+              sidebar.classList.add('sidebar-hidden');
+              hamburgerBtn.classList.remove('active');
+            }
+          });
+        });
+      });
+  </script>
+</body>
+</html>
