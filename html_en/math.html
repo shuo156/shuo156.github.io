@@ -8,13 +8,16 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- KaTeX CSS -->
     <link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet">
-    <!-- 自定义样式 CSS -->
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --bg-color: #f8f9fa;
             --card-bg: #ffffff;
             --text-color: #212529;
             --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
         }
 
         [data-theme="dark"] {
@@ -22,6 +25,8 @@
             --card-bg: #343a40;
             --text-color: #f8f9fa;
             --card-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+            --primary-color: #4895ef;
+            --secondary-color: #4361ee;
         }
 
         body {
@@ -29,23 +34,32 @@
             color: var(--text-color);
             transition: all 0.3s ease;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding-bottom: 2rem;
         }
 
         .container {
-            padding: 2rem;
+            padding: 1rem;
+            max-width: 1400px;
+        }
+
+        .card-container {
+            perspective: 1500px;
+            margin-bottom: 1.5rem;
+            height: 280px;
         }
 
         .card {
             background-color: var(--card-bg);
             box-shadow: var(--card-shadow);
-            transition: transform 0.6s;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform-style: preserve-3d;
             cursor: pointer;
-            margin-bottom: 1.5rem;
-            height: 250px;
+            height: 100%;
             position: relative;
             border-radius: 12px;
             overflow: hidden;
+            border: none;
         }
 
         .card.flipped {
@@ -67,7 +81,7 @@
         }
 
         .card-front {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
         }
 
@@ -76,6 +90,8 @@
             overflow-y: auto;
             background-color: var(--card-bg);
             color: var(--text-color);
+            justify-content: flex-start;
+            text-align: left;
         }
 
         .theme-toggle {
@@ -90,25 +106,40 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: var(--primary-color);
+            color: white;
+            border: none;
         }
 
         h1 {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             font-weight: 700;
-            color: #2c3e50;
+            color: var(--primary-color);
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #6c757d;
+            font-size: 1.1rem;
         }
 
         .stage-selector {
             text-align: center;
             margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
         .stage-selector .btn {
-            margin: 0 0.5rem;
             border-radius: 20px;
             padding: 8px 20px;
             font-weight: 600;
+            transition: all 0.3s ease;
         }
 
         .stage-content {
@@ -120,12 +151,13 @@
         }
         
         .header-section {
-            background: linear-gradient(120deg, #1d2b64, #f8cdda);
+            background: linear-gradient(120deg, #1d2b64, #4361ee);
             padding: 30px 0;
             margin-bottom: 30px;
             border-radius: 0 0 20px 20px;
             color: white;
             text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         
         .card h5 {
@@ -140,6 +172,7 @@
         
         .card-back p {
             line-height: 1.6;
+            margin-bottom: 0.5rem;
         }
         
         .footer {
@@ -155,21 +188,118 @@
             margin-bottom: 15px;
             opacity: 0.9;
         }
+        
+        .example-box {
+            background-color: rgba(67, 97, 238, 0.1);
+            border-left: 4px solid var(--primary-color);
+            padding: 0.8rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+        }
+        
+        .flip-indicator {
+            position: absolute;
+            bottom: 15px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.8rem;
+        }
+        
+        /* Mobile adaptations */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.5rem;
+            }
+            
+            .card-container {
+                height: auto;
+                min-height: 200px;
+                margin-bottom: 1rem;
+            }
+            
+            .card {
+                height: auto;
+                min-height: 200px;
+            }
+            
+            .card-front, .card-back {
+                position: relative;
+                height: auto;
+                min-height: 200px;
+                backface-visibility: visible;
+                transform: none;
+            }
+            
+            .card.flipped .card-front {
+                display: none;
+            }
+            
+            .card.flipped .card-back {
+                display: flex;
+            }
+            
+            .card-back {
+                display: none;
+                transform: none;
+            }
+            
+            .stage-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .stage-selector .btn {
+                width: 90%;
+                margin-bottom: 0.5rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .header-section {
+                padding: 20px 0;
+            }
+            
+            .theme-toggle {
+                width: 40px;
+                height: 40px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Tablet adaptations */
+        @media (min-width: 769px) and (max-width: 992px) {
+            .card-container {
+                height: 320px;
+            }
+        }
+        
+        /* Animation for card flip */
+        @keyframes flipIn {
+            0% { transform: rotateY(0); }
+            100% { transform: rotateY(180deg); }
+        }
     </style>
 </head>
 <body>
-    <button class="btn btn-primary theme-toggle" onclick="toggleTheme()">🌓</button>
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-moon"></i>
+    </button>
     
     <div class="header-section">
         <div class="container">
             <h1>High School Mathematics Knowledge Cards</h1>
-            <p class="lead">Flip the cards to review key concepts, formulas, and examples</p>
+            <p class="subtitle">Flip the cards to review key concepts and formulas</p>
         </div>
     </div>
     
     <div class="container">
         <div class="stage-selector">
-            <button class="btn btn-outline-primary active" onclick="showStage('grade1')">Grade 10</button>
+            <button class="btn btn-primary" onclick="showStage('grade1')">Grade 10</button>
             <button class="btn btn-outline-primary" onclick="showStage('grade2')">Grade 11</button>
             <button class="btn btn-outline-primary" onclick="showStage('grade3')">Grade 12</button>
         </div>
@@ -178,162 +308,143 @@
         <div id="grade1" class="stage-content active">
             <div class="row">
                 <!-- Sets -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-front">
-                            <div class="card-icon">📊</div>
-                            <h5>Sets</h5>
-                            <p>Basic Concepts</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Set: a whole made up of elements that satisfy certain conditions.<br>
-                            Representation methods: enumeration, description<br>
-                            Operations: \(\cup\) (Union), \(\cap\) (Intersection), \(A \setminus B\) (Complement)<br>
-                            <strong>Example</strong>: \( A = \{1, 2, 3\}, B = \{2, 3, 4\} \), Find \( A \cap B \).<br>
-                            <strong>Analysis</strong>: \( A \cap B = \{2, 3\} \), take the common elements.</p>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card-container">
+                        <div class="card">
+                            <div class="card-front">
+                                <div class="card-icon"><i class="fas fa-project-diagram"></i></div>
+                                <h5>Sets</h5>
+                                <p>Basic Concepts</p>
+                                <div class="flip-indicator">Click to flip</div>
+                            </div>
+                            <div class="card-back">
+                                <p><strong>Set</strong>: A collection of distinct objects.</p>
+                                <p><strong>Representation</strong>: Enumeration, description</p>
+                                <p><strong>Operations</strong>: 
+                                    \(\cup\) (Union), 
+                                    \(\cap\) (Intersection), 
+                                    \(A \setminus B\) (Complement)
+                                </p>
+                                <div class="example-box">
+                                    <strong>Example</strong>: \( A = \{1, 2, 3\}, B = \{2, 3, 4\} \)<br>
+                                    Find \( A \cap B \)<br>
+                                    <strong>Solution</strong>: \( A \cap B = \{2, 3\} \)
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!-- Functions -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-front">
-                            <div class="card-icon">📈</div>
-                            <h5>Functions</h5>
-                            <p>Definitions and Properties</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Function: \( y = f(x) \), mapping from domain to range.<br>
-                            Properties: monotonicity, parity, periodicity<br>
-                            <strong>Example</strong>: Determine the parity of \( f(x) = x^2 \).<br>
-                            <strong>Analysis</strong>: \( f(-x) = (-x)^2 = x^2 = f(x) \), an even function.</p>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card-container">
+                        <div class="card">
+                            <div class="card-front">
+                                <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                                <h5>Functions</h5>
+                                <p>Definitions and Properties</p>
+                                <div class="flip-indicator">Click to flip</div>
+                            </div>
+                            <div class="card-back">
+                                <p><strong>Function</strong>: \( y = f(x) \), mapping from domain to range.</p>
+                                <p><strong>Properties</strong>: Monotonicity, parity, periodicity</p>
+                                <div class="example-box">
+                                    <strong>Example</strong>: Determine parity of \( f(x) = x^2 \)<br>
+                                    <strong>Solution</strong>: \( f(-x) = (-x)^2 = x^2 = f(x) \), even function
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!-- Exponential Functions -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-front">
-                            <div class="card-icon">🧮</div>
-                            <h5>Exponential Functions</h5>
-                            <p>Forms and Properties</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Form: \( y = a^x \ (a > 0, a \neq 1) \)<br>
-                            Properties: when \( a > 1 \), monotonically increasing; when \( 0 < a < 1 \), monotonically decreasing.<br>
-                            <strong>Example</strong>: Find the value of \( y = 2^x \) at \( x = 3 \).<br>
-                            <strong>Analysis</strong>: \( y = 2^3 = 8 \).</p>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card-container">
+                        <div class="card">
+                            <div class="card-front">
+                                <div class="card-icon"><i class="fas fa-sort-amount-up-alt"></i></div>
+                                <h5>Exponential Functions</h5>
+                                <p>Forms and Properties</p>
+                                <div class="flip-indicator">Click to flip</div>
+                            </div>
+                            <div class="card-back">
+                                <p><strong>Form</strong>: \( y = a^x \ (a > 0, a \neq 1) \)</p>
+                                <p><strong>Properties</strong>: 
+                                    Monotonically increasing for \( a > 1 \), 
+                                    decreasing for \( 0 < a < 1 \)
+                                </p>
+                                <div class="example-box">
+                                    <strong>Example</strong>: Find \( y = 2^x \) at \( x = 3 \)<br>
+                                    <strong>Solution</strong>: \( y = 2^3 = 8 \)
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!-- Logarithmic Functions -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-front">
-                            <div class="card-icon">🔢</div>
-                            <h5>Logarithmic Functions</h5>
-                            <p>Forms and Properties</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Form: \( y = \log_a x \ (a > 0, a \neq 1) \)<br>
-                            Properties: domain \( (0, +\infty) \), range \( \mathbb{R} \)<br>
-                            <strong>Example</strong>: Find \( \log_2 8 \).<br>
-                            <strong>Analysis</strong>: \( \log_2 8 = \log_2 (2^3) = 3 \).</p>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card-container">
+                        <div class="card">
+                            <div class="card-front">
+                                <div class="card-icon"><i class="fas fa-calculator"></i></div>
+                                <h5>Logarithmic Functions</h5>
+                                <p>Forms and Properties</p>
+                                <div class="flip-indicator">Click to flip</div>
+                            </div>
+                            <div class="card-back">
+                                <p><strong>Form</strong>: \( y = \log_a x \ (a > 0, a \neq 1) \)</p>
+                                <p><strong>Properties</strong>: 
+                                    Domain \( (0, +\infty) \), 
+                                    Range \( \mathbb{R} \)
+                                </p>
+                                <div class="example-box">
+                                    <strong>Example</strong>: Find \( \log_2 8 \)<br>
+                                    <strong>Solution</strong>: \( \log_2 8 = \log_2 (2^3) = 3 \)
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!-- Trigonometric Functions -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-front">
-                            <div class="card-icon">📐</div>
-                            <h5>Trigonometric Functions</h5>
-                            <p>Basic Formulas</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Definitions: \( \sin \theta, \cos \theta, \tan \theta \)<br>
-                            Formula: \( \sin^2 \theta + \cos^2 \theta = 1 \)<br>
-                            <strong>Example</strong>: Find \( \sin \frac{\pi}{6} \).<br>
-                            <strong>Analysis</strong>: \( \sin \frac{\pi}{6} = \frac{1}{2} \).</p>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card-container">
+                        <div class="card">
+                            <div class="card-front">
+                                <div class="card-icon"><i class="fas fa-wave-square"></i></div>
+                                <h5>Trigonometric Functions</h5>
+                                <p>Basic Formulas</p>
+                                <div class="flip-indicator">Click to flip</div>
+                            </div>
+                            <div class="card-back">
+                                <p><strong>Definitions</strong>: \( \sin \theta, \cos \theta, \tan \theta \)</p>
+                                <p><strong>Fundamental Identity</strong>: 
+                                    \( \sin^2 \theta + \cos^2 \theta = 1 \)
+                                </p>
+                                <div class="example-box">
+                                    <strong>Example</strong>: Find \( \sin \frac{\pi}{6} \)<br>
+                                    <strong>Solution</strong>: \( \sin \frac{\pi}{6} = \frac{1}{2} \)
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!-- Sequences -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-front">
-                            <div class="card-icon">🔍</div>
-                            <h5>Sequences</h5>
-                            <p>Arithmetic and Geometric</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Arithmetic: \( a_n = a_1 + (n-1)d \)<br>
-                            Geometric: \( a_n = a_1 \cdot q^{n-1} \)<br>
-                            <strong>Example</strong>: Arithmetic sequence with first term 2, common difference 3, find the 5th term.<br>
-                            <strong>Analysis</strong>: \( a_5 = 2 + (5-1) \cdot 3 = 14 \).</p>
-                        </div>
-                    </div>
-                </div>
-                <!-- Vectors -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-front">
-                            <div class="card-icon">➗</div>
-                            <h5>Vectors</h5>
-                            <p>Operations and Properties</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Operations: addition, scalar product \( \vec{a} \cdot \vec{b} = |\vec{a}||\vec{b}|\cos \theta \)<br>
-                            <strong>Example</strong>: \( \vec{a} = (1, 2), \vec{b} = (3, 4) \), find \( \vec{a} + \vec{b} \).<br>
-                            <strong>Analysis</strong>: \( \vec{a} + \vec{b} = (1+3, 2+4) = (4, 6) \).</p>
-                        </div>
-                    </div>
-                </div>
-                <!-- Basic Inequalities -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-front">
-                            <div class="card-icon">⚖️</div>
-                            <h5>Basic Inequalities</h5>
-                            <p>Mean Value and Cauchy</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Mean value: \( \frac{a + b}{2} \geq \sqrt{ab} \)<br>
-                            <strong>Example</strong>: Verify for \( a = 4, b = 9 \).<br>
-                            <strong>Analysis</strong>: \( \frac{4 + 9}{2} = 6.5 \geq \sqrt{4 \cdot 9} = 6 \), holds true.</p>
-                        </div>
-                    </div>
-                </div>
-                <!-- Quadratic Functions -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-front">
-                            <div class="card-icon">📉</div>
-                            <h5>Quadratic Functions</h5>
-                            <p>Forms and Properties</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Standard form: \( y = ax^2 + bx + c \)<br>
-                            Vertex form: \( y = a(x - h)^2 + k \)<br>
-                            Vertex: \( \left( -\frac{b}{2a}, f\left(-\frac{b}{2a}\right) \right) \)<br>
-                            <strong>Example</strong>: Find the vertex of \( y = x^2 - 4x + 3 \).<br>
-                            <strong>Analysis</strong>: \( x = -\frac{-4}{2 \cdot 1} = 2 \), \( y = 2^2 - 4 \cdot 2 + 3 = -1 \), vertex \( (2, -1) \).</p>
-                        </div>
-                    </div>
-                </div>
-                <!-- Permutations and Combinations -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-front">
-                            <div class="card-icon">🔄</div>
-                            <h5>Permutations & Combinations</h5>
-                            <p>Basic Formulas</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Permutation: \( P(n, k) = \frac{n!}{(n-k)!} \)<br>
-                            Combination: \( C(n, k) = \frac{n!}{k!(n-k)!} \)<br>
-                            <strong>Example</strong>: Select 3 people from 5, find the number of combinations.<br>
-                            <strong>Analysis</strong>: \( C(5, 3) = \frac{5!}{3! \cdot 2!} = 10 \).</p>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card-container">
+                        <div class="card">
+                            <div class="card-front">
+                                <div class="card-icon"><i class="fas fa-sort-numeric-down"></i></div>
+                                <h5>Sequences</h5>
+                                <p>Arithmetic and Geometric</p>
+                                <div class="flip-indicator">Click to flip</div>
+                            </div>
+                            <div class="card-back">
+                                <p><strong>Arithmetic</strong>: \( a_n = a_1 + (n-1)d \)</p>
+                                <p><strong>Geometric</strong>: \( a_n = a_1 \cdot q^{n-1} \)</p>
+                                <div class="example-box">
+                                    <strong>Example</strong>: Arithmetic sequence, first term 2, common difference 3<br>
+                                    Find the 5th term<br>
+                                    <strong>Solution</strong>: \( a_5 = 2 + (5-1) \cdot 3 = 14 \)
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -344,94 +455,125 @@
         <div id="grade2" class="stage-content">
             <div class="row">
                 <!-- Solid Geometry -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-front">
-                            <div class="card-icon">🧊</div>
-                            <h5>Solid Geometry</h5>
-                            <p>Basic Concepts</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Point, line, plane relationships: parallel, perpendicular, angle<br>
-                            <strong>Example</strong>: Find the diagonal length of a cube (side length \( a \)).<br>
-                            <strong>Analysis</strong>: Space diagonal \( d = a\sqrt{3} \), derived from Pythagorean theorem.</p>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card-container">
+                        <div class="card">
+                            <div class="card-front">
+                                <div class="card-icon"><i class="fas fa-cube"></i></div>
+                                <h5>Solid Geometry</h5>
+                                <p>Basic Concepts</p>
+                                <div class="flip-indicator">Click to flip</div>
+                            </div>
+                            <div class="card-back">
+                                <p><strong>Relationships</strong>: Point, line, plane: parallel, perpendicular, angles</p>
+                                <div class="example-box">
+                                    <strong>Example</strong>: Find the diagonal length of a cube (side length \( a \))<br>
+                                    <strong>Solution</strong>: Space diagonal \( d = a\sqrt{3} \)
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!-- Linear Equations -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-front">
-                            <div class="card-icon">📏</div>
-                            <h5>Linear Equations</h5>
-                            <p>Forms and Properties</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Forms: point-slope \( y - y_1 = k(x - x_1) \), general \( ax + by + c = 0 \)<br>
-                            <strong>Example</strong>: Find the equation of the line passing through \( (1, 2) \) with slope 3.<br>
-                            <strong>Analysis</strong>: \( y - 2 = 3(x - 1) \), so \( y = 3x - 1 \).</p>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card-container">
+                        <div class="card">
+                            <div class="card-front">
+                                <div class="card-icon"><i class="fas fa-ruler-combined"></i></div>
+                                <h5>Linear Equations</h5>
+                                <p>Forms and Properties</p>
+                                <div class="flip-indicator">Click to flip</div>
+                            </div>
+                            <div class="card-back">
+                                <p><strong>Point-Slope</strong>: \( y - y_1 = k(x - x_1) \)</p>
+                                <p><strong>General Form</strong>: \( ax + by + c = 0 \)</p>
+                                <div class="example-box">
+                                    <strong>Example</strong>: Line passing through \( (1, 2) \) with slope 3<br>
+                                    <strong>Solution</strong>: \( y - 2 = 3(x - 1) \) → \( y = 3x - 1 \)
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!-- Circle Equations -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-front">
-                            <div class="card-icon">⭕</div>
-                            <h5>Circle Equations</h5>
-                            <p>Standard and General Forms</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Standard form: \( (x - h)^2 + (y - k)^2 = r^2 \)<br>
-                            <strong>Example</strong>: Center \( (1, -2) \), radius 3, find the equation.<br>
-                            <strong>Analysis</strong>: \( (x - 1)^2 + (y + 2)^2 = 9 \).</p>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card-container">
+                        <div class="card">
+                            <div class="card-front">
+                                <div class="card-icon"><i class="fas fa-circle"></i></div>
+                                <h5>Circle Equations</h5>
+                                <p>Standard and General Forms</p>
+                                <div class="flip-indicator">Click to flip</div>
+                            </div>
+                            <div class="card-back">
+                                <p><strong>Standard Form</strong>: \( (x - h)^2 + (y - k)^2 = r^2 \)</p>
+                                <div class="example-box">
+                                    <strong>Example</strong>: Center \( (1, -2) \), radius 3<br>
+                                    <strong>Solution</strong>: \( (x - 1)^2 + (y + 2)^2 = 9 \)
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!-- Ellipse -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-front">
-                            <div class="card-icon">🥚</div>
-                            <h5>Ellipse</h5>
-                            <p>Standard Equation</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Standard form: \( \frac{x^2}{a^2} + \frac{y^2}{b^2} = 1 \ (a > b > 0) \)<br>
-                            <strong>Example</strong>: Find the focal distance of the ellipse \( \frac{x^2}{16} + \frac{y^2}{9} = 1 \).<br>
-                            <strong>Analysis</strong>: \( c = \sqrt{a^2 - b^2} = \sqrt{16 - 9} = \sqrt{7} \).</p>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card-container">
+                        <div class="card">
+                            <div class="card-front">
+                                <div class="card-icon"><i class="fas fa-egg"></i></div>
+                                <h5>Ellipse</h5>
+                                <p>Standard Equation</p>
+                                <div class="flip-indicator">Click to flip</div>
+                            </div>
+                            <div class="card-back">
+                                <p><strong>Standard Form</strong>: \( \frac{x^2}{a^2} + \frac{y^2}{b^2} = 1 \ (a > b > 0) \)</p>
+                                <div class="example-box">
+                                    <strong>Example</strong>: Ellipse \( \frac{x^2}{16} + \frac{y^2}{9} = 1 \)<br>
+                                    Find focal distance<br>
+                                    <strong>Solution</strong>: \( c = \sqrt{16 - 9} = \sqrt{7} \)
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!-- Complex Numbers -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-front">
-                            <div class="card-icon">ℂ</div>
-                            <h5>Complex Numbers</h5>
-                            <p>Operations and Properties</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Form: \( z = a + bi \)<br>
-                            Operations: addition, subtraction, multiplication, division<br>
-                            Modulus: \( |z| = \sqrt{a^2 + b^2} \)<br>
-                            <strong>Example</strong>: Find \( (1 + i)(2 - i) \).<br>
-                            <strong>Analysis</strong>: \( = 2 - i + 2i - i^2 = 3 + i \).</p>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card-container">
+                        <div class="card">
+                            <div class="card-front">
+                                <div class="card-icon"><i class="fas fa-square-root-alt"></i></div>
+                                <h5>Complex Numbers</h5>
+                                <p>Operations and Properties</p>
+                                <div class="flip-indicator">Click to flip</div>
+                            </div>
+                            <div class="card-back">
+                                <p><strong>Form</strong>: \( z = a + bi \)</p>
+                                <p><strong>Modulus</strong>: \( |z| = \sqrt{a^2 + b^2} \)</p>
+                                <div class="example-box">
+                                    <strong>Example</strong>: \( (1 + i)(2 - i) \)<br>
+                                    <strong>Solution</strong>: \( 2 - i + 2i - i^2 = 2 + i + 1 = 3 + i \)
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!-- Statistics and Probability -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-front">
-                            <div class="card-icon">🎲</div>
-                            <h5>Statistics & Probability</h5>
-                            <p>Basic Concepts</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Probability: \( P(A) = \frac{\text{favorable outcomes}}{\text{total outcomes}} \)<br>
-                            <strong>Example</strong>: Roll a die, find the probability of getting 6.<br>
-                            <strong>Analysis</strong>: \( P = \frac{1}{6} \).</p>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card-container">
+                        <div class="card">
+                            <div class="card-front">
+                                <div class="card-icon"><i class="fas fa-dice"></i></div>
+                                <h5>Statistics & Probability</h5>
+                                <p>Basic Concepts</p>
+                                <div class="flip-indicator">Click to flip</div>
+                            </div>
+                            <div class="card-back">
+                                <p><strong>Probability</strong>: \( P(A) = \frac{\text{favorable outcomes}}{\text{total outcomes}} \)</p>
+                                <div class="example-box">
+                                    <strong>Example</strong>: Probability of rolling a 6 on a die<br>
+                                    <strong>Solution</strong>: \( P = \frac{1}{6} \)
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -442,77 +584,102 @@
         <div id="grade3" class="stage-content">
             <div class="row">
                 <!-- Derivatives -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-front">
-                            <div class="card-icon">📊</div>
-                            <h5>Derivatives</h5>
-                            <p>Definition and Applications</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Definition: \( f'(x) = \lim_{\Delta x \to 0} \frac{f(x + \Delta x) - f(x)}{\Delta x} \)<br>
-                            <strong>Example</strong>: Find the derivative of \( f(x) = x^3 \).<br>
-                            <strong>Analysis</strong>: \( f'(x) = 3x^2 \).</p>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card-container">
+                        <div class="card">
+                            <div class="card-front">
+                                <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                                <h5>Derivatives</h5>
+                                <p>Definition and Applications</p>
+                                <div class="flip-indicator">Click to flip</div>
+                            </div>
+                            <div class="card-back">
+                                <p><strong>Definition</strong>: \( f'(x) = \lim_{\Delta x \to 0} \frac{f(x + \Delta x) - f(x)}{\Delta x} \)</p>
+                                <div class="example-box">
+                                    <strong>Example</strong>: Derivative of \( f(x) = x^3 \)<br>
+                                    <strong>Solution</strong>: \( f'(x) = 3x^2 \)
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!-- Integration -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-front">
-                            <div class="card-icon">∫</div>
-                            <h5>Integration</h5>
-                            <p>Basic Concepts</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Indefinite integral: \( \int f(x) \, dx = F(x) + C \)<br>
-                            <strong>Example</strong>: Find \( \int x^2 \, dx \).<br>
-                            <strong>Analysis</strong>: \( \int x^2 \, dx = \frac{x^3}{3} + C \).</p>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card-container">
+                        <div class="card">
+                            <div class="card-front">
+                                <div class="card-icon"><i class="fas fa-calculator"></i></div>
+                                <h5>Integration</h5>
+                                <p>Basic Concepts</p>
+                                <div class="flip-indicator">Click to flip</div>
+                            </div>
+                            <div class="card-back">
+                                <p><strong>Indefinite Integral</strong>: \( \int f(x) \, dx = F(x) + C \)</p>
+                                <div class="example-box">
+                                    <strong>Example</strong>: \( \int x^2 \, dx \)<br>
+                                    <strong>Solution</strong>: \( \frac{x^3}{3} + C \)
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!-- Space Vectors -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-front">
-                            <div class="card-icon">🧭</div>
-                            <h5>Space Vectors</h5>
-                            <p>Operations and Applications</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Operations: scalar product, vector product<br>
-                            <strong>Example</strong>: Find the scalar product of \( \vec{a} = (1, 0, 1), \vec{b} = (0, 1, 0) \).<br>
-                            <strong>Analysis</strong>: \( \vec{a} \cdot \vec{b} = 1 \cdot 0 + 0 \cdot 1 + 1 \cdot 0 = 0 \).</p>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card-container">
+                        <div class="card">
+                            <div class="card-front">
+                                <div class="card-icon"><i class="fas fa-vector-square"></i></div>
+                                <h5>Space Vectors</h5>
+                                <p>Operations and Applications</p>
+                                <div class="flip-indicator">Click to flip</div>
+                            </div>
+                            <div class="card-back">
+                                <p><strong>Operations</strong>: Scalar product, vector product</p>
+                                <div class="example-box">
+                                    <strong>Example</strong>: Scalar product of \( \vec{a} = (1, 0, 1), \vec{b} = (0, 1, 0) \)<br>
+                                    <strong>Solution</strong>: \( \vec{a} \cdot \vec{b} = 1\cdot0 + 0\cdot1 + 1\cdot0 = 0 \)
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!-- Reasoning and Proof -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-front">
-                            <div class="card-icon">🔍</div>
-                            <h5>Reasoning and Proof</h5>
-                            <p>Methods</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Methods: mathematical induction, proof by contradiction<br>
-                            <strong>Example</strong>: Prove \( 1 + 3 + \dots + (2n-1) = n^2 \).<br>
-                            <strong>Analysis</strong>: Mathematical induction: for \( n = 1 \), holds; assume for \( n = k \) holds, then verify for \( n = k+1 \).</p>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card-container">
+                        <div class="card">
+                            <div class="card-front">
+                                <div class="card-icon"><i class="fas fa-brain"></i></div>
+                                <h5>Reasoning and Proof</h5>
+                                <p>Methods</p>
+                                <div class="flip-indicator">Click to flip</div>
+                            </div>
+                            <div class="card-back">
+                                <p><strong>Methods</strong>: Mathematical induction, proof by contradiction</p>
+                                <div class="example-box">
+                                    <strong>Example</strong>: Prove \( 1 + 3 + \dots + (2n-1) = n^2 \)<br>
+                                    <strong>Solution</strong>: Mathematical induction: base case n=1 holds, assume for n=k, then for n=k+1
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!-- Algorithm Basics -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-front">
-                            <div class="card-icon">💻</div>
-                            <h5>Algorithm Basics</h5>
-                            <p>Basic Concepts</p>
-                        </div>
-                        <div class="card-back">
-                            <p>Algorithm: methods and steps to solve problems<br>
-                            <strong>Example</strong>: Write an algorithm to find \( 1 + 2 + \dots + n \).<br>
-                            <strong>Analysis</strong>: Use a loop, or formula \( S = \frac{n(n+1)}{2} \).</p>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card-container">
+                        <div class="card">
+                            <div class="card-front">
+                                <div class="card-icon"><i class="fas fa-laptop-code"></i></div>
+                                <h5>Algorithm Basics</h5>
+                                <p>Basic Concepts</p>
+                                <div class="flip-indicator">Click to flip</div>
+                            </div>
+                            <div class="card-back">
+                                <p><strong>Algorithm</strong>: Step-by-step method to solve problems</p>
+                                <div class="example-box">
+                                    <strong>Example</strong>: Algorithm for \( 1 + 2 + \dots + n \)<br>
+                                    <strong>Solution</strong>: Use loop or formula \( S = \frac{n(n+1)}{2} \)
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -542,7 +709,7 @@
             });
         });
 
-        // Card flipping
+        // Card flipping with animation
         $(document).ready(function() {
             $('.card').click(function() {
                 $(this).toggleClass('flipped');
@@ -553,10 +720,16 @@
         function toggleTheme() {
             const html = document.documentElement;
             const currentTheme = html.getAttribute('data-theme');
+            const icon = document.querySelector('.theme-toggle i');
+            
             if (currentTheme === 'dark') {
                 html.removeAttribute('data-theme');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
             } else {
                 html.setAttribute('data-theme', 'dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
             }
         }
 
@@ -566,9 +739,19 @@
             $(`#${grade}`).addClass('active');
             
             // Update button states
-            $('.stage-selector .btn').removeClass('active');
-            $(`.stage-selector .btn:contains(${grade === 'grade1' ? 'Grade 10' : grade === 'grade2' ? 'Grade 11' : 'Grade 12'})`).addClass('active');
+            $('.stage-selector .btn').removeClass('btn-primary').addClass('btn-outline-primary');
+            $(`.stage-selector .btn:contains(${grade === 'grade1' ? 'Grade 10' : grade === 'grade2' ? 'Grade 11' : 'Grade 12'})`)
+                .removeClass('btn-outline-primary')
+                .addClass('btn-primary');
         }
+        
+        // Mobile adaptation - tap anywhere to flip back
+        $(document).on('click', '.card-back', function(e) {
+            if ($(window).width() < 768) {
+                e.stopPropagation();
+                $(this).closest('.card').removeClass('flipped');
+            }
+        });
     </script>
 </body>
 </html>
