@@ -284,6 +284,105 @@
             100% { transform: rotateY(180deg); }
         }
     </style>
+    <style>
+/* 修复代码 */
+.card-container {
+  perspective: 1500px;
+  margin-bottom: 1.5rem;
+  height: 280px;
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  background-color: var(--card-bg);
+}
+
+.card.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.card-front {
+  background: linear-gradient(135deg, #4361ee, #3f37c9);
+  color: white;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-back {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  justify-content: flex-start;
+  text-align: left;
+  transform: rotateY(180deg); 
+  overflow-y: auto;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .card-container {
+    perspective: none;
+    height: auto;
+    min-height: 200px;
+  }
+  
+  .card {
+    height: auto;
+    min-height: 200px;
+    transform: none !important;
+  }
+  
+  .card-front, .card-back {
+    position: relative;
+    height: auto;
+    min-height: 200px;
+    backface-visibility: visible;
+    transform: none !important;
+  }
+  
+  .card.flipped .card-front {
+    display: none;
+  }
+  
+  .card-back {
+    display: none;
+  }
+  
+  .card.flipped .card-back {
+    display: flex;
+  }
+}
+</style>
+
+<!-- HTML结构 -->
+<div class="card-container">
+  <div class="card">
+    <div class="card-front">
+      <!-- 卡片正面内容 -->
+    </div>
+    <div class="card-back">
+      <!-- 卡片背面内容 -->
+    </div>
+  </div>
+</div>
 </head>
 <body>
     <button class="theme-toggle" onclick="toggleTheme()">
@@ -752,6 +851,20 @@
                 $(this).closest('.card').removeClass('flipped');
             }
         });
+        // 卡片翻转
+$(document).ready(function() {
+  $('.card').click(function() {
+    $(this).toggleClass('flipped');
+  });
+  
+  // 移动端：点击背面返回
+  $(document).on('click', '.card-back', function(e) {
+    if ($(window).width() < 768) {
+      e.stopPropagation();
+      $(this).closest('.card').removeClass('flipped');
+    }
+  });
+});
     </script>
 </body>
 </html>
