@@ -1,0 +1,132 @@
+<!DOCTYPE html><html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>二维码生成器</title>
+  <!-- 引入QRCode.js 库 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    @font-face {
+      font-family: 'MainFont';
+      src: url('https://shuo156.github.io/fontmain.ttf') format('truetype');
+    }* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'MainFont', Arial, sans-serif;
+  background: linear-gradient(to bottom, #f0f8ff, #ffffff);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.container {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+}
+.container h1 {
+  font-size: 2rem;
+  margin-bottom: 1.2rem;
+  color: #333;
+}
+.form-group {
+  margin-bottom: 1rem;
+  text-align: left;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: bold;
+}
+.form-group input {
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+}
+.btn {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.btn:hover {
+  background-color: #0056b3;
+}
+#qrcode {
+  margin-top: 1.5rem;
+}
+.footer {
+  font-size: 0.9rem;
+  margin-top: 1.5rem;
+  color: #777;
+}
+.preview-url {
+  word-break: break-all;
+  margin-top: 0.5rem;
+  color: #007bff;
+  font-size: 0.95rem;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>二维码生成器</h1>
+    <div class="form-group">
+      <label for="url-input">输入网址：</label>
+      <input type="text" id="url-input" placeholder="https://example.com">
+    </div>
+    <div class="form-group">
+      <label for="size-input">尺寸大小（像素）：</label>
+      <input type="number" id="size-input" value="240" min="100" max="1000">
+    </div>
+    <button class="btn" id="generate-btn">生成二维码</button>
+    <div id="qrcode"></div>
+    <div class="preview-url" id="preview"></div>
+    <div class="footer">© 2025 二维码工具 by shuo156</div>
+  </div>  <script>
+    const generateBtn = document.getElementById('generate-btn');
+    const qrcodeContainer = document.getElementById('qrcode');
+    const preview = document.getElementById('preview');
+
+    generateBtn.addEventListener('click', () => {
+      const url = document.getElementById('url-input').value.trim();
+      const size = parseInt(document.getElementById('size-input').value, 10);
+
+      if (!url || !/^https?:\/\//i.test(url)) {
+        alert('请输入有效的URL（必须以 http:// 或 https:// 开头）');
+        return;
+      }
+
+      // 清除原二维码
+      qrcodeContainer.innerHTML = '';
+      preview.textContent = '';
+
+      // 生成二维码
+      new QRCode(qrcodeContainer, {
+        text: url,
+        width: size,
+        height: size,
+        correctLevel: QRCode.CorrectLevel.H
+      });
+
+      // 显示当前URL预览
+      preview.textContent = `已生成链接：${url}`;
+    });
+  </script></body>
+</html>
