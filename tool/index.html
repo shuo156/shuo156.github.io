@@ -1,1 +1,67 @@
-too
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实用工具</title>
+    <style>
+  @font-face {
+    font-family: 'CustomFont';
+    src: url("../font/fontmain.ttf") format('truetype');
+    font-display: swap;
+  }
+
+    /* 样式 */
+  body {
+    font-family: 'CustomFont', sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: linear-gradient(to bottom,
+        #FFD1DC,
+        #C2E0FF
+    );
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* 文本居中 */
+    text-align: center;
+  }
+
+   /* 文本样式 */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'CustomFont', sans-serif;
+    text-align: center;
+  }
+
+  /* 图片居中 */
+  img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
+  }
+        /* 本页时间显示6241634添加 */
+  .datetime {
+    text-align: center;
+    margin: 20px 0;
+    font-family: 'CustomFont', sans-serif;
+    color: #666666; /* 灰字 */
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+</head>
+  <body>
+      <h1>实用工具合集</h1>
+    <div class="datetime" id="current-time"></div>
+    <a>(持续更新)</a>
+    <ul>
+        <li><a href="https://shuo156.github.io/html/QR.html">二维码生成</a></li>
+        <li><a href="https://shuo156.github.io/html/color">颜色调试</a></li>
+    </ul>
+</body>
+<html>
