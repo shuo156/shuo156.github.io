@@ -3,7 +3,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>二维码生成器</title>
-  <!-- 引入QRCode.js 库 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     @font-face {
@@ -63,12 +62,17 @@ body {
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s;
+  margin-top: 0.5rem;
 }
 .btn:hover {
   background-color: #0056b3;
 }
 #qrcode {
   margin-top: 1.5rem;
+}
+canvas {
+  max-width: 100% !important;
+  height: auto !important;
 }
 .footer {
   font-size: 0.9rem;
@@ -92,41 +96,64 @@ body {
       <input type="text" id="url-input" placeholder="https://example.com">
     </div>
     <div class="form-group">
-      <label for="size-input">尺寸大小（像素）：</label>
+      <label for="size-input">尺寸大小（像素 100-1000）：</label>
       <input type="number" id="size-input" value="240" min="100" max="1000">
     </div>
     <button class="btn" id="generate-btn">生成二维码</button>
+    <button class="btn" id="download-btn" style="display: none;">下载二维码</button>
     <div id="qrcode"></div>
     <div class="preview-url" id="preview"></div>
-    <div class="footer">© 2025 二维码工具 by shuo156</div>
+    <div class="footer">Github@shuo156</div>
   </div>  <script>
     const generateBtn = document.getElementById('generate-btn');
+    const downloadBtn = document.getElementById('download-btn');
     const qrcodeContainer = document.getElementById('qrcode');
     const preview = document.getElementById('preview');
+    let currentCanvas = null;
 
     generateBtn.addEventListener('click', () => {
       const url = document.getElementById('url-input').value.trim();
-      const size = parseInt(document.getElementById('size-input').value, 10);
+      let size = parseInt(document.getElementById('size-input').value, 10);
 
       if (!url || !/^https?:\/\//i.test(url)) {
         alert('请输入有效的URL（必须以 http:// 或 https:// 开头）');
         return;
       }
 
-      // 清除原二维码
+      if (size < 100) size = 100;
+      if (size > 1000) size = 1000;
+
       qrcodeContainer.innerHTML = '';
       preview.textContent = '';
+      downloadBtn.style.display = 'none';
+      currentCanvas = null;
 
-      // 生成二维码
-      new QRCode(qrcodeContainer, {
+      const qr = new QRCode(qrcodeContainer, {
         text: url,
         width: size,
         height: size,
         correctLevel: QRCode.CorrectLevel.H
       });
 
-      // 显示当前URL预览
+      // 延时确保 canvas 渲染完成
+      setTimeout(() => {
+        const canvas = qrcodeContainer.querySelector('canvas');
+        if (canvas) {
+          currentCanvas = canvas;
+          downloadBtn.style.display = 'block';
+        }
+      }, 300);
+
       preview.textContent = `已生成链接：${url}`;
+    });
+
+    downloadBtn.addEventListener('click', () => {
+      if (currentCanvas) {
+        const link = document.createElement('a');
+        link.href = currentCanvas.toDataURL('image/png');
+        link.download = 'qrcode.png';
+        link.click();
+      }
     });
   </script></body>
 </html>
