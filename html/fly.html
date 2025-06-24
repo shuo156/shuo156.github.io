@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>太空探险者 - 移动版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            touch-action: manipulation;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            padding: 10px;
+            color: #fff;
+        }
+        
+        .game-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 0 10px;
+        }
+        
+        .game-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-shadow: 0 0 10px #00b3ff;
+            letter-spacing: 1px;
+        }
+        
+        .score-container {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 2px solid #00b3ff;
+        }
+        
+        .game-container {
+            position: relative;
+            width: 100%;
+            height: 65vh;
+            max-height: 500px;
+            background: linear-gradient(to bottom, #0a1128, #001f3f);
+            border-radius: 12px;
+            border: 3px solid #00b3ff;
+            box-shadow: 0 0 20px rgba(0, 179, 255, 0.4);
+            overflow: hidden;
+        }
+        
+        /* 星空背景 */
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 3s infinite alternate;
+        }
+        
+        /* 月球地面 */
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 40px;
+            background: linear-gradient(to top, #9d9d9d, #c0c0c0);
+            z-index: 2;
+        }
+        
+        .ground-line {
+            position: absolute;
+            top: 0;
+            width: 200%;
+            height: 3px;
+            background: repeating-linear-gradient(
+                to right, transparent, transparent 20px, 
+                #e0e0e0 20px, #e0e0e0 40px
+            );
+            animation: groundMove 1s linear infinite;
+        }
+        
+        /* 障碍物 */
+        .crater {
+            position: absolute;
+            bottom: 40px;
+            width: 30px;
+            height: 15px;
+            background: #909090;
+            border-radius: 50%;
+            z-index: 5;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+        }
+        
+        .satellite {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            z-index: 5;
+            background: radial-gradient(circle, #ffcc00, #ff9900);
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ffcc00;
+        }
+        
+        .satellite::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 15px;
+            height: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 50%;
+        }
+        
+        /* 宇航员容器 */
+        #astronaut-container {
+            position: absolute;
+            bottom: 40px;
+            left: 60px;
+            width: 50px;
+            height: 80px;
+            z-index: 10;
+            transition: bottom 0.1s;
+        }
+        
+        /* 游戏UI */
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 20, 40, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid #00b3ff;
+            text-align: center;
+            display: none;
+            z-index: 20;
+            width: 90%;
+            max-width: 400px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .game-over-title {
+            font-size: 2.5rem;
+            color: #ff3366;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 51, 102, 0.5);
+        }
+        
+        .final-score {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+        }
+        
+        .restart-btn {
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            background: linear-gradient(to right, #00b3ff, #0066ff);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(0, 179, 255, 0.5);
+        }
+        
+        .restart-btn:active {
+            transform: scale(0.95);
+            background: linear-gradient(to right, #0099cc, #0055cc);
+        }
+        
+        .instructions {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.1rem;
+            color: #a0d0ff;
+            padding: 0 10px;
+        }
+        
+        .mobile-controls {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+            padding: 0 10px;
+        }
+        
+        .control-btn {
+            width: 80px;
+            height: 80px;
+            background: rgba(0, 179, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            border: 2px solid #00b3ff;
+            color: #fff;
+            cursor: pointer;
+            touch-action: manipulation;
+            user-select: none;
+        }
+        
+        /* 动画 */
+        @keyframes groundMove {
+            from { transform: translateX(0); }
+            to { transform: translateX(-40px); }
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes astronautRun {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            50% { transform: rotate(0deg); }
+            75% { transform: rotate(-5deg); }
+            100% { transform: rotate(0deg); }
+        }
+        
+        @keyframes astronautJump {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-120px) rotate(-10deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+        
+        .running {
+            animation: astronautRun 0.8s infinite linear;
+        }
+        
+        .jumping {
+            animation: astronautJump 0.7s ease-out;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .game-title {
+                font-size: 1.5rem;
+            }
+            
+            .score-container {
+                font-size: 1.3rem;
+                padding: 6px 12px;
+            }
+            
+            .game-container {
+                height: 55vh;
+            }
+            
+            #astronaut-container {
+                left: 40px;
+                width: 40px;
+                height: 60px;
+            }
+            
+            .control-btn {
+                width: 70px;
+                height: 70px;
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .game-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .game-title {
+                font-size: 1.3rem;
+            }
+            
+            .game-container {
+                height: 50vh;
+            }
+            
+            #astronaut-container {
+                left: 30px;
+                width: 35px;
+                height: 50px;
+            }
+            
+            .mobile-controls {
+                gap: 30px;
+            }
+            
+            .control-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+            
+            .instructions {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-wrapper">
+        <div class="game-header">
+            <div class="game-title">🚀 太空探险者</div>
+            <div class="score-container">距离: <span id="score">0</span>米</div>
+        </div>
+        
+        <div class="game-container" id="game-container">
+            <!-- 星空背景由JS生成 -->
+            
+            <!-- 宇航员SVG -->
+            <div id="astronaut-container">
+                <svg id="astronaut" width="100%" height="100%" viewBox="0 0 100 160">
+                    <!-- 身体 -->
+                    <rect x="30" y="50" width="40" height="60" rx="10" fill="#FFFFFF" stroke="#A0D0FF" stroke-width="2"/>
+                    
+                    <!-- 头盔 -->
+                    <circle cx="50" cy="40" r="25" fill="#A0D0FF" stroke="#70A0FF" stroke-width="2"/>
+                    <circle cx="50" cy="40" r="18" fill="#D0F0FF" stroke="#70A0FF" stroke-width="1"/>
+                    
+                    <!-- 面罩 -->
+                    <circle cx="50" cy="40" r="15" fill="#E0F7FF" stroke="#70A0FF" stroke-width="0.5"/>
+                    
+                    <!-- 背包 -->
+                    <rect x="20" y="70" width="20" height="35" rx="5" fill="#303060" stroke="#202050" stroke-width="1"/>
+                    
+                    <!-- 手臂 - 左 -->
+                    <path d="M30 60 L15 50 L10 70 L25 75 Z" fill="#FFFFFF" stroke="#A0D0FF" stroke-width="1"/>
+                    
+                    <!-- 手臂 - 右 -->
+                    <path d="M70 60 L85 50 L90 70 L75 75 Z" fill="#FFFFFF" stroke="#A0D0FF" stroke-width="1"/>
+                    
+                    <!-- 腿 - 左 -->
+                    <path d="M35 110 L30 140 L40 145 L45 115 Z" fill="#FFFFFF" stroke="#A0D0FF" stroke-width="1"/>
+                    
+                    <!-- 腿 - 右 -->
+                    <path d="M65 110 L70 140 L60 145 L55 115 Z" fill="#FFFFFF" stroke="#A0D0FF" stroke-width="1"/>
+                </svg>
+            </div>
+            
+            <!-- 地面 -->
+            <div class="ground">
+                <div class="ground-line"></div>
+            </div>
+            
+            <!-- 游戏结束画面 -->
+            <div class="game-over" id="game-over">
+                <div class="game-over-title">任务失败!</div>
+                <div class="final-score">距离: <span id="final-score">0</span>米</div>
+                <button class="restart-btn" id="restart-btn">重新出发</button>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            空格键/点击屏幕跳跃 - 躲避陨石坑和卫星
+        </div>
+        
+        <div class="mobile-controls">
+            <div class="control-btn" id="jump-btn">↑</div>
+        </div>
+    </div>
+
+    <script>
+        // 初始化变量
+        const container = document.getElementById('game-container');
+        const astronautContainer = document.getElementById('astronaut-container');
+        const astronaut = document.getElementById('astronaut');
+        const scoreDisplay = document.getElementById('score');
+        const finalScoreDisplay = document.getElementById('final-score');
+        const gameOverScreen = document.getElementById('game-over');
+        const restartBtn = document.getElementById('restart-btn');
+        const jumpBtn = document.getElementById('jump-btn');
+
+        let gameSpeed = 6;
+        let score = 0;
+        let isJumping = false;
+        let isGameOver = false;
+        let obstacles = [];
+        let gameId;
+        let lastFrameTime = 0;
+        const frameRate = 60;
+        const frameInterval = 1000 / frameRate;
+
+        // 创建星空背景
+        function createStars() {
+            for (let i = 0; i < 80; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                const size = Math.random() * 3 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.animationDelay = `${Math.random() * 3}s`;
+                container.appendChild(star);
+            }
+        }
+
+        // 生成障碍物
+        function createObstacle() {
+            if (isGameOver) return;
+
+            const obstacleType = Math.random() > 0.4 ? 'crater' : 'satellite';
+            const obstacle = document.createElement('div');
+            obstacle.className = `obstacle ${obstacleType}`;
+            
+            if (obstacleType === 'crater') {
+                obstacle.style.bottom = '40px';
+                obstacle.style.height = `${15 + Math.random() * 10}px`;
+                obstacle.style.width = `${30 + Math.random() * 20}px`;
+            } else {
+                // 卫星在离地一定高度飞行
+                const height = 80 + Math.random() * 60;
+                obstacle.style.bottom = `${height}px`;
+                obstacle.style.width = '25px';
+                obstacle.style.height = '25px';
+            }
+            
+            obstacle.style.right = '-50px';
+            container.appendChild(obstacle);
+            obstacles.push({
+                element: obstacle,
+                type: obstacleType,
+                passed: false
+            });
+        }
+
+        // 跳跃控制
+        function jump() {
+            if (isJumping || isGameOver) return;
+            
+            isJumping = true;
+            astronautContainer.classList.remove('running');
+            astronautContainer.classList.add('jumping');
+            
+            // 添加跳跃音效
+            const jumpSound = new Audio("data:audio/wav;base64,UklGRigEAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQEAAD//wIA/f38+/r5+fj39/b19fTz8/Lx8fDw7+/u7u3t7ezs7Ovr6+rq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq");
+            jumpSound.volume = 0.3;
+            jumpSound.play().catch(e => console.log("Audio play failed:", e));
+            
+            setTimeout(() => {
+                isJumping = false;
+                astronautContainer.classList.remove('jumping');
+                astronautContainer.classList.add('running');
+            }, 700);
+        }
+
+        // 碰撞检测
+        function checkCollision(obstacle) {
+            const astroRect = astronautContainer.getBoundingClientRect();
+            const obsRect = obstacle.element.getBoundingClientRect();
+            
+            // 碰撞检测简化
+            const astroLeft = astroRect.left + 15;
+            const astroRight = astroRect.right - 15;
+            const astroTop = astroRect.top + 20;
+            const astroBottom = astroRect.bottom - 10;
+            
+            const obsLeft = obsRect.left;
+            const obsRight = obsRect.right;
+            const obsTop = obsRect.top;
+            const obsBottom = obsRect.bottom;
+            
+            return (
+                astroRight > obsLeft + 10 &&
+                astroLeft < obsRight - 10 &&
+                astroTop < obsBottom &&
+                astroBottom > obsTop
+            );
+        }
+
+        // 游戏主循环
+        function gameLoop(timestamp) {
+            if (isGameOver) return;
+            
+            // 控制帧率
+            if (timestamp - lastFrameTime < frameInterval) {
+                requestAnimationFrame(gameLoop);
+                return;
+            }
+            
+            lastFrameTime = timestamp;
+            
+            // 更新分数
+            score++;
+            scoreDisplay.textContent = Math.floor(score/10);
+            
+            // 每500分增加速度
+            if (score % 500 === 0) {
+                gameSpeed += 0.5;
+                
+                // 添加速度提升效果
+                const speedEffect = document.createElement('div');
+                speedEffect.style.position = 'absolute';
+                speedEffect.style.top = '20px';
+                speedEffect.style.left = '50%';
+                speedEffect.style.transform = 'translateX(-50%)';
+                speedEffect.style.color = '#00ffaa';
+                speedEffect.style.fontSize = '24px';
+                speedEffect.style.fontWeight = 'bold';
+                speedEffect.style.textShadow = '0 0 10px #00ffaa';
+                speedEffect.textContent = '速度提升!';
+                container.appendChild(speedEffect);
+                
+                setTimeout(() => {
+                    container.removeChild(speedEffect);
+                }, 1000);
+            }
+            
+            // 移动障碍物并检测碰撞
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                const obstacle = obstacles[i];
+                const currentRight = parseInt(obstacle.element.style.right) || -50;
+                obstacle.element.style.right = `${currentRight + gameSpeed}px`;
+                
+                // 碰撞检测
+                if (checkCollision(obstacle)) {
+                    gameOver();
+                    return;
+                }
+                
+                // 移除屏幕外的障碍物
+                if (currentRight > container.offsetWidth + 50) {
+                    obstacle.element.remove();
+                    obstacles.splice(i, 1);
+                }
+            }
+            
+            requestAnimationFrame(gameLoop);
+        }
+
+        // 游戏结束
+        function gameOver() {
+            isGameOver = true;
+            finalScoreDisplay.textContent = Math.floor(score/10);
+            gameOverScreen.style.display = 'block';
+            astronautContainer.classList.remove('running');
+            
+            // 添加爆炸效果
+            const explosion = document.createElement('div');
+            explosion.style.position = 'absolute';
+            explosion.style.width = '100px';
+            explosion.style.height = '100px';
+            explosion.style.background = 'radial-gradient(circle, #ff8800, #ff3300)';
+            explosion.style.borderRadius = '50%';
+            explosion.style.zIndex = '15';
+            explosion.style.top = `${astronautContainer.offsetTop - 50}px`;
+            explosion.style.left = `${astronautContainer.offsetLeft - 50}px`;
+            explosion.style.opacity = '0.8';
+            explosion.style.animation = 'explode 0.5s forwards';
+            
+            container.appendChild(explosion);
+            
+            // 添加爆炸音效
+            const explosionSound = new Audio("data:audio/wav;base64,UklGRigEAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQEAAD//wIA/f38+/r5+fj39/b19fTz8/Lx8fDw7+/u7u3t7ezs7Ovr6+rq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq");
+            explosionSound.volume = 0.4;
+            explosionSound.play().catch(e => console.log("Audio play failed:", e));
+            
+            setTimeout(() => {
+                explosion.remove();
+            }, 500);
+        }
+
+        // 重新开始
+        function restartGame() {
+            // 清除障碍物
+            obstacles.forEach(obs => obs.element.remove());
+            obstacles = [];
+            
+            // 重置状态
+            isGameOver = false;
+            score = 0;
+            gameSpeed = 6;
+            astronautContainer.style.bottom = '40px';
+            astronautContainer.classList.add('running');
+            gameOverScreen.style.display = 'none';
+            
+            // 重新开始游戏循环
+            lastFrameTime = 0;
+            requestAnimationFrame(gameLoop);
+        }
+
+        // 初始化游戏
+        function init() {
+            createStars();
+            
+            // 添加跑步动画
+            astronautContainer.classList.add('running');
+            
+            // 障碍物生成器
+            setInterval(createObstacle, 1500);
+            
+            // 键盘控制
+            document.addEventListener('keydown', (e) => {
+                if ((e.code === 'Space' || e.key === 'ArrowUp') && !isGameOver) {
+                    jump();
+                }
+            });
+            
+            // 触摸控制
+            container.addEventListener('touchstart', (e) => {
+                if (!isGameOver) {
+                    e.preventDefault();
+                    jump();
+                }
+            });
+            
+            jumpBtn.addEventListener('click', jump);
+            jumpBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                jump();
+            });
+            
+            restartBtn.addEventListener('click', restartGame);
+            
+            // 启动游戏循环
+            requestAnimationFrame(gameLoop);
+        }
+
+        // 添加爆炸动画样式
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes explode {
+                0% { transform: scale(0); opacity: 0.8; }
+                70% { transform: scale(1.5); opacity: 0.6; }
+                100% { transform: scale(2); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 启动游戏
+        window.onload = init;
+    </script>
+</body>
+</html>
