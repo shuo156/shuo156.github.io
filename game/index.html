@@ -1,1 +1,47 @@
-g
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>波兰球法法的日常</title>
+    <!-- CSS文件引用 -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/save-system.css">
+    <link rel="stylesheet" href="css/dialog.css">
+    <link rel="stylesheet" href="css/achievements.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="status-panel" id="status">
+            <!-- 状态面板将通过JS动态更新 -->
+        </div>
+        
+        <div class="event-area" id="eventLog">
+            <!-- 事件记录将在这里显示 -->
+        </div>
+        
+        <div class="action-menu" id="actions">
+            <!-- 动态生成的操作按钮将在这里显示 -->
+        </div>
+    </div>
+
+    <!-- 游戏核心系统 -->
+    <script src="js/config.js"></script>
+    <script src="js/gameState.js"></script>
+    <script src="js/timeSystem.js"></script>
+    
+    <!-- 数据文件 -->
+    <script src="data/events.js"></script>
+    <script src="data/achievements.js"></script>
+    <script src="data/items.js"></script>
+    
+    <!-- 功能模块 -->
+    <script src="js/saveSystem.js"></script>
+    <script src="js/dialogSystem.js"></script>
+    <script src="js/uiSystem.js"></script>
+    <script src="js/achievementSystem.js"></script>
+    
+    <!-- 主程序 -->
+    <script src="js/main.js"></script>
+</body>
+</html>
