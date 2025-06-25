@@ -1,0 +1,36 @@
+.achievement-unlock {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    animation: slideIn 0.5s ease-out;
+    z-index: 1000;
+}
+
+.achievement-content {
+    text-align: center;
+}
+
+.achievement-content h4 {
+    margin: 0;
+    color: gold;
+}
+
+.achievement-desc {
+    font-size: 0.9em;
+    color: #ccc;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
