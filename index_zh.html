@@ -16,74 +16,7 @@
             text-align: center;
             margin: 20px 0;
             font-family: 'CustomFont', sans-serif;
-            color: #666666;
-        }
-        
-        /* 暗色模式 */
-        body.dark-mode {
-            background-color: #1a1a1a;
-            color: #e6e6e6;
-        }
-        
-        .dark-mode h1, 
-        .dark-mode h2, 
-        .dark-mode a {
-            color: #bb86fc;
-        }
-        
-        .dark-mode .datetime {
-            color: #a0a0a0;
-        }
-        
-        .dark-mode ul li a {
-            color: #7fb4ff;
-        }
-        
-        .dark-mode img {
-            filter: brightness(0.8);
-        }
-        
-        .dark-mode #dark-mode-toggle {
-            background-color: #bb86fc;
-            color: #121212;
-        }
-        
-        /* 切换按钮样式 */
-        #dark-mode-toggle {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 10px 15px;
-            background-color: #333;
-            color: white;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-        
-        #dark-mode-toggle:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-        
-        /* 暗色模式切换动画 */
-        body {
-            transition: background-color 0.5s ease, color 0.5s ease;
-        }
-        
-        .dark-mode-section {
-            text-align: center;
-            margin: 40px 0 30px;
-            padding-top: 20px;
-            border-top: 1px dashed #ccc;
-        }
-        
-        .dark-mode .dark-mode-section {
-            border-top: 1px dashed #444;
+            color: #666666; //灰∽色（朱辉）
         }
     </style>
 </head>
@@ -130,12 +63,6 @@
     <h2>语言</h2>
     <a href="https://shuo156.github.io/index_en.html">English</a>
     
-    <!-- 暗色模式区域 -->
-    <div class="dark-mode-section">
-        <h2>显示模式</h2>
-        <button id="dark-mode-toggle">切换深色模式</button>
-    </div>
-
     <!-- JavaScript实时更新时间 -->
     <!-- 李影韩彬舍天地 -->
     <script>
@@ -160,83 +87,6 @@
         updateDateTime();
         // 每秒更新一次
         setInterval(updateDateTime, 1000);
-        
-        // 暗色模式切换功能
-        const darkModeToggle = document.getElementById('dark-mode-toggle');
-        const body = document.body;
-        
-        // 检查本地存储中是否有暗色模式偏好
-        const isDarkMode = localStorage.getItem('darkMode') === 'true';
-        
-        // 根据偏好设置初始模式
-        if (isDarkMode) {
-            body.classList.add('dark-mode');
-            darkModeToggle.textContent = '切换浅色模式';
-        }
-        
-        // 切换暗色模式
-        darkModeToggle.addEventListener('click', function() {
-            body.classList.toggle('dark-mode');
-            
-            const isDark = body.classList.contains('dark-mode');
-            darkModeToggle.textContent = isDark ? '切换浅色模式' : '切换深色模式';
-            
-            // 保存用户偏好
-            localStorage.setItem('darkMode', isDark);
-        });
-        
-        // 添加悬浮按钮
-        const floatingToggle = document.createElement('button');
-        floatingToggle.id = 'floating-dark-toggle';
-        floatingToggle.innerHTML = '🌓';
-        floatingToggle.title = '切换深色/浅色模式';
-        document.body.appendChild(floatingToggle);
-        
-        // 悬浮按钮样式
-        const floatingStyle = document.createElement('style');
-        floatingStyle.textContent = `
-            #floating-dark-toggle {
-                position: fixed;
-                bottom: 70px;
-                right: 20px;
-                width: 45px;
-                height: 45px;
-                border-radius: 50%;
-                background-color: #333;
-                color: white;
-                border: none;
-                cursor: pointer;
-                font-size: 20px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-                transition: all 0.3s ease;
-                z-index: 1000;
-            }
-            
-            #floating-dark-toggle:hover {
-                transform: rotate(30deg) scale(1.1);
-                background-color: #444;
-            }
-            
-            .dark-mode #floating-dark-toggle {
-                background-color: #bb86fc;
-                color: #121212;
-            }
-        `;
-        document.head.appendChild(floatingStyle);
-        
-        // 悬浮按钮功能
-        floatingToggle.addEventListener('click', function() {
-            body.classList.toggle('dark-mode');
-            
-            const isDark = body.classList.contains('dark-mode');
-            darkModeToggle.textContent = isDark ? '切换浅色模式' : '切换深色模式';
-            
-            // 保存用户偏好
-            localStorage.setItem('darkMode', isDark);
-        });
     </script>
 </body>
 </html>
