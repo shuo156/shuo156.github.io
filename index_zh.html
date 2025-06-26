@@ -93,30 +93,73 @@
         updateDateTime();
         // 每秒更新一次
         setInterval(updateDateTime, 1000);
-        
+    </script>
+    
+    <!-- 暗色模式切换动画脚本 -->
+    <script>
         // 暗色模式切换功能
-    const darkModeToggle = document.getElementById('dark-mode-toggle');
-    const body = document.body;
-    
-    // 检查本地存储中是否有暗色模式偏好
-    const isDarkMode = localStorage.getItem('darkMode') === 'true';
-    
-    // 根据偏好设置初始模式
-    if (isDarkMode) {
-        body.classList.add('dark-mode');
-        darkModeToggle.textContent = '切换浅色模式';
-    }
-    
-    // 切换暗色模式
-    darkModeToggle.addEventListener('click', function() {
-        body.classList.toggle('dark-mode');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const body = document.body;
         
-        const isDark = body.classList.contains('dark-mode');
-        darkModeToggle.textContent = isDark ? '切换浅色模式' : '切换深色模式';
+        // 检查本地存储中是否有暗色模式偏好
+        const isDarkMode = localStorage.getItem('darkMode') === 'true';
         
-        // 保存用户偏好
-        localStorage.setItem('darkMode', isDark);
-    });
+        // 根据偏好设置初始模式
+        if (isDarkMode) {
+            body.classList.add('dark-mode');
+            darkModeToggle.textContent = '切换浅色模式';
+        }
+        
+        // 创建动画元素
+        const animationElement = document.createElement('div');
+        animationElement.classList.add('theme-switch-animation');
+        animationElement.style.display = 'none';
+        document.body.appendChild(animationElement);
+        
+        // 切换暗色模式
+        darkModeToggle.addEventListener('click', function(e) {
+            // 获取点击位置
+            const rect = darkModeToggle.getBoundingClientRect();
+            const centerX = rect.left + rect.width/2;
+            const centerY = rect.top + rect.height/2;
+            
+            // 设置动画起点
+            animationElement.style.left = centerX + 'px';
+            animationElement.style.top = centerY + 'px';
+            animationElement.style.transformOrigin = 'center';
+            
+            // 显示动画元素
+            animationElement.style.display = 'block';
+            
+            // 根据当前模式决定动画类型
+            const isDark = body.classList.contains('dark-mode');
+            
+            if (isDark) {
+                // 从深色切换到浅色
+                animationElement.style.background = '#16213e';
+                animationElement.style.animation = 'shrink 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+            } else {
+                // 从浅色切换到深色
+                animationElement.style.background = '#ffffff';
+                animationElement.style.animation = 'expand 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+            }
+            
+            // 在动画中途切换主题
+            setTimeout(() => {
+                body.classList.toggle('dark-mode');
+                darkModeToggle.textContent = body.classList.contains('dark-mode') 
+                    ? '切换浅色模式' 
+                    : '切换深色模式';
+                
+                // 保存用户偏好
+                localStorage.setItem('darkMode', !isDark);
+            }, 400);
+            
+            // 动画完成后隐藏元素
+            setTimeout(() => {
+                animationElement.style.display = 'none';
+            }, 800);
+        });
     </script>
 </body>
 </html>
