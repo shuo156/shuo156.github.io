@@ -42,66 +42,118 @@ img {
 }
 
 /* 暗色模式样式 */
-body.dark-mode {
-    background: linear-gradient(to bottom,
-        #1a1a2e,    /* 深蓝黑 */
-        #16213e     /* 更深蓝黑 */
-    );
-    color: #e6e6e6;
-}
+        body.dark-mode {
+            background: linear-gradient(to bottom,
+                #1a1a2e,    /* 深蓝黑 */
+                #16213e     /* 更深蓝黑 */
+            );
+            color: #e6e6e6;
+        }
 
-.dark-mode h1,
-.dark-mode h2,
-.dark-mode h3,
-.dark-mode h4,
-.dark-mode h5,
-.dark-mode h6 {
-    color: #bb86fc;
-}
+        .dark-mode h1,
+        .dark-mode h2,
+        .dark-mode h3,
+        .dark-mode h4,
+        .dark-mode h5,
+        .dark-mode h6 {
+            color: #bb86fc;
+        }
 
-.dark-mode a {
-    color: #7fb4ff;
-}
+        .dark-mode a {
+            color: #7fb4ff;
+        }
 
-.dark-mode .datetime {
-    color: #a0a0a0;
-}
+        .dark-mode .datetime {
+            color: #a0a0a0;
+        }
 
-.dark-mode img {
-    filter: brightness(0.8);
-}
+        .dark-mode img {
+            filter: brightness(0.8);
+        }
 
-/* 切换按钮容器 */
-.dark-mode-toggle-container {
-    margin: 40px 0;
-    padding-top: 20px;
-    border-top: 1px dashed #ccc;
-}
+        /* 切换按钮容器 */
+        .dark-mode-toggle-container {
+            margin: 40px 0;
+            padding-top: 20px;
+            border-top: 1px dashed #ccc;
+        }
 
-.dark-mode .dark-mode-toggle-container {
-    border-top: 1px dashed #444;
-}
+        .dark-mode .dark-mode-toggle-container {
+            border-top: 1px dashed #444;
+        }
 
-/* 切换按钮样式 */
-#dark-mode-toggle {
-    padding: 10px 20px;
-    background-color: #333;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: 'CustomFont', sans-serif;
-    font-size: 16px;
-    transition: all 0.3s ease;
-    margin-top: 10px;
-}
+        /* 切换按钮样式 */
+        #dark-mode-toggle {
+            padding: 12px 24px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'CustomFont', sans-serif;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+        }
 
-#dark-mode-toggle:hover {
-    background-color: #444;
-    transform: translateY(-2px);
-}
+        #dark-mode-toggle:hover {
+            background-color: #444;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
 
-.dark-mode #dark-mode-toggle {
-    background-color: #bb86fc;
-    color: #121212;
-}
+        .dark-mode #dark-mode-toggle {
+            background-color: #bb86fc;
+            color: #121212;
+        }
+
+        /* 动画遮罩层 */
+        .theme-switch-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            z-index: 1000;
+            border-radius: 50%;
+            transform: scale(0);
+            transform-origin: center;
+            pointer-events: none;
+            animation-fill-mode: forwards;
+        }
+
+        .dark-mode .theme-switch-animation {
+            background: #16213e;
+        }
+
+        @keyframes expand {
+            0% {
+                transform: scale(0);
+                border-radius: 50%;
+            }
+            50% {
+                border-radius: 40%;
+            }
+            100% {
+                transform: scale(2.5);
+                border-radius: 0;
+            }
+        }
+
+        @keyframes shrink {
+            0% {
+                transform: scale(2.5);
+                border-radius: 0;
+            }
+            50% {
+                border-radius: 40%;
+            }
+            100% {
+                transform: scale(0);
+                border-radius: 50%;
+            }
+        }
