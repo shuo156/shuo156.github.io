@@ -40,3 +40,68 @@ img {
     text-align: center;
     margin: 20px 0;
 }
+
+/* 暗色模式样式 */
+body.dark-mode {
+    background: linear-gradient(to bottom,
+        #1a1a2e,    /* 深蓝黑 */
+        #16213e     /* 更深蓝黑 */
+    );
+    color: #e6e6e6;
+}
+
+.dark-mode h1,
+.dark-mode h2,
+.dark-mode h3,
+.dark-mode h4,
+.dark-mode h5,
+.dark-mode h6 {
+    color: #bb86fc;
+}
+
+.dark-mode a {
+    color: #7fb4ff;
+}
+
+.dark-mode .datetime {
+    color: #a0a0a0;
+}
+
+.dark-mode img {
+    filter: brightness(0.8);
+}
+
+/* 切换按钮容器 */
+.dark-mode-toggle-container {
+    margin: 40px 0;
+    padding-top: 20px;
+    border-top: 1px dashed #ccc;
+}
+
+.dark-mode .dark-mode-toggle-container {
+    border-top: 1px dashed #444;
+}
+
+/* 切换按钮样式 */
+#dark-mode-toggle {
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'CustomFont', sans-serif;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+#dark-mode-toggle:hover {
+    background-color: #444;
+    transform: translateY(-2px);
+}
+
+.dark-mode #dark-mode-toggle {
+    background-color: #bb86fc;
+    color: #121212;
+}
