@@ -1,1 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>函数专区</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- 引入通用CSS文件 -->
+    <link rel="stylesheet" href="../../css/math-ques.css">
+    <style>
+        /* 针对深度学习页面的特有样式 */
+        .knowledge-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .knowledge-title {
+            font-size: 2.2rem;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .knowledge-title::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+        
+        .knowledge-description {
+            max-width: 800px;
+            margin: 0 auto 20px;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--dark);
+        }
+        
+        .topic-selector {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .topic-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px;
+            background: var(--light);
+            color: var(--dark);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            border: 2px solid var(--medium-gray);
+        }
+        
+        .topic-btn.active, .topic-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .progress-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 20px 0;
+            background: white;
+            padding: 15px 25px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .progress-bar {
+            flex-grow: 1;
+            height: 12px;
+            background: var(--light);
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 0 20px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--success);
+            border-radius: 6px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .question-navigation {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .nav-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary);
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            border: none;
+        }
+        
+        .nav-btn:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .nav-btn:disabled {
+            background: var(--medium-gray);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .current-question {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--primary);
+            min-width: 100px;
+            text-align: center;
+        }
+        
+        .knowledge-points {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .point-card {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: 25px;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .point-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .point-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .point-title {
+            font-size: 1.4rem;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .point-description {
+            font-size: 1rem;
+            color: var(--dark);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .point-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--dark-gray);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1>深度学习数学知识点</h1>
+                <p class="subtitle">北师大版 | 高一数学 | 知识点深度训练</p>
+                <div class="grade-selector">
+                    <button class="grade-btn active">高一</button>
+                    <button class="grade-btn">高二</button>
+                    <button class="grade-btn">高三</button>
+                </div>
+            </div>
+        </header>
 
+        <div class="knowledge-header">
+            <h2 class="knowledge-title">函数专题</h2>
+            <p class="knowledge-description">
+                函数是数学中的核心概念，描述了两个变量之间的依赖关系。本专题包含函数的定义、性质、图像和应用，
+                通过深度训练掌握函数的各种变换和复合函数等高级概念。
+            </p>
+        </div>
+
+        <div class="topic-selector">
+            <button class="topic-btn active">
+                <i class="fas fa-function"></i> 函数基础
+            </button>
+            <button class="topic-btn">
+                <i class="fas fa-chart-line"></i> 函数图像
+            </button>
+            <button class="topic-btn">
+                <i class="fas fa-project-diagram"></i> 复合函数
+            </button>
+            <button class="topic-btn">
+                <i class="fas fa-calculator"></i> 函数应用
+            </button>
+            <button class="topic-btn">
+                <i class="fas fa-infinity"></i> 函数极限
+            </button>
+        </div>
+
+        <div class="progress-container">
+            <div class="stat-box">
+                <div class="stat-label">当前进度</div>
+                <div class="stat-value" id="current-progress">1/20</div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill" style="width: 5%"></div>
+            </div>
+            
+            <div class="stat-box">
+                <div class="stat-label">掌握程度</div>
+                <div class="stat-value" id="mastery-level">5%</div>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-header">
+                <div class="question-id">1</div>
+                <div class="question-type">函数定义</div>
+            </div>
+            <div class="question-content">
+                已知函数 f(x) = 2x + 3，求 f(5) 的值。
+            </div>
+            <div class="answer-section">
+                <input type="text" class="answer-input" placeholder="请输入答案">
+                <button class="submit-btn">提交答案</button>
+                <div class="feedback"></div>
+            </div>
+        </div>
+
+        <div class="question-navigation">
+            <button class="nav-btn" disabled>
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="current-question">第 1 题 / 共 20 题</div>
+            <button class="nav-btn">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <div class="knowledge-points">
+            <div class="point-card">
+                <div class="point-icon">
+                    <i class="fas fa-dice-one"></i>
+                </div>
+                <h3 class="point-title">函数定义域</h3>
+                <p class="point-description">
+                    函数的定义域是指所有可能输入值的集合，即自变量x的取值范围。
+                    确定函数的定义域是解决函数问题的第一步。
+                </p>
+                <div class="point-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">20</div>
+                        <div class="stat-label">练习题</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">85%</div>
+                        <div class="stat-label">掌握率</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="point-card">
+                <div class="point-icon">
+                    <i class="fas fa-dice-two"></i>
+                </div>
+                <h3 class="point-title">函数值域</h3>
+                <p class="point-description">
+                    函数的值域是指所有可能输出值的集合，即因变量y的取值范围。
+                    求解函数值域需要掌握多种方法和技巧。
+                </p>
+                <div class="point-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">20</div>
+                        <div class="stat-label">练习题</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">78%</div>
+                        <div class="stat-label">掌握率</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="point-card">
+                <div class="point-icon">
+                    <i class="fas fa-dice-three"></i>
+                </div>
+                <h3 class="point-title">函数性质</h3>
+                <p class="point-description">
+                    函数的性质包括奇偶性、单调性、周期性等，这些性质决定了函数的图像特征和行为模式。
+                </p>
+                <div class="point-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">20</div>
+                        <div class="stat-label">练习题</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">82%</div>
+                        <div class="stat-label">掌握率</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>© 2023 深度学习数学知识点 - 北师大版 | 为高效学习而设计</p>
+            <p>覆盖高一数学所有核心知识点 | 持续更新中</p>
+        </footer>
+    </div>
+
+    <script>
+        // 知识点数据模型
+        const knowledgePoints = [
+            {
+                id: "function-basics",
+                title: "函数基础",
+                description: "函数的定义、表示方法、定义域和值域等基本概念",
+                questions: 20,
+                mastery: 85
+            },
+            {
+                id: "function-graph",
+                title: "函数图像",
+                description: "函数的图像特征、变换规律和图像分析方法",
+                questions: 20,
+                mastery: 78
+            },
+            {
+                id: "composite-function",
+                title: "复合函数",
+                description: "复合函数的定义、求解方法和应用场景",
+                questions: 20,
+                mastery: 75
+            },
+            {
+                id: "function-application",
+                title: "函数应用",
+                description: "函数在实际问题中的应用和建模方法",
+                questions: 20,
+                mastery: 82
+            },
+            {
+                id: "function-limit",
+                title: "函数极限",
+                description: "函数的极限概念、计算方法和应用",
+                questions: 20,
+                mastery: 70
+            }
+        ];
+
+        // 题目数据模型
+        const questions = [
+            {
+                id: 1,
+                type: "函数定义",
+                content: "已知函数 f(x) = 2x + 3，求 f(5) 的值。",
+                answer: "13"
+            },
+            {
+                id: 2,
+                type: "定义域",
+                content: "函数 f(x) = √(x-2) 的定义域是什么？",
+                answer: "[2, +∞)"
+            },
+            {
+                id: 3,
+                type: "值域",
+                content: "函数 f(x) = x² + 1 的值域是什么？",
+                answer: "[1, +∞)"
+            },
+            {
+                id: 4,
+                type: "奇偶性",
+                content: "判断函数 f(x) = x³ - x 的奇偶性。",
+                answer: "奇函数"
+            },
+            {
+                id: 5,
+                type: "单调性",
+                content: "函数 f(x) = -2x + 5 在定义域内的单调性是？",
+                answer: "单调递减"
+            }
+        ];
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            // 知识点选择事件
+            document.querySelectorAll('.topic-btn').forEach((btn, index) => {
+                btn.addEventListener('click', function() {
+                    document.querySelector('.topic-btn.active').classList.remove('active');
+                    this.classList.add('active');
+                    
+                    // 更新知识点标题和描述
+                    const point = knowledgePoints[index];
+                    document.querySelector('.knowledge-title').textContent = point.title;
+                    document.querySelector('.knowledge-description').textContent = point.description;
+                    
+                    // 重置进度
+                    updateProgress(1, 20);
+                    
+                    // 加载第一题
+                    loadQuestion(1);
+                });
+            });
+            
+            // 导航按钮事件
+            document.querySelector('.nav-btn:not(:disabled)').addEventListener('click', function() {
+                const current = parseInt(document.querySelector('.current-question').textContent.match(/\d+/)[0]);
+                if(current < 20) {
+                    loadQuestion(current + 1);
+                    updateProgress(current + 1, 20);
+                }
+            });
+            
+            // 提交答案事件
+            document.querySelector('.submit-btn').addEventListener('click', function() {
+                const answerInput = document.querySelector('.answer-input');
+                const feedback = document.querySelector('.feedback');
+                
+                if(!answerInput.value) {
+                    feedback.textContent = "请输入答案！";
+                    feedback.className = "feedback incorrect";
+                    return;
+                }
+                
+                // 模拟答案检查
+                const isCorrect = Math.random() > 0.3;
+                
+                if(isCorrect) {
+                    feedback.textContent = "✓ 回答正确！";
+                    feedback.className = "feedback correct";
+                } else {
+                    feedback.textContent = "✗ 回答错误，请再试一次！";
+                    feedback.className = "feedback incorrect";
+                }
+            });
+        });
+
+        // 加载题目
+        function loadQuestion(questionNumber) {
+            const question = questions[Math.min(questionNumber - 1, questions.length - 1)];
+            const questionCard = document.querySelector('.question-card');
+            
+            questionCard.querySelector('.question-id').textContent = questionNumber;
+            questionCard.querySelector('.question-type').textContent = question.type;
+            questionCard.querySelector('.question-content').textContent = question.content;
+            questionCard.querySelector('.answer-input').value = "";
+            questionCard.querySelector('.feedback').textContent = "";
+            questionCard.querySelector('.feedback').className = "feedback";
+            
+            // 更新导航显示
+            document.querySelector('.current-question').textContent = `第 ${questionNumber} 题 / 共 20 题`;
+            
+            // 更新导航按钮状态
+            const prevBtn = document.querySelector('.nav-btn:first-child');
+            const nextBtn = document.querySelector('.nav-btn:last-child');
+            
+            prevBtn.disabled = (questionNumber === 1);
+            nextBtn.disabled = (questionNumber === 20);
+        }
+
+        // 更新进度
+        function updateProgress(current, total) {
+            const percentage = Math.round((current / total) * 100);
+            document.getElementById('current-progress').textContent = `${current}/${total}`;
+            document.getElementById('progress-fill').style.width = `${percentage}%`;
+            document.getElementById('mastery-level').textContent = `${percentage}%`;
+        }
+    </script>
+</body>
+</html>
