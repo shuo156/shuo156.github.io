@@ -6,10 +6,119 @@
     <title>函数专区</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- 引入通用CSS文件 -->
-    <link rel="stylesheet" href="../../css/math-ques.css">
     <style>
-        /* 针对深度学习页面的特有样式 */
+        :root {
+            --primary: #4e73df;
+            --primary-dark: #2e59d9;
+            --primary-light: #858796;
+            --secondary: #858796;
+            --success: #1cc88a;
+            --info: #36b9cc;
+            --warning: #f6c23e;
+            --danger: #e74a3b;
+            --light: #f8f9fc;
+            --dark: #5a5c69;
+            --dark-gray: #6e707e;
+            --medium-gray: #dddfeb;
+            --light-gray: #eaecf4;
+            --white: #ffffff;
+            --shadow-sm: 0 .15rem 1.75rem 0 rgba(58, 59, 69, .15);
+            --shadow-md: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+            --border-radius: 0.35rem;
+            --border-radius-lg: 0.5rem;
+            --border-radius-xl: 1rem;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7f4 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(120deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: var(--border-radius-xl);
+            padding: 30px 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .grade-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .grade-btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.2);
+            font-size: 1rem;
+        }
+
+        .grade-btn.active, .grade-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
         .knowledge-header {
             text-align: center;
             margin-bottom: 30px;
@@ -41,6 +150,11 @@
             font-size: 1.1rem;
             line-height: 1.7;
             color: var(--dark);
+            background: rgba(255,255,255,0.7);
+            padding: 20px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-sm);
+            backdrop-filter: blur(5px);
         }
         
         .topic-selector {
@@ -83,7 +197,7 @@
             margin: 20px 0;
             background: white;
             padding: 15px 25px;
-            border-radius: var(--border-radius-lg);
+            border-radius: var(--border-radius-xl);
             box-shadow: var(--shadow-sm);
         }
         
@@ -98,10 +212,128 @@
         
         .progress-fill {
             height: 100%;
-            background: var(--success);
+            background: linear-gradient(90deg, var(--primary), var(--success));
             border-radius: 6px;
             width: 0%;
             transition: width 0.5s ease;
+        }
+        
+        .question-card {
+            background: white;
+            border-radius: var(--border-radius-xl);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            margin: 30px 0;
+            transition: transform 0.3s ease;
+        }
+        
+        .question-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: linear-gradient(120deg, var(--primary), var(--info));
+            color: white;
+        }
+        
+        .question-id {
+            font-size: 1.3rem;
+            font-weight: bold;
+            background: rgba(0,0,0,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+        
+        .question-type {
+            font-size: 1.1rem;
+            font-weight: 500;
+            padding: 5px 15px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+        }
+        
+        .question-content {
+            padding: 30px;
+            font-size: 1.4rem;
+            text-align: center;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--light);
+            border-bottom: 1px solid var(--medium-gray);
+        }
+        
+        .answer-section {
+            padding: 25px;
+        }
+        
+        .answer-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--medium-gray);
+            border-radius: var(--border-radius-lg);
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+        
+        .answer-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+        
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-top: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-lg);
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .submit-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .feedback.correct {
+            background: rgba(28, 200, 138, 0.15);
+            color: var(--success);
+            border: 1px solid var(--success);
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .feedback.incorrect {
+            background: rgba(231, 74, 59, 0.15);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            opacity: 1;
+            transform: translateY(0);
         }
         
         .question-navigation {
@@ -112,8 +344,8 @@
         }
         
         .nav-btn {
-            width: 45px;
-            height: 45px;
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -137,26 +369,34 @@
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
+            opacity: 0.6;
         }
         
         .current-question {
             font-size: 1.3rem;
             font-weight: bold;
             color: var(--primary);
-            min-width: 100px;
+            min-width: 150px;
             text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--light);
+            padding: 10px 20px;
+            border-radius: 30px;
+            box-shadow: var(--shadow-sm);
         }
         
         .knowledge-points {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 25px;
-            margin: 30px 0;
+            margin: 40px 0;
         }
         
         .point-card {
             background: white;
-            border-radius: var(--border-radius-lg);
+            border-radius: var(--border-radius-xl);
             padding: 25px;
             box-shadow: var(--shadow-sm);
             transition: var(--transition);
@@ -168,6 +408,16 @@
         .point-card:hover {
             transform: translateY(-5px);
             box-shadow: var(--shadow-lg);
+        }
+        
+        .point-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--primary);
         }
         
         .point-icon {
@@ -199,17 +449,57 @@
         
         .stat-item {
             text-align: center;
+            flex: 1;
         }
         
         .stat-value {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: bold;
             color: var(--primary);
+            margin-bottom: 5px;
         }
         
         .stat-label {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: var(--dark-gray);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--medium-gray);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px;
+            }
+            
+            .knowledge-title {
+                font-size: 1.8rem;
+            }
+            
+            .question-content {
+                font-size: 1.2rem;
+                padding: 20px;
+            }
+            
+            .knowledge-points {
+                grid-template-columns: 1fr;
+            }
+            
+            .progress-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .progress-bar {
+                width: 100%;
+                margin: 10px 0;
+            }
         }
     </style>
 </head>
@@ -234,36 +524,12 @@
                 通过深度训练掌握函数的各种变换和复合函数等高级概念。
             </p>
         </div>
-
-        <div class="topic-selector">
-            <button class="topic-btn active">
-                <i class="fas fa-function"></i> 函数基础
-            </button>
-            <button class="topic-btn">
-                <i class="fas fa-chart-line"></i> 函数图像
-            </button>
-            <button class="topic-btn">
-                <i class="fas fa-project-diagram"></i> 复合函数
-            </button>
-            <button class="topic-btn">
-                <i class="fas fa-calculator"></i> 函数应用
-            </button>
-            <button class="topic-btn">
-                <i class="fas fa-infinity"></i> 函数极限
-            </button>
-        </div>
-
-        <div class="progress-container">
-            <div class="stat-box">
-                <div class="stat-label">当前进度</div>
-                <div class="stat-value" id="current-progress">1/20</div>
-            </div>
-            
+                    
             <div class="progress-bar">
                 <div class="progress-fill" id="progress-fill" style="width: 5%"></div>
             </div>
             
-            <div class="stat-box">
+            <div class="stat-item">
                 <div class="stat-label">掌握程度</div>
                 <div class="stat-value" id="mastery-level">5%</div>
             </div>
@@ -272,10 +538,10 @@
         <div class="question-card">
             <div class="question-header">
                 <div class="question-id">1</div>
-                <div class="question-type">函数定义</div>
+                <div class="question-type">函数求值</div>
             </div>
             <div class="question-content">
-                已知函数 f(x) = 2x + 3，求 f(5) 的值。
+                已知函数 f(x) = 2x + 3，求 f(5) 的值
             </div>
             <div class="answer-section">
                 <input type="text" class="answer-input" placeholder="请输入答案">
@@ -285,11 +551,11 @@
         </div>
 
         <div class="question-navigation">
-            <button class="nav-btn" disabled>
+            <button class="nav-btn prev-btn">
                 <i class="fas fa-chevron-left"></i>
             </button>
             <div class="current-question">第 1 题 / 共 20 题</div>
-            <button class="nav-btn">
+            <button class="nav-btn next-btn">
                 <i class="fas fa-chevron-right"></i>
             </button>
         </div>
@@ -367,127 +633,130 @@
     <script>
         // 知识点数据模型
         const knowledgePoints = [
-    {
-        "id": 1,
-        "type": "函数求值",
-        "content": "已知函数 f(x) = 2x + 3，求 f(5) 的值(意思相同也对，后同，但系统不会判定)",
-        "answer": "13"
-    },
-    {
-        "id": 2,
-        "type": "定义域",
-        "content": "函数 f(x) = √(x-2) 的定义域是",
-        "answer": "[2, +∞)"
-    },
-    {
-        "id": 3,
-        "type": "值域",
-        "content": "函数 f(x) = x² + 1 的值域是",
-        "answer": "[1, +∞)"
-    },
-    {
-        "id": 4,
-        "type": "奇偶性",
-        "content": "函数 f(x) = x³ - x 的奇偶性是",
-        "answer": "奇函数"
-    },
-    {
-        "id": 5,
-        "type": "解析式",
-        "content": "已知 f(x-1) = x² + 2x，则 f(x) =",
-        "answer": "x² + 4x + 3"
-    },
-    {
-        "id": 6,
-        "type": "定义域",
-        "content": "函数 f(x) = 1/(x-3) + √(x+1) 的定义域是",
-        "answer": "[-1, 3) ∪ (3, +∞)"
-    },
-    {
-        "id": 7,
-        "type": "单调性",
-        "content": "函数 f(x) = -x² + 4x - 3 的单调递减区间是",
-        "answer": "[2, +∞)"
-    },
-    {
-        "id": 8,
-        "type": "复合函数",
-        "content": "设 f(x) = 2x-1，g(x) = x²，则 g(f(2)) =",
-        "answer": "9"
-    },
-    {
-        "id": 9,
-        "type": "奇偶性",
-        "content": "若 f(x) = ax³ + bx 是奇函数，则常数 a 必须满足",
-        "answer": "a 可为任意实数"
-    },
-    {
-        "id": 10,
-        "type": "值域",
-        "content": "函数 f(x) = |x-2| 在区间 [-1, 3] 上的值域是",
-        "answer": "[0, 3]"
-    },
-    {
-        "id": 11,
-        "type": "分段函数",
-        "content": "设 f(x) = { x+1 (x≤0); 2^x (x>0) }，则 f(-2) + f(1) =",
-        "answer": "3"
-    },
-    {
-        "id": 12,
-        "type": "解析式",
-        "content": "若 f(x) 是一次函数，且 f(1)=3, f(2)=5，则 f(x) =",
-        "answer": "2x + 1"
-    },
-    {
-        "id": 13,
-        "type": "图像变换",
-        "content": "将 y = x² 的图像向右平移 3 个单位，所得函数解析式是",
-        "answer": "y = (x-3)²"
-    },
-    {
-        "id": 14,
-        "type": "单调性",
-        "content": "若函数在 R 上单调递增，且 f(2)>f(3)，该函数是否可能成立？",
-        "answer": "否"
-    },
-    {
-        "id": 15,
-        "type": "复合函数",
-        "content": "若 f(x) = 2x + 3 且 f(g(x)) = 4x - 1，则 g(x) =",
-        "answer": "2x - 2"
-    },
-    {
-        "id": 16,
-        "type": "定义域",
-        "content": "函数 y = √(4-x) + 1/(x-1) 的定义域是",
-        "answer": "(-∞, 1) ∪ (1, 4]"
-    },
-    {
-        "id": 17,
-        "type": "奇偶性",
-        "content": "已知 g(x) 是偶函数，g(3)=5，则 g(-3) =",
-        "answer": "5"
-    },
-    {
-        "id": 18,
-        "type": "分段函数",
-        "content": "设 f(x) = { x² (x≥0); -x (x<0) }，则 f(f(-2)) =",
-        "answer": "4"
-    },
-    {
-        "id": 19,
-        "type": "值域",
-        "content": "函数 f(x) = 3 - 2x (x∈[-1, 2]) 的值域是",
-        "answer": "[-1, 5]"
-    },
-    {
-        "id": 20,
-        "type": "解析式",
-        "content": "若 f(x) + 2f(-x) = 3x，则 f(2) =",
-        "answer": "2"
-    }
-];
+            {
+                "id": 1,
+                "type": "函数求值",
+                "content": "已知函数 f(x) = 2x + 3，求 f(5) 的值(Tip:答案相近也对，系统不会判定，后同)",
+                "answer": "13"
+            },
+            {
+                "id": 2,
+                "type": "定义域",
+                "content": "函数 f(x) = √(x-2) 的定义域是",
+                "answer": "[2, +∞)"
+            },
+            {
+                "id": 3,
+                "type": "值域",
+                "content": "函数 f(x) = x² + 1 的值域是",
+                "answer": "[1, +∞)"
+            },
+            {
+                "id": 4,
+                "type": "奇偶性",
+                "content": "函数 f(x) = x³ - x 的奇偶性是",
+                "answer": "奇函数"
+            },
+            {
+                "id": 5,
+                "type": "解析式",
+                "content": "已知 f(x-1) = x² + 2x，则 f(x) =",
+                "answer": "x² + 4x + 3"
+            },
+            {
+                "id": 6,
+                "type": "定义域",
+                "content": "函数 f(x) = 1/(x-3) + √(x+1) 的定义域是",
+                "answer": "[-1, 3) ∪ (3, +∞)"
+            },
+            {
+                "id": 7,
+                "type": "单调性",
+                "content": "函数 f(x) = -x² + 4x - 3 的单调递减区间是",
+                "answer": "[2, +∞)"
+            },
+            {
+                "id": 8,
+                "type": "复合函数",
+                "content": "设 f(x) = 2x-1，g(x) = x²，则 g(f(2)) =",
+                "answer": "9"
+            },
+            {
+                "id": 9,
+                "type": "奇偶性",
+                "content": "若 f(x) = ax³ + bx 是奇函数，则常数 a 必须满足",
+                "answer": "a 可为任意实数"
+            },
+            {
+                "id": 10,
+                "type": "值域",
+                "content": "函数 f(x) = |x-2| 在区间 [-1, 3] 上的值域是",
+                "answer": "[0, 3]"
+            },
+            {
+                "id": 11,
+                "type": "分段函数",
+                "content": "设 f(x) = { x+1 (x≤0); 2^x (x>0) }，则 f(-2) + f(1) =",
+                "answer": "3"
+            },
+            {
+                "id": 12,
+                "type": "解析式",
+                "content": "若 f(x) 是一次函数，且 f(1)=3, f(2)=5，则 f(x) =",
+                "answer": "2x + 1"
+            },
+            {
+                "id": 13,
+                "type": "图像变换",
+                "content": "将 y = x² 的图像向右平移 3 个单位，所得函数解析式是",
+                "answer": "y = (x-3)²"
+            },
+            {
+                "id": 14,
+                "type": "单调性",
+                "content": "若函数在 R 上单调递增，且 f(2)>f(3)，该函数是否可能成立？",
+                "answer": "否"
+            },
+            {
+                "id": 15,
+                "type": "复合函数",
+                "content": "若 f(x) = 2x + 3 且 f(g(x)) = 4x - 1，则 g(x) =",
+                "answer": "2x - 2"
+            },
+            {
+                "id": 16,
+                "type": "定义域",
+                "content": "函数 y = √(4-x) + 1/(x-1) 的定义域是",
+                "answer": "(-∞, 1) ∪ (1, 4]"
+            },
+            {
+                "id": 17,
+                "type": "奇偶性",
+                "content": "已知 g(x) 是偶函数，g(3)=5，则 g(-3) =",
+                "answer": "5"
+            },
+            {
+                "id": 18,
+                "type": "分段函数",
+                "content": "设 f(x) = { x² (x≥0); -x (x<0) }，则 f(f(-2)) =",
+                "answer": "4"
+            },
+            {
+                "id": 19,
+                "type": "值域",
+                "content": "函数 f(x) = 3 - 2x (x∈[-1, 2]) 的值域是",
+                "answer": "[-1, 5]"
+            },
+            {
+                "id": 20,
+                "type": "解析式",
+                "content": "若 f(x) + 2f(-x) = 3x，则 f(2) =",
+                "answer": "2"
+            }
+        ];
+
+        // 当前题目索引
+        let currentQuestionIndex = 0;
 
         // 初始化页面
         document.addEventListener('DOMContentLoaded', function() {
@@ -498,25 +767,37 @@
                     this.classList.add('active');
                     
                     // 更新知识点标题和描述
-                    const point = knowledgePoints[index];
-                    document.querySelector('.knowledge-title').textContent = point.title;
-                    document.querySelector('.knowledge-description').textContent = point.description;
+                    document.querySelector('.knowledge-title').textContent = "函数专题";
+                    document.querySelector('.knowledge-description').textContent = 
+                        "函数是数学中的核心概念，描述了两个变量之间的依赖关系。本专题包含函数的定义、性质、图像和应用，通过深度训练掌握函数的各种变换和复合函数等高级概念。";
                     
                     // 重置进度
-                    updateProgress(1, 20);
+                    currentQuestionIndex = 0;
+                    updateProgress(currentQuestionIndex + 1, knowledgePoints.length);
                     
                     // 加载第一题
-                    loadQuestion(1);
+                    loadQuestion(currentQuestionIndex);
                 });
             });
             
-            // 导航按钮事件
-            document.querySelector('.nav-btn:not(:disabled)').addEventListener('click', function() {
-                const current = parseInt(document.querySelector('.current-question').textContent.match(/\d+/)[0]);
-                if(current < 20) {
-                    loadQuestion(current + 1);
-                    updateProgress(current + 1, 20);
+            // 导航按钮事件 - 上一题
+            document.querySelector('.prev-btn').addEventListener('click', function() {
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex--;
+                    loadQuestion(currentQuestionIndex);
+                    updateProgress(currentQuestionIndex + 1, knowledgePoints.length);
                 }
+                updateNavButtons();
+            });
+            
+            // 导航按钮事件 - 下一题
+            document.querySelector('.next-btn').addEventListener('click', function() {
+                if (currentQuestionIndex < knowledgePoints.length - 1) {
+                    currentQuestionIndex++;
+                    loadQuestion(currentQuestionIndex);
+                    updateProgress(currentQuestionIndex + 1, knowledgePoints.length);
+                }
+                updateNavButtons();
             });
             
             // 提交答案事件
@@ -530,25 +811,31 @@
                     return;
                 }
                 
-                // 模拟答案检查
-                const isCorrect = Math.random() > 0.3;
+                // 获取正确答案
+                const correctAnswer = knowledgePoints[currentQuestionIndex].answer;
                 
-                if(isCorrect) {
+                // 检查答案
+                if(answerInput.value === correctAnswer) {
                     feedback.textContent = "✓ 回答正确！";
                     feedback.className = "feedback correct";
                 } else {
-                    feedback.textContent = "✗ 回答错误，请再试一次！";
+                    feedback.textContent = `✗ 回答错误，正确答案是：${correctAnswer}`;
                     feedback.className = "feedback incorrect";
                 }
             });
+            
+            // 初始加载第一题
+            loadQuestion(currentQuestionIndex);
+            updateProgress(currentQuestionIndex + 1, knowledgePoints.length);
+            updateNavButtons();
         });
 
         // 加载题目
-        function loadQuestion(questionNumber) {
-            const question = questions[Math.min(questionNumber - 1, questions.length - 1)];
+        function loadQuestion(index) {
+            const question = knowledgePoints[index];
             const questionCard = document.querySelector('.question-card');
             
-            questionCard.querySelector('.question-id').textContent = questionNumber;
+            questionCard.querySelector('.question-id').textContent = index + 1;
             questionCard.querySelector('.question-type').textContent = question.type;
             questionCard.querySelector('.question-content').textContent = question.content;
             questionCard.querySelector('.answer-input').value = "";
@@ -556,14 +843,13 @@
             questionCard.querySelector('.feedback').className = "feedback";
             
             // 更新导航显示
-            document.querySelector('.current-question').textContent = `第 ${questionNumber} 题 / 共 20 题`;
-            
-            // 更新导航按钮状态
-            const prevBtn = document.querySelector('.nav-btn:first-child');
-            const nextBtn = document.querySelector('.nav-btn:last-child');
-            
-            prevBtn.disabled = (questionNumber === 1);
-            nextBtn.disabled = (questionNumber === 20);
+            document.querySelector('.current-question').textContent = `第 ${index + 1} 题 / 共 ${knowledgePoints.length} 题`;
+        }
+
+        // 更新导航按钮状态
+        function updateNavButtons() {
+            document.querySelector('.prev-btn').disabled = (currentQuestionIndex === 0);
+            document.querySelector('.next-btn').disabled = (currentQuestionIndex === knowledgePoints.length - 1);
         }
 
         // 更新进度
