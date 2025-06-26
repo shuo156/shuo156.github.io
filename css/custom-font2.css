@@ -1,52 +1,32 @@
-/* 自定义字体 */
-@font-face {
-    font-family: 'CustomFont';
-    src: url('https://shuo156.github.io/font/fontmain.ttf') format('truetype');
-    font-display: swap;
-}
+        /* 自定义字体 */
+        @font-face {
+            font-family: 'CustomFont';
+            src: url('https://shuo156.github.io/font/fontmain.ttf') format('truetype');
+            font-display: swap;
+        }
 
-/* 基础样式和渐变背景 */
-body {
-    font-family: 'CustomFont', sans-serif;
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    background: linear-gradient(to bottom,
-        #F0F8FF,    /* 爱丽丝蓝 */
-        #FFFFFF     /* 白色 */
-    );
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    /* 添加文本居中 */
-    text-align: center;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-/* 文本样式 */
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'CustomFont', sans-serif;
-    text-align: center;
-}
+        body {
+            font-family: 'CustomFont', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #F0F8FF, #FFFFFF);
+            color: #333;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-align: center;
+            position: relative;
+            overflow-x: hidden;
+            transition: background 0.5s ease, color 0.5s ease;
+        }
 
-/* 图片居中 */
-img {
-    display: block;
-    margin: 0 auto;
-    max-width: 100%;
-    height: auto;
-}
-
-/* 日期时间显示样式 */
-.datetime {
-    text-align: center;
-    margin: 20px 0;
-}
-
-/* 暗色模式样式 */
+        /* 暗色模式样式 */
         body.dark-mode {
-            background: linear-gradient(to bottom,
-                #1a1a2e,    /* 深蓝黑 */
-                #16213e     /* 更深蓝黑 */
-            );
+            background: linear-gradient(to bottom, #1a1a2e, #16213e);
             color: #e6e6e6;
         }
 
@@ -71,89 +51,173 @@ img {
             filter: brightness(0.8);
         }
 
-        /* 切换按钮容器 */
-        .dark-mode-toggle-container {
-            margin: 40px 0;
-            padding-top: 20px;
-            border-top: 1px dashed #ccc;
+        /* 主容器 */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
         }
 
-        .dark-mode .dark-mode-toggle-container {
-            border-top: 1px dashed #444;
+        /* 头部样式 */
+        header {
+            padding: 30px 0;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .datetime {
+            font-size: 1.2rem;
+            margin: 15px 0;
+            color: #666;
+        }
+
+        /* 内容区域 */
+        .content {
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode .content {
+            background: rgba(26, 26, 46, 0.85);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        ul li a {
+            display: block;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #3498db;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: 1px solid #e0e0e0;
+        }
+
+        ul li a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: #e3f2fd;
+        }
+
+        .dark-mode ul li a {
+            background: rgba(30, 30, 50, 0.7);
+            border: 1px solid #444;
+            color: #7fb4ff;
+        }
+
+        .dark-mode ul li a:hover {
+            background: rgba(40, 40, 65, 0.8);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 底部区域 */
+        footer {
+            margin-top: 30px;
+            padding: 20px 0;
+            font-size: 0.9rem;
         }
 
         /* 切换按钮样式 */
-        #dark-mode-toggle {
-            padding: 12px 24px;
-            background-color: #333;
+        .theme-switch-container {
+            margin: 40px 0;
+            padding: 20px 0;
+            border-top: 1px dashed #ccc;
+        }
+
+        .dark-mode .theme-switch-container {
+            border-top: 1px dashed #444;
+        }
+
+        #theme-toggle {
+            padding: 14px 28px;
+            background: #2c3e50;
             color: white;
             border: none;
-            border-radius: 30px;
+            border-radius: 50px;
             cursor: pointer;
             font-family: 'CustomFont', sans-serif;
-            font-size: 16px;
+            font-size: 1.1rem;
             transition: all 0.3s ease;
             margin-top: 10px;
             position: relative;
             overflow: hidden;
-            z-index: 2;
+            z-index: 20;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
-        #dark-mode-toggle:hover {
-            background-color: #444;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        #theme-toggle:hover {
+            background: #34495e;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
         }
 
-        .dark-mode #dark-mode-toggle {
-            background-color: #bb86fc;
+        .dark-mode #theme-toggle {
+            background: #bb86fc;
             color: #121212;
         }
 
-        /* 动画遮罩层 */
-        .theme-switch-animation {
+        /* Canvas 覆盖层 */
+        #animation-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #ffffff;
-            z-index: 1000;
-            border-radius: 50%;
-            transform: scale(0);
-            transform-origin: center;
             pointer-events: none;
-            animation-fill-mode: forwards;
+            z-index: 1000;
+            display: none;
         }
-
-        .dark-mode .theme-switch-animation {
-            background: #16213e;
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            ul {
+                grid-template-columns: 1fr;
+            }
+            
+            #theme-toggle {
+                padding: 12px 24px;
+                font-size: 1rem;
+            }
         }
-
-        @keyframes expand {
-            0% {
-                transform: scale(0);
-                border-radius: 50%;
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
             }
-            50% {
-                border-radius: 40%;
-            }
-            100% {
-                transform: scale(2.5);
-                border-radius: 0;
-            }
-        }
-
-        @keyframes shrink {
-            0% {
-                transform: scale(2.5);
-                border-radius: 0;
-            }
-            50% {
-                border-radius: 40%;
-            }
-            100% {
-                transform: scale(0);
-                border-radius: 50%;
+            
+            .content {
+                padding: 15px;
             }
         }
