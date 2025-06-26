@@ -3,425 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>高中数学题库 - 北师大版</title>
+    <title>高中数学题库</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        :root {
-            --primary: #3498db;
-            --secondary: #2980b9;
-            --accent: #e74c3c;
-            --light: #ecf0f1;
-            --dark: #2c3e50;
-            --success: #2ecc71;
-            --warning: #f39c12;
-            --shadow: 0 4px 6px rgba(0,0,0,0.1);
-            --book-icon: #95a5a6;
-            --bg-gradient: linear-gradient(135deg, #e0f7fa, #bbdefb);
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Roboto', 'Noto Sans SC', sans-serif;
-        }
-        
-        body {
-            background: var(--bg-gradient);
-            color: var(--dark);
-            line-height: 1.6;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 20px 0;
-            text-align: center;
-            box-shadow: var(--shadow);
-            margin-bottom: 30px;
-            border-radius: 10px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .header-content {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 20px;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        
-        .logo-svg {
-            width: 48px;
-            height: 48px;
-            fill: var(--light);
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        
-        .subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            max-width: 600px;
-            margin: 0 auto 15px;
-        }
-        
-        .grade-selector {
-            background: rgba(255,255,255,0.15);
-            border-radius: 50px;
-            padding: 8px;
-            display: inline-flex;
-            margin-top: 10px;
-        }
-        
-        .grade-btn {
-            background: none;
-            border: none;
-            color: white;
-            padding: 8px 20px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        
-        .grade-btn.active {
-            background: white;
-            color: var(--primary);
-        }
-        
-        .grade-btn:hover:not(.active) {
-            background: rgba(255,255,255,0.2);
-        }
-        
-        .controls {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin: 25px 0;
-        }
-        
-        .btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 8px;
-            background: var(--primary);
-            color: white;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        }
-        
-        .btn:active {
-            transform: translateY(-1px);
-        }
-        
-        .btn-warning {
-            background: var(--warning);
-        }
-        
-        .btn-success {
-            background: var(--success);
-        }
-        
-        .btn-accent {
-            background: var(--accent);
-        }
-        
-        .question-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-top: 20px;
-        }
-        
-        .question-card {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: var(--shadow);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .question-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        
-        .question-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--light);
-        }
-        
-        .question-id {
-            background: var(--primary);
-            color: white;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-        
-        .question-type {
-            background: var(--light);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            color: var(--dark);
-        }
-        
-        .question-content {
-            font-size: 1.05rem;
-            margin-bottom: 20px;
-            line-height: 1.7;
-        }
-        
-        .answer-section {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .answer-input {
-            padding: 12px 15px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-        
-        .answer-input:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-        }
-        
-        .submit-btn {
-            align-self: flex-start;
-            padding: 10px 20px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-        
-        .submit-btn:hover {
-            background: var(--secondary);
-        }
-        
-        .feedback {
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 6px;
-            display: none;
-        }
-        
-        .feedback.correct {
-            background: rgba(46, 204, 113, 0.15);
-            color: var(--success);
-            display: block;
-        }
-        
-        .feedback.incorrect {
-            background: rgba(231, 76, 60, 0.15);
-            color: var(--accent);
-            display: block;
-        }
-        
-        .wrong-notes {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: var(--shadow);
-            margin-top: 40px;
-            display: none;
-        }
-        
-        .section-title {
-            font-size: 1.5rem;
-            color: var(--dark);
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--light);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .wrong-list {
-            list-style-type: none;
-        }
-        
-        .wrong-item {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .wrong-item:last-child {
-            border-bottom: none;
-        }
-        
-        .wrong-question {
-            flex-grow: 1;
-        }
-        
-        .remove-btn {
-            background: none;
-            border: none;
-            color: var(--accent);
-            cursor: pointer;
-            font-size: 1.2rem;
-            padding: 5px;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 30px 0;
-            color: var(--dark);
-            font-size: 0.9rem;
-            margin-top: 40px;
-        }
-        
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .stat-box {
-            background: white;
-            border-radius: 10px;
-            padding: 15px 25px;
-            box-shadow: var(--shadow);
-            min-width: 150px;
-        }
-        
-        .stat-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary);
-            margin: 5px 0;
-        }
-        
-        .stat-label {
-            font-size: 0.9rem;
-            color: #7f8c8d;
-        }
-        
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .question-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .controls {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .stats {
-                flex-direction: column;
-                align-items: center;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .header-content {
-                padding: 0 10px;
-            }
-            
-            .grade-selector {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .question-card {
-                padding: 20px 15px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="../css/math-ques.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <div class="header-content">
-                <div class="logo">
-                    <svg class="logo-svg" viewBox="0 0 48 48">
-                        <path d="M42,12v26c0,2.2-1.8,4-4,4H10c-2.2,0-4-1.8-4-4V12c0-2.2,1.8-4,4-4h28C40.2,8,42,9.8,42,12z"/>
-                        <path fill="#fff" d="M14,16h20v4H14V16z M14,24h20v4H14V24z M14,32h14v4H14V32z"/>
-                    </svg>
-                    <h1>高中数学题库</h1>
-                </div>
-                <p class="subtitle">北师大版 | 高一数学 | 知识点全覆盖 | 智能错题本</p>
-                <div class="grade-selector">
-                    <button class="grade-btn active">高一</button>
-                    <button class="grade-btn">高二</button>
-                    <button class="grade-btn">高三</button>
-                </div>
-            </div>
-        </header>
+<header class="header">
+    <div class="header-content">
+        <div class="logo">
+            <h1>高中数学题库</h1>
+        </div>
+        <p class="subtitle">北师大版 | 高一数学 | Github@shuo156 </p>
+        <div class="grade-selector">
+            <button class="grade-btn active">高一</button>
+            <button class="grade-btn">高二</button>
+            <button class="grade-btn">高三</button>
+        </div>
+    </div>
+</header>
 
         <div class="controls">
             <button class="btn" id="random-btn">
@@ -463,11 +64,179 @@
             </ul>
         </div>
 
-        <footer>
-            <p>© 2023 高中数学题库 - 北师大版 | 为高效学习而设计</p>
-            <p>覆盖高一数学所有知识点 | 持续更新中</p>
+        <footer class="footer">
+            <p>高中数学题库(北师大版) | 为高效学习而设计</p>
+            <p>覆盖高一数学知识点 | 持续更新中</p>
+            <a href="https://shuo156.github.io/html/mhtml/fun">函数专区(开发)</a>
         </footer>
     </div>
-    <script src="https://shuo156.github.io/js/ques.js"></script>
+
+    <!-- 引入题目数据 -->
+    <script src="../js/math-ques.js"></script>
+    
+    <!-- 主逻辑 -->
+    <script>
+        // 用户答题数据
+        let userData = {
+            completed: 0,
+            correct: 0,
+            wrongList: []
+        };
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            renderQuestions();
+            updateStats();
+            
+            // 年级选择事件
+            document.querySelectorAll('.grade-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (!this.classList.contains('active')) {
+                        document.querySelector('.grade-btn.active').classList.remove('active');
+                        this.classList.add('active');
+                        
+                        if (this.textContent === '高二' || this.textContent === '高三') {
+                            alert('高二和高三内容正在开发中，敬请期待！');
+                        }
+                    }
+                });
+            });
+            
+            // 查看错题本事件
+            document.getElementById('wrong-notes-btn').addEventListener('click', function() {
+                renderWrongNotes();
+                document.getElementById('wrong-notes').style.display = 'block';
+            });
+            
+            // 随机出题事件
+            document.getElementById('random-btn').addEventListener('click', function() {
+                renderQuestions(true);
+                document.getElementById('wrong-notes').style.display = 'none';
+            });
+            
+            // 重置进度事件
+            document.getElementById('reset-btn').addEventListener('click', function() {
+                if (confirm('确定要重置所有进度吗？此操作不可撤销。')) {
+                    userData = {
+                        completed: 0,
+                        correct: 0,
+                        wrongList: []
+                    };
+                    renderQuestions();
+                    updateStats();
+                    document.getElementById('wrong-notes').style.display = 'none';
+                    alert('进度已重置！');
+                }
+            });
+        });
+
+        // 渲染题目
+        function renderQuestions(randomize = false) {
+            const container = document.getElementById('question-container');
+            container.innerHTML = '';
+            
+            let qList = [...questions];
+            
+            if (randomize) {
+                // 随机排序题目
+                qList.sort(() => Math.random() - 0.5);
+            }
+            
+            qList.forEach(q => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.innerHTML = `
+                    <div class="question-header">
+                        <div class="question-id">${q.id}</div>
+                        <div class="question-type">${q.type}</div>
+                    </div>
+                    <div class="question-content">${q.content}</div>
+                    <div class="answer-section">
+                        <input type="text" class="answer-input" id="answer-${q.id}" placeholder="请输入答案">
+                        <button class="submit-btn" onclick="checkAnswer(${q.id})">提交答案</button>
+                        <div class="feedback" id="feedback-${q.id}"></div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // 检查答案
+        function checkAnswer(qId) {
+            const userAnswer = document.getElementById(`answer-${qId}`).value.trim();
+            const feedback = document.getElementById(`feedback-${qId}`);
+            const question = questions.find(q => q.id === qId);
+            
+            if (!userAnswer) {
+                feedback.textContent = "请输入答案！";
+                feedback.className = "feedback incorrect";
+                return;
+            }
+            
+            if (userAnswer === question.answer) {
+                feedback.textContent = "✓ 回答正确！";
+                feedback.className = "feedback correct";
+                userData.correct++;
+            } else {
+                feedback.textContent = `✗ 回答错误！正确答案: ${question.answer}`;
+                feedback.className = "feedback incorrect";
+                
+                // 添加到错题本（如果尚未添加）
+                if (!userData.wrongList.includes(qId)) {
+                    userData.wrongList.push(qId);
+                }
+            }
+            
+            userData.completed++;
+            updateStats();
+        }
+
+        // 渲染错题本
+        function renderWrongNotes() {
+            const wrongList = document.getElementById('wrong-list');
+            wrongList.innerHTML = '';
+            
+            if (userData.wrongList.length === 0) {
+                wrongList.innerHTML = '<li class="wrong-item"><div class="wrong-question">暂无错题，继续保持！</div></li>';
+                return;
+            }
+            
+            userData.wrongList.forEach(qId => {
+                const q = questions.find(q => q.id === qId);
+                const li = document.createElement('li');
+                li.className = 'wrong-item';
+                li.innerHTML = `
+                    <div class="wrong-question">
+                        <strong>${q.id}. [${q.type}]</strong> ${q.content}
+                        <div><strong>正确答案:</strong> ${q.answer}</div>
+                    </div>
+                    <button class="remove-btn" onclick="removeWrongItem(${qId})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                wrongList.appendChild(li);
+            });
+        }
+
+        // 从错题本移除
+        function removeWrongItem(qId) {
+            const index = userData.wrongList.indexOf(qId);
+            if (index !== -1) {
+                userData.wrongList.splice(index, 1);
+                renderWrongNotes();
+                updateStats();
+            }
+        }
+
+        // 更新统计信息
+        function updateStats() {
+            document.getElementById('completed-count').textContent = userData.completed;
+            document.getElementById('wrong-count').textContent = userData.wrongList.length;
+            
+            const accuracy = userData.completed > 0 ? 
+                Math.round((userData.correct / userData.completed) * 100) : 0;
+            document.getElementById('accuracy-rate').textContent = `${accuracy}%`;
+        }
+    </script>
 </body>
 </html>
