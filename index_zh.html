@@ -63,7 +63,7 @@
     <h2>语言</h2>
     <a href="https://shuo156.github.io/index_en.html">English</a>
     
-    <!-- 暗色区域 -->
+    <!-- 暗色切换区域 -->
 <div class="dark-mode-toggle-container">
     <h2>显示模式</h2>
     <button id="dark-mode-toggle">切换深色模式</button>
@@ -93,13 +93,12 @@
         updateDateTime();
         // 每秒更新一次
         setInterval(updateDateTime, 1000);
-    </script>
-    
-    <!-- 暗色模式切换动画脚本 -->
-    <script>
-        // 暗色模式切换功能
-        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        
+        // 主题切换功能
+        const themeToggle = document.getElementById('theme-toggle');
         const body = document.body;
+        const canvas = document.getElementById('animation-canvas');
+        const ctx = canvas.getContext('2d');
         
         // 检查本地存储中是否有暗色模式偏好
         const isDarkMode = localStorage.getItem('darkMode') === 'true';
@@ -107,59 +106,99 @@
         // 根据偏好设置初始模式
         if (isDarkMode) {
             body.classList.add('dark-mode');
-            darkModeToggle.textContent = '切换浅色模式';
+            themeToggle.textContent = '切换浅色模式';
         }
         
-        // 创建动画元素
-        const animationElement = document.createElement('div');
-        animationElement.classList.add('theme-switch-animation');
-        animationElement.style.display = 'none';
-        document.body.appendChild(animationElement);
-        
-        // 切换暗色模式
-        darkModeToggle.addEventListener('click', function(e) {
+        // 主题切换动画
+        function animateThemeSwitch(e, isToDark) {
+            // 设置Canvas尺寸
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            canvas.style.display = 'block';
+            
             // 获取点击位置
-            const rect = darkModeToggle.getBoundingClientRect();
-            const centerX = rect.left + rect.width/2;
-            const centerY = rect.top + rect.height/2;
+            const clickX = e.clientX;
+            const clickY = e.clientY;
             
-            // 设置动画起点
-            animationElement.style.left = centerX + 'px';
-            animationElement.style.top = centerY + 'px';
-            animationElement.style.transformOrigin = 'center';
+            // 最大半径（覆盖整个屏幕）
+            const maxRadius = Math.sqrt(
+                Math.max(
+                    Math.pow(clickX, 2) + Math.pow(clickY, 2),
+                    Math.pow(canvas.width - clickX, 2) + Math.pow(clickY, 2),
+                    Math.pow(clickX, 2) + Math.pow(canvas.height - clickY, 2),
+                    Math.pow(canvas.width - clickX, 2) + Math.pow(canvas.height - clickY, 2)
+                )
+            );
             
-            // 显示动画元素
-            animationElement.style.display = 'block';
+            // 动画开始时间
+            const startTime = Date.now();
+            const duration = 800; // 动画持续时间
             
-            // 根据当前模式决定动画类型
-            const isDark = body.classList.contains('dark-mode');
-            
-            if (isDark) {
-                // 从深色切换到浅色
-                animationElement.style.background = '#16213e';
-                animationElement.style.animation = 'shrink 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards';
-            } else {
-                // 从浅色切换到深色
-                animationElement.style.background = '#ffffff';
-                animationElement.style.animation = 'expand 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+            // 动画帧
+            function animate() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const radius = progress * maxRadius;
+                
+                // 清除Canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // 绘制当前主题内容
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.fillStyle = isToDark ? '#1a1a2e' : '#F0F8FF';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // 创建圆形路径
+                ctx.beginPath();
+                ctx.arc(clickX, clickY, radius, 0, Math.PI * 2);
+                
+                // 使用异或操作实现部分变色效果
+                ctx.globalCompositeOperation = 'xor';
+                ctx.fillStyle = isToDark ? '#F0F8FF' : '#1a1a2e';
+                ctx.fill();
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    // 动画完成后切换主题
+                    body.classList.toggle('dark-mode');
+                    themeToggle.textContent = body.classList.contains('dark-mode') 
+                        ? '切换浅色模式' 
+                        : '切换深色模式';
+                    localStorage.setItem('darkMode', body.classList.contains('dark-mode'));
+                    
+                    // 隐藏Canvas
+                    setTimeout(() => {
+                        canvas.style.display = 'none';
+                    }, 100);
+                }
             }
             
-            // 在动画中途切换主题
-            setTimeout(() => {
-                body.classList.toggle('dark-mode');
-                darkModeToggle.textContent = body.classList.contains('dark-mode') 
-                    ? '切换浅色模式' 
-                    : '切换深色模式';
-                
-                // 保存用户偏好
-                localStorage.setItem('darkMode', !isDark);
-            }, 400);
-            
-            // 动画完成后隐藏元素
-            setTimeout(() => {
-                animationElement.style.display = 'none';
-            }, 800);
+            animate();
+        }
+        
+        // 绑定切换事件
+        themeToggle.addEventListener('click', function(e) {
+            const isToDark = !body.classList.contains('dark-mode');
+            animateThemeSwitch(e, isToDark);
         });
+        
+        // 初始化Canvas尺寸
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        
+        // 初始化评论区
+        const thread = document.getElementById('cusdis_thread');
+        if (thread) {
+            thread.dataset.pageId = location.pathname;
+            thread.dataset.pageUrl = location.href;
+            thread.dataset.pageTitle = document.title;
+        }
     </script>
 </body>
 </html>
