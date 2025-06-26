@@ -1,0 +1,42 @@
+/* 自定义字体 */
+@font-face {
+    font-family: 'CustomFont';
+    src: url('https://shuo156.github.io/font/fontmain.ttf') format('truetype');
+    font-display: swap;
+}
+
+/* 基础样式和渐变背景 */
+body {
+    font-family: 'CustomFont', sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: linear-gradient(to bottom,
+        #F0F8FF,    /* 爱丽丝蓝 */
+        #FFFFFF     /* 白色 */
+    );
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* 添加文本居中 */
+    text-align: center;
+}
+
+/* 文本样式 */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'CustomFont', sans-serif;
+    text-align: center;
+}
+
+/* 图片居中 */
+img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
+}
+
+/* 日期时间显示样式 */
+.datetime {
+    text-align: center;
+    margin: 20px 0;
+}
