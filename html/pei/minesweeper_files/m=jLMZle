@@ -1,0 +1,17 @@
+try{
+qs_y("sy19d");var qs_cAh=qs_M("jLMZle");var qs_dAh=qs_M("uE6Wcc");
+qs_x();
+}catch(e){_DumpException(e)}
+try{
+qs_y("sy19e");var qs_0yh={gplus:"//plus.google.com/share?url=",twitter:"//twitter.com/home?status=",facebook:"//www.facebook.com/sharer/sharer.php?u="},qs_q3=function(a){qs_T.call(this,a.Ua);this.Ba="";this.Aa=this.getData("funbox").Db();this.Ma=this.La("v8ioAf");this.Fa=this.La("KC8Ekf");this.Da=this.La("eWsfnd");this.Ia=this.La("WELAMd");this.Ga=this.La("Csy1P");this.$=this.La("haAclf");this.Ja=this.La("YOuPgf");this.wa=this.getData("url").Db();qs_1yh(this)};qs_g(qs_q3,qs_T);qs_q3.Oa=qs_T.Oa;
+qs_q3.prototype.Ca=function(a){this.Ba=a;qs_1yh(this)};var qs_1yh=function(a){qs_Tc(a.Fa.el(),qs_0yh.gplus+qs_lb(a.wa));qs_Tc(a.Ma.el(),qs_0yh.twitter+qs_lb(a.Ba+" "+a.wa));qs_Tc(a.Da.el(),qs_0yh.facebook+qs_lb(a.wa));qs_Tc(a.Ia.el(),"mailto:?subject="+a.Ba+"&body="+qs_lb(a.wa));a.La("yyI5yf").el().value=a.wa};qs_a=qs_q3.prototype;qs_a.BOb=function(){qs_ke(this.$.el())?this.$z():(qs_c(this.Ja.el(),{data:{fbx:this.Aa}}),this.Wkb())};qs_a.zLb=function(){};
+qs_a.$z=function(){var a=this;return qs_ke(this.$.el())?(qs_8i(this.$,"share-in"),qs_7i(this.$,"share-out"),qs_A.setTimeout(function(){a.$.hide()},400),!0):!1};qs_a.Wkb=function(){qs_ke(this.$.el())||(this.$.show(),qs_7i(this.$,"share-in"),qs_8i(this.$,"share-out"))};qs_a.iua=function(a){a=a.Zc.el();qs_c(a,{data:{fbx:this.Aa}});qs__i(a.href,{menubar:!1,toolbar:!1,resizable:!0,scrollbars:!0,height:600,width:600})};
+qs_a.XLb=function(){var a=this.La("b3v4Yc"),b=this.La("yyI5yf").el();qs_6i(a,"show-copy")?(qs_8i(a,"show-copy"),b.blur()):(qs_7i(a,"show-copy"),b.focus(),b.select(),qs_c(this.Ga.el(),{data:{fbx:this.Aa}}))};qs_P(qs_q3.prototype,"biWynf",function(){return this.XLb});qs_P(qs_q3.prototype,"uztZfd",function(){return this.iua});qs_P(qs_q3.prototype,"tpqltf",function(){return this.Wkb});qs_P(qs_q3.prototype,"reXHN",function(){return this.$z});qs_P(qs_q3.prototype,"wmI1xf",function(){return this.zLb}); qs_P(qs_q3.prototype,"mp3e5d",function(){return this.BOb});qs_$(qs_cAh,qs_q3);
+
+qs_x();
+}catch(e){_DumpException(e)}
+try{
+qs_y("jLMZle");
+qs_x();
+}catch(e){_DumpException(e)}
+// Google Inc.
