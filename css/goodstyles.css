@@ -12,34 +12,254 @@ body {
     padding: 0;
     min-height: 100vh;
     background: linear-gradient(to bottom,
-        #FDC0B4,     /* 说不上来，不打注释了 */
-        #FBCACA,
-        #F3E7FF,
-        #EAE8FF,
-        #E2E9FF    /* 哟西，大大的好看 */
+        #FDC0B4,     /* 粉桃初绽 */
+        #FBCACA,     /* 荷瓣轻摇 */
+        #F3E7FF,     /* 紫藤垂露 */
+        #EAE8FF,     /* 青瓷淡雅 */
+        #E2E9FF      /* 碧空如洗 */
     );
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* 添加文本居中 */
     text-align: center;
+    color: #5a3921; /* 深棕色文字，传统中国风 */
+    position: relative;
+    overflow-x: hidden;
 }
 
-/* 文本样式 */
-h1, h2, h3, h4, h5, h6 {
+/* 添加中国风装饰元素 */
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M20,20 Q40,5 60,20 T100,20 L100,80 Q80,95 60,80 T20,80 Z" fill="none" stroke="rgba(253,192,180,0.2)" stroke-width="0.5"/></svg>');
+    z-index: -1;
+    opacity: 0.3;
+}
+
+/* 主容器 */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e8c4b8;
+    position: relative;
+    z-index: 1;
+    margin-top: 30px;
+}
+
+/* 标题样式 - 中国风 */
+h1 {
     font-family: 'CustomFont', sans-serif;
     text-align: center;
+    color: #8b0000; /* 深红色 */
+    margin-bottom: 30px;
+    position: relative;
+    padding-bottom: 15px;
+    font-size: 2.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* 图片居中 */
-img {
-    display: block;
-    margin: 0 auto;
-    max-width: 100%;
-    height: auto;
+h1::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 3px;
+    background: linear-gradient(to right, #FDC0B4, #8b0000, #FDC0B4);
+    border-radius: 3px;
 }
 
-/* 日期时间显示样式 */
+/* 精美的时间显示区域 */
 .datetime {
     text-align: center;
-    margin: 20px 0;
+    margin: 30px auto;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8e0d4, #f0c9b8);
+    border-radius: 12px;
+    color: #5a3921;
+    font-size: 1.8rem;
+    font-weight: bold;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.1),
+        inset 0 0 10px rgba(255, 255, 255, 0.5);
+    border: 2px solid #e8b4a8;
+    position: relative;
+    overflow: hidden;
+}
+
+.datetime::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="20" viewBox="0 0 100 20"><path d="M0,10 Q25,15 50,10 T100,10" fill="none" stroke="rgba(139,0,0,0.2)" stroke-width="1"/></svg>') repeat;
+    z-index: -1;
+    opacity: 0.5;
+}
+
+/* 链接样式 - 中国风 */
+a {
+    display: inline-block;
+    color: #8b0000;
+    text-decoration: none;
+    margin: 10px 0;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    background: rgba(253, 192, 180, 0.3);
+    border: 1px solid #e8b4a8;
+    min-width: 220px;
+    position: relative;
+}
+
+a:hover {
+    background: rgba(139, 0, 0, 0.1);
+    color: #5a0000;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+a::before {
+    content: "❧";
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    opacity: 0.6;
+}
+
+/* 列表样式 */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 30px 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+ul li {
+    background: linear-gradient(135deg, #f8e0d4, #f0c9b8);
+    border-radius: 10px;
+    padding: 15px 25px;
+    transition: all 0.3s ease;
+    min-width: 250px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e8b4a8;
+}
+
+ul li:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(135deg, #f8e0d4, #e8b4a8);
+}
+
+/* 图片样式 */
+img {
+    display: block;
+    margin: 25px auto;
+    max-width: 90%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 2px solid #e8b4a8;
+}
+
+img:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* 赞助商区域 */
+.sponsor-section {
+    background: linear-gradient(135deg, #f8e0d4, #f0c9b8);
+    padding: 25px;
+    border-radius: 12px;
+    margin: 40px 0;
+    border: 2px solid #e8b4a8;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* 底部信息 */
+.footer-info {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 2px dashed #e8b4a8;
+    color: #5a3921;
+    font-size: 1rem;
+    line-height: 1.8;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+        margin: 15px;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    .datetime {
+        font-size: 1.4rem;
+        padding: 15px;
+    }
+    
+    ul {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    ul li {
+        width: 90%;
+    }
+    
+    a {
+        min-width: 80%;
+    }
+}
+
+/* 中国风装饰边框 */
+.chinese-border {
+    position: relative;
+    padding: 30px;
+    margin: 40px 0;
+    border: 2px solid #8b0000;
+    border-radius: 5px;
+}
+
+.chinese-border::before, .chinese-border::after {
+    content: "❦";
+    position: absolute;
+    font-size: 2rem;
+    color: #8b0000;
+    opacity: 0.6;
+}
+
+.chinese-border::before {
+    top: -15px;
+    left: -15px;
+}
+
+.chinese-border::after {
+    bottom: -15px;
+    right: -15px;
 }
