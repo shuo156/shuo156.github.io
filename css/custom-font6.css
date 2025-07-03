@@ -11,32 +11,196 @@ body {
     margin: 0;
     padding: 0;
     min-height: 100vh;
-    background: linear-gradient(to bottom,
-        #F0F8FF,    /* 爱丽丝蓝 */
-        #FFFFFF     /* 白色 */
+    background: linear-gradient(135deg,
+        #e0f7fa,    /* 浅蓝绿色 */
+        #f5f5f5,    /* 浅灰色 */
+        #fff8e1     /* 浅黄色 */
     );
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* 添加文本居中 */
     text-align: center;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
 }
 
-/* 文本样式 */
-h1, h2, h3, h4, h5, h6 {
+/* 容器样式 */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* 标题样式 */
+h1 {
     font-family: 'CustomFont', sans-serif;
     text-align: center;
+    color: #2c3e50;
+    margin-bottom: 25px;
+    position: relative;
+    padding-bottom: 10px;
 }
 
-/* 图片居中 */
-img {
-    display: block;
-    margin: 0 auto;
-    max-width: 100%;
-    height: auto;
+h1:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(to right, #3498db, #2ecc71);
+    border-radius: 3px;
 }
 
-/* 日期时间显示样式 */
+/* 专门的时间显示区域 */
 .datetime {
     text-align: center;
+    margin: 20px auto;
+    padding: 15px;
+    background: linear-gradient(135deg, #74ebd5, #9face6);
+    border-radius: 12px;
+    color: white;
+    font-size: 1.4rem;
+    font-weight: bold;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* 专门的天气显示区域 */
+.weather-info {
+    text-align: center;
+    margin: 20px auto;
+    padding: 15px;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    border-radius: 12px;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* 天气图标 */
+.weather-icon {
+    font-size: 2rem;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+/* 链接样式 */
+a {
+    display: inline-block;
+    color: #2980b9;
+    text-decoration: none;
+    margin: 8px 0;
+    padding: 8px 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    position: relative;
+}
+
+a:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #3498db;
+    transition: width 0.3s ease;
+}
+
+a:hover {
+    color: #e74c3c;
+    background-color: rgba(52, 152, 219, 0.1);
+    transform: translateY(-2px);
+}
+
+a:hover:after {
+    width: 100%;
+}
+
+/* 列表样式 */
+ul {
+    list-style: none;
+    padding: 0;
     margin: 20px 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+}
+
+ul li {
+    background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+    border-radius: 10px;
+    padding: 12px 20px;
+    transition: all 0.3s ease;
+    min-width: 200px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+ul li:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* 图片样式 */
+img {
+    display: block;
+    margin: 20px auto;
+    max-width: 90%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+img:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* 赞助商区域 */
+.sponsor-section {
+    background: linear-gradient(135deg, #d4fc79, #96e6a1);
+    padding: 20px;
+    border-radius: 12px;
+    margin: 30px 0;
+}
+
+/* 底部信息 */
+.footer-info {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+/* 响应式设计 */
+@media (max-width: 600px) {
+    .container {
+        padding: 15px;
+    }
+    
+    ul {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    ul li {
+        width: 90%;
+    }
+    
+    .datetime, .weather-info {
+        font-size: 1.1rem;
+    }
 }
