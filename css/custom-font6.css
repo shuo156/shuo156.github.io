@@ -1,3 +1,16 @@
+/* CSS变量定义 */
+:root {
+    --primary-gradient: linear-gradient(135deg, #74ebd5, #9face6);
+    --secondary-gradient: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    --background-gradient: linear-gradient(135deg, #e0f7fa, #f5f5f5, #fff8e1);
+    --box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    --border-radius: 15px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --container-width: 1200px;
+    --text-primary: #2c3e50;
+    --text-secondary: #7f8c8d;
+}
+
 /* 自定义字体 */
 @font-face {
     font-family: 'CustomFont';
@@ -6,201 +19,295 @@
 }
 
 /* 基础样式和渐变背景 */
-body {
-    font-family: 'CustomFont', sans-serif;
+* {
     margin: 0;
     padding: 0;
-    min-height: 100vh;
-    background: linear-gradient(135deg,
-        #e0f7fa,    /* 浅蓝绿色 */
-        #f5f5f5,    /* 浅灰色 */
-        #fff8e1     /* 浅黄色 */
-    );
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #333;
-    line-height: 1.6;
-    padding: 20px;
+    box-sizing: border-box;
 }
 
-/* 容器样式 */
+body {
+    font-family: 'CustomFont', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    min-height: 100vh;
+    background: var(--background-gradient);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: var(--text-primary);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+}
+
+/* 主容器样式 */
 .container {
-    max-width: 800px;
+    width: 100%;
+    max-width: var(--container-width);
     margin: 0 auto;
-    padding: 20px;
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 15px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
 }
 
 /* 标题样式 */
 h1 {
-    font-family: 'CustomFont', sans-serif;
     text-align: center;
-    color: #2c3e50;
-    margin-bottom: 25px;
+    color: var(--text-primary);
+    margin-bottom: 2rem;
     position: relative;
-    padding-bottom: 10px;
+    padding-bottom: 1rem;
+    font-size: 2.5rem;
 }
 
-h1:after {
+h1::after {
     content: '';
     position: absolute;
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
     width: 80px;
-    height: 3px;
-    background: linear-gradient(to right, #3498db, #2ecc71);
-    border-radius: 3px;
+    height: 4px;
+    background: var(--primary-gradient);
+    border-radius: 2px;
 }
 
-/* 专门的时间显示区域 */
+/* 信息显示区域共同样式 */
+.info-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+    margin: 2rem 0;
+}
+
+/* 时间显示区域 */
 .datetime {
-    text-align: center;
-    margin: 20px auto;
-    padding: 15px;
-    background: linear-gradient(135deg, #74ebd5, #9face6);
-    border-radius: 12px;
+    width: 100%;
+    max-width: 500px;
+    padding: 1.5rem;
+    background: var(--primary-gradient);
+    border-radius: var(--border-radius);
     color: white;
     font-size: 1.4rem;
     font-weight: bold;
-    width: 90%;
-    max-width: 500px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
 }
 
-/* 专门的天气显示区域 */
+.datetime:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* 天气显示区域 */
 .weather-info {
-    text-align: center;
-    margin: 20px auto;
-    padding: 15px;
-    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-    border-radius: 12px;
+    width: 100%;
+    max-width: 500px;
+    padding: 1.5rem;
+    background: var(--secondary-gradient);
+    border-radius: var(--border-radius);
     color: white;
     font-size: 1.2rem;
     font-weight: bold;
-    width: 90%;
-    max-width: 500px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
 }
 
-/* 天气图标 */
-.weather-icon {
-    font-size: 2rem;
-    margin-right: 10px;
-    vertical-align: middle;
+.weather-info:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
 }
 
 /* 链接样式 */
 a {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     color: #2980b9;
     text-decoration: none;
-    margin: 8px 0;
-    padding: 8px 15px;
+    padding: 0.8rem 1.5rem;
     border-radius: 8px;
-    transition: all 0.3s ease;
-    font-weight: bold;
-    position: relative;
-}
-
-a:after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: #3498db;
-    transition: width 0.3s ease;
+    transition: var(--transition);
+    background: rgba(41, 128, 185, 0.1);
 }
 
 a:hover {
+    background: rgba(41, 128, 185, 0.2);
+    transform: translateX(5px);
     color: #e74c3c;
-    background-color: rgba(52, 152, 219, 0.1);
-    transform: translateY(-2px);
-}
-
-a:hover:after {
-    width: 100%;
 }
 
 /* 列表样式 */
 ul {
     list-style: none;
     padding: 0;
-    margin: 20px 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
+    margin: 2rem 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
 }
 
 ul li {
-    background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
-    border-radius: 10px;
-    padding: 12px 20px;
-    transition: all 0.3s ease;
-    min-width: 200px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: var(--primary-gradient);
+    border-radius: var(--border-radius);
+    padding: 1.2rem 1.5rem;
+    color: white;
+    transition: var(--transition);
+    box-shadow: var(--box-shadow);
 }
 
 ul li:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
 }
 
 /* 图片样式 */
 img {
     display: block;
-    margin: 20px auto;
-    max-width: 90%;
+    width: 100%;
+    max-width: 100%;
     height: auto;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    object-fit: cover;
 }
 
 img:hover {
     transform: scale(1.03);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
 }
 
 /* 赞助商区域 */
 .sponsor-section {
+    margin: 3rem 0;
+    padding: 2rem;
     background: linear-gradient(135deg, #d4fc79, #96e6a1);
-    padding: 20px;
-    border-radius: 12px;
-    margin: 30px 0;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+}
+
+.sponsor-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
 }
 
 /* 底部信息 */
 .footer-info {
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
-    color: #7f8c8d;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    color: var(--text-secondary);
     font-size: 0.9rem;
+    text-align: center;
+}
+
+/* 添加动画效果 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.5s ease-out forwards;
 }
 
 /* 响应式设计 */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+
     .container {
-        padding: 15px;
+        padding: 1.5rem;
     }
-    
-    ul {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    ul li {
-        width: 90%;
-    }
-    
-    .datetime, .weather-info {
+
+    .datetime,
+    .weather-info {
         font-size: 1.1rem;
+        padding: 1rem;
     }
+
+    ul {
+        grid-template-columns: 1fr;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+}
+
+/* 添加深色模式支持 */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text-primary: #f5f5f5;
+        --text-secondary: #a0a0a0;
+    }
+
+    body {
+        background: linear-gradient(135deg, #1a1a1a, #2d2d2d, #1a1a1a);
+    }
+
+    .container {
+        background: rgba(30, 30, 30, 0.95);
+    }
+
+    a {
+        color: #74ebd5;
+    }
+
+    a:hover {
+        color: #9face6;
+    }
+}
+
+/* 优化加载性能 */
+img {
+    content-visibility: auto;
+    contain: content;
+}
+
+/* 添加滚动平滑效果 */
+html {
+    scroll-behavior: smooth;
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-gradient);
+    border-radius: 5px;
+}
+
+/* 文本选择效果 */
+::selection {
+    background: rgba(116, 235, 213, 0.3);
+    color: var(--text-primary);
 }
