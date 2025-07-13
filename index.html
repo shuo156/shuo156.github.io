@@ -3,15 +3,19 @@
   <head>
     <meta charset="UTF-8">
     <title>Redirecting...</title>
+    <link rel="icon" href="https://shuo156.github.io/favicon.png" type="image/x-icon">
     <script>
        // 获取语言
        var userLang = navigator.language || navigator.userLanguage; 
 
        if (userLang.indexOf('zh') !== -1) {
-           window.location.href = 'index_zh.html'; // 中文版
+           window.location.href = 'index_zh.html'; // 跳转中文
        } else {
-           window.location.href = 'index_en.html'; // 默认英文版
+           window.location.href = 'index_en.html'; // 跳转英文
        }
     </script>
+  </head>
+  <body>
+    <p>Redirecting...</p>
   </body>
 </html>
