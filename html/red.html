@@ -1,1 +1,164 @@
-111
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI 服务平台</title>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    /* Reset & Base */
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; color:#333; background:#f5f7fa; }
+    a { text-decoration:none; color: inherit; }
+    button { cursor:pointer; border:none; }
+
+    /* Container */
+    .container { max-width: 960px; margin: auto; padding: 1rem; }
+
+    /* Header */
+    .header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 0;
+    }
+    .logo { font-size: 1.5rem; font-weight: bold; color: #4A90E2; }
+    .nav a { margin-left: 1rem; font-size: .9rem; color: #666; }
+
+    /* Main */
+    .main {
+      background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      padding: 2rem; margin-top: 1rem;
+    }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label {
+      display: block; margin-bottom: .5rem; font-weight: 500;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%; padding: .75rem 1rem; border: 1px solid #ddd;
+      border-radius: 8px; font-size: 1rem;
+    }
+    .btn {
+      display: inline-flex; align-items: center;
+      background: #4A90E2; color: #fff; padding: .75rem 1.5rem;
+      border-radius: 8px; font-size: 1rem; transition: background .3s;
+    }
+    .btn i { margin-right: .5rem; }
+    .btn:hover { background: #357ABD; }
+
+    /* Chat area */
+    .chat-container {
+      margin-top: 2rem; max-height: 400px; overflow-y: auto;
+      border: 1px solid #eee; border-radius: 8px; padding: 1rem;
+      background: #fafafa;
+    }
+    .msg { margin-bottom: 1rem; display: flex; }
+    .msg.user .bubble { background: #4A90E2; color:#fff; align-self: flex-end; }
+    .msg.ai .bubble { background: #eee; color:#333; align-self: flex-start; }
+    .bubble {
+      max-width: 70%; padding: .75rem 1rem; border-radius: 12px;
+      position: relative;
+    }
+    .bubble::after {
+      content: '';
+      position: absolute; width: 0; height: 0;
+      border: 8px solid transparent;
+    }
+    .msg.user .bubble::after {
+      border-left-color: #4A90E2; right: -16px; top: 12px;
+    }
+    .msg.ai .bubble::after {
+      border-right-color: #eee; left: -16px; top: 12px;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center; margin: 2rem 0 .5rem; color:#aaa;
+      font-size: .85rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .btn { width: 100%; justify-content: center; }
+      .chat-container { max-height: 300px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo"><i class="fas fa-robot"></i> AI 平台</div>
+      <nav class="nav">
+        <a href="#">关于</a>
+        <a href="#">文档</a>
+        <a href="#">帮助</a>
+      </nav>
+    </header>
+
+    <!-- Main form -->
+    <section class="main">
+      <div class="form-group">
+        <label for="apiKey"><i class="fas fa-key"></i> API Key</label>
+        <input type="text" id="apiKey" placeholder="请输入您的 API Key">
+      </div>
+      <div class="form-group">
+        <label for="provider"><i class="fas fa-server"></i> 服务商</label>
+        <select id="provider">
+          <option value="openai">OpenAI</option>
+          <option value="azure">Azure OpenAI</option>
+          <option value="anthropic">Anthropic</option>
+          <!-- 根据需要自行添加 -->
+        </select>
+      </div>
+      <button class="btn" id="sendBtn">
+        <i class="fas fa-paper-plane"></i> 发送
+      </button>
+
+      <!-- 聊天内容区 -->
+      <div class="chat-container" id="chatContainer">
+        <!-- 消息项示例：
+        <div class="msg user"><div class="bubble">你好</div></div>
+        <div class="msg ai"><div class="bubble">Hello!</div></div>
+        -->
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      © 2025 AI 平台 • All Rights Reserved
+    </footer>
+  </div>
+
+  <!-- 可自行替换为实际逻辑 -->
+  <script>
+    const sendBtn = document.getElementById('sendBtn');
+    const chat = document.getElementById('chatContainer');
+
+    function appendMessage(text, sender) {
+      const msgEl = document.createElement('div');
+      msgEl.className = 'msg ' + sender;
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.textContent = text;
+      msgEl.appendChild(bubble);
+      chat.appendChild(msgEl);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    sendBtn.addEventListener('click', () => {
+      const apiKey = document.getElementById('apiKey').value.trim();
+      const provider = document.getElementById('provider').value;
+      if (!apiKey) {
+        alert('请填写 API Key');
+        return;
+      }
+      // 模拟发送
+      appendMessage('这是用户输入的示例消息', 'user');
+      appendMessage('这是 AI 返回的示例消息', 'ai');
+      // TODO: 在这里根据 apiKey 和 provider 调用对应后端或第三方 API
+    });
+  </script>
+</body>
+</html>
