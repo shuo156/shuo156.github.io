@@ -11,10 +11,14 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#165DFF',
-                        secondary: '#36CFC9',
-                        dark: '#1D2129',
-                        light: '#F2F3F5'
+                        primary: '#2563eb',
+                        secondary: '#eff6ff',
+                        neutral: '#f8fafc',
+                        dark: {
+                            100: '#1e293b',
+                            200: '#0f172a',
+                            300: '#020617'
+                        }
                     },
                     fontFamily: {
                         sans: ['Inter', 'system-ui', 'sans-serif'],
@@ -28,44 +32,38 @@
             .content-auto {
                 content-visibility: auto;
             }
-            .scrollbar-hide {
-                scrollbar-width: none;
-                -ms-overflow-style: none;
+            .scrollbar-thin {
+                scrollbar-width: thin;
             }
-            .scrollbar-hide::-webkit-scrollbar {
-                display: none;
+            .scrollbar-thin::-webkit-scrollbar {
+                width: 4px;
+            }
+            .scrollbar-thin::-webkit-scrollbar-thumb {
+                background-color: rgba(156, 163, 175, 0.5);
+                border-radius: 2px;
             }
         }
     </style>
 </head>
-<body class="bg-gray-50 dark:bg-dark text-gray-800 dark:text-gray-100 min-h-screen">
+<body class="bg-gray-50 dark:bg-dark-300 text-gray-800 dark:text-gray-100 min-h-screen font-sans">
     <div class="flex flex-col h-screen max-h-screen overflow-hidden">
         <!-- 顶部导航 -->
-        <header class="bg-white dark:bg-gray-900 shadow-sm py-3 px-4 md:px-6 flex items-center justify-between border-b border-gray-200 dark:border-gray-800">
-            <div class="flex items-center space-x-2">
-                <<i class="fa fa-comments text-primary text-2xl"></</i>
-                <h1 class="text-xl font-bold text-primary">GPT对话助手</h1>
-            </div>
-            <div class="flex items-center space-x-4">
-                <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                    <<i class="fa fa-moon-o dark:hidden"></</i>
-                    <<i class="fa fa-sun-o hidden dark:inline"></</i>
-                </button>
-                <button id="clear-chat" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                    <<i class="fa fa-trash-o"></</i>
-                </button>
-            </div>
+        <header class="bg-white dark:bg-dark-200 py-3 px-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-center">
+            <h1 class="text-lg md:text-xl font-semibold text-primary flex items-center">
+                <<i class="fa fa-comments-o mr-2"></</i>
+                GPT对话助手
+            </h1>
         </header>
 
         <!-- 对话区域 -->
-        <main class="flex-1 overflow-y-auto p-4 md:p-6 scrollbar-hide" id="chat-container">
-            <div class="max-w-3xl mx-auto space-y-6">
+        <main class="flex-1 overflow-y-auto p-4 scrollbar-thin bg-neutral dark:bg-dark-300" id="chat-container">
+            <div class="max-w-2xl mx-auto space-y-6 py-4">
                 <!-- 欢迎消息 -->
-                <div class="flex items-start space-x-3">
-                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white mr-3">
                         <<i class="fa fa-robot"></</i>
                     </div>
-                    <div class="bg-white dark:bg-gray-800 rounded-lg rounded-tl-none p-4 shadow-sm max-w-[85%]">
+                    <div class="bg-white dark:bg-dark-100 rounded-lg p-4 shadow-sm max-w-[90%]">
                         <p>你好！我是GPT对话助手，有什么可以帮助你的吗？</p>
                     </div>
                 </div>
@@ -73,26 +71,38 @@
         </main>
 
         <!-- 输入区域 -->
-        <footer class="bg-white dark:bg-gray-900 p-4 border-t border-gray-200 dark:border-gray-800">
-            <div class="max-w-3xl mx-auto">
-                <form id="chat-form" class="relative">
+        <footer class="bg-white dark:bg-dark-200 p-4 border-t border-gray-200 dark:border-gray-800">
+            <div class="max-w-2xl mx-auto">
+                <div class="relative">
                     <textarea 
                         id="user-input" 
-                        placeholder="输入你的问题..." 
-                        class="w-full p-4 pr-12 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                        placeholder="输入问题后按Enter发送，Shift+Enter换行..." 
+                        class="w-full p-3 pr-10 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-dark-100 focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none transition-all"
                         rows="3"
                         maxlength="1000"
                     ></textarea>
                     <button 
-                        type="submit" 
-                        class="absolute right-3 bottom-3 p-2 bg-primary text-white rounded-full hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        type="button" 
                         id="send-button"
+                        class="absolute right-2 bottom-2 p-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        <<i class="fa fa-paper-plane"></</i>
+                        <<i class="fa fa-paper-plane-o"></</i>
                     </button>
-                </form>
-                <div class="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
-                    提示：按Shift+Enter换行，按Enter发送消息
+                </div>
+                <div class="flex justify-between mt-2 text-xs text-gray-500 dark:text-gray-400">
+                    <div>
+                        <button id="clear-chat" class="hover:text-primary transition-colors">
+                            <<i class="fa fa-trash-o mr-1"></</i>清空对话
+                        </button>
+                    </div>
+                    <div>
+                        <button id="theme-toggle" class="hover:text-primary transition-colors">
+                            <<i class="fa fa-moon-o dark:hidden mr-1"></</i>
+                            <<i class="fa fa-sun-o hidden dark:inline mr-1"></</i>
+                            <span class="dark:hidden">深色模式</span>
+                            <span class="hidden dark:inline">浅色模式</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </footer>
@@ -101,7 +111,6 @@
     <script>
         // DOM元素
         const chatContainer = document.getElementById('chat-container');
-        const chatForm = document.getElementById('chat-form');
         const userInput = document.getElementById('user-input');
         const sendButton = document.getElementById('send-button');
         const themeToggle = document.getElementById('theme-toggle');
@@ -128,12 +137,12 @@
         clearChat.addEventListener('click', () => {
             if (confirm('确定要清空所有对话吗？')) {
                 chatContainer.innerHTML = `
-                    <div class="max-w-3xl mx-auto space-y-6">
-                        <div class="flex items-start space-x-3">
-                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">
+                    <div class="max-w-2xl mx-auto space-y-6 py-4">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white mr-3">
                                 <<i class="fa fa-robot"></</i>
                             </div>
-                            <div class="bg-white dark:bg-gray-800 rounded-lg rounded-tl-none p-4 shadow-sm max-w-[85%]">
+                            <div class="bg-white dark:bg-dark-100 rounded-lg p-4 shadow-sm max-w-[90%]">
                                 <p>你好！我是GPT对话助手，有什么可以帮助你的吗？</p>
                             </div>
                         </div>
@@ -143,15 +152,26 @@
             }
         });
         
-        // 提交表单
-        chatForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+        // 发送消息
+        sendButton.addEventListener('click', sendMessage);
+        
+        // 支持Shift+Enter换行
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        // 发送消息处理函数
+        async function sendMessage() {
             const message = userInput.value.trim();
             
             if (message) {
                 // 添加用户消息
                 addMessageToChat(message, 'user');
                 userInput.value = '';
+                adjustTextareaHeight();
                 
                 // 发送请求
                 try {
@@ -185,44 +205,32 @@
                     addMessageToChat(`抱歉，发生错误：${error.message}`, 'bot');
                 } finally {
                     sendButton.disabled = false;
-                    sendButton.innerHTML = '<<i class="fa fa-paper-plane"></</i>';
+                    sendButton.innerHTML = '<<i class="fa fa-paper-plane-o"></</i>';
                 }
             }
-        });
-        
-        // 支持Shift+Enter换行
-        userInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                chatForm.dispatchEvent(new Event('submit'));
-            }
-        });
+        }
         
         // 添加消息到聊天窗口
         function addMessageToChat(message, sender) {
-            const maxWidth = sender === 'user' ? 'max-w-[85%] ml-auto' : 'max-w-[85%]';
-            const roundedClass = sender === 'user' ? 'rounded-lg rounded-tr-none' : 'rounded-lg rounded-tl-none';
-            const bgClass = sender === 'user' ? 'bg-primary text-white' : 'bg-white dark:bg-gray-800';
-            const icon = sender === 'user' ? '<<i class="fa fa-user"></</i>' : '<<i class="fa fa-robot"></</i>';
-            const avatarBg = sender === 'user' ? 'bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-200' : 'bg-primary text-white';
+            const chatMessages = chatContainer.querySelector('.max-w-2xl');
+            const isUser = sender === 'user';
             
             const messageHTML = `
-                <div class="flex items-start space-x-3 ${sender === 'user' ? 'flex-row-reverse' : ''}">
-                    <div class="flex-shrink-0 w-8 h-8 rounded-full ${avatarBg} flex items-center justify-center">
-                        ${icon}
+                <div class="flex items-start ${isUser ? 'flex-row-reverse' : ''}">
+                    <div class="flex-shrink-0 w-8 h-8 rounded-full ${isUser ? 'bg-gray-300 dark:bg-gray-600 text-gray-800' : 'bg-primary text-white'} flex items-center justify-center ${isUser ? 'ml-3' : 'mr-3'}">
+                        <<i class="${isUser ? 'fa fa-user' : 'fa fa-robot'}"></</i>
                     </div>
-                    <div class="${bgClass} ${roundedClass} p-4 shadow-sm ${maxWidth}">
+                    <div class="bg-white dark:bg-dark-100 rounded-lg p-4 shadow-sm max-w-[90%] ${isUser ? 'bg-secondary dark:bg-primary/10' : ''}">
                         <p>${formatMessage(message)}</p>
                     </div>
                 </div>
             `;
             
-            const chatMessages = chatContainer.querySelector('.max-w-3xl');
             chatMessages.insertAdjacentHTML('beforeend', messageHTML);
             scrollToBottom();
         }
         
-        // 格式化消息（简单处理换行）
+        // 格式化消息（处理换行）
         function formatMessage(message) {
             return message.replace(/\n/g, '<br>');
         }
@@ -233,10 +241,17 @@
         }
         
         // 自动调整文本框高度
-        userInput.addEventListener('input', () => {
+        function adjustTextareaHeight() {
             userInput.style.height = 'auto';
-            userInput.style.height = Math.min(userInput.scrollHeight, 200) + 'px';
-        });
+            const scrollHeight = userInput.scrollHeight;
+            userInput.style.height = `${Math.min(scrollHeight, 120)}px`;
+        }
+        
+        // 监听输入调整高度
+        userInput.addEventListener('input', adjustTextareaHeight);
+        
+        // 初始化文本框高度
+        adjustTextareaHeight();
     </script>
 </body>
 </html>
