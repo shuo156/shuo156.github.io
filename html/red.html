@@ -3,50 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>story</title>
-    <style>
-  @font-face {
-    font-family: 'CustomFont';
-    src: url("../font/fontmain.ttf") format('truetype');
-    font-display: swap;
-  }
-
-    /* 样式 */
-  body {
-    font-family: 'CustomFont', sans-serif;
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    background: linear-gradient(to bottom,
-        #FFD1DC,
-        #C2E0FF
-    );
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-   /* 文本样式 */
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'CustomFont', sans-serif;
-    text-align: center;
-  }
-
-  /* 图片居中 */
-  img {
-    display: block;
-    margin: 0 auto;
-    max-width: 100%;
-    height: auto;
-  }
+    <title>GPT对话助手</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#36CFC9',
+                        dark: '#1D2129',
+                        light: '#F2F3F5'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .scrollbar-hide {
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+        }
     </style>
 </head>
-  <body>
-  <h2>The Blossoming Path: A Young Citizen's View</h2>
-  <a>  Gazing out at the city skyline, where gleaming towers touch the clouds and bustling streets hum with quiet purpose, I feel a profound sense of belonging. This is the landscape shaped by Socialism with Chinese Characteristics – not a distant theory, but the very ground beneath our feet and the shared journey we navigate. It is a path uniquely forged, resonating deeply with the spirit and aspirations of our people.</a><br>
-  <a>  Its most compelling testament is the remarkable transformation it has orchestrated. Within the span of a generation, my grandparents' tales of scarcity have faded into history. Instead, I witness a nation lifting hundreds of millions from the grip of poverty, an achievement unprecedented in human history. Infrastructure blossoms – high-speed trains stitching provinces together like silver threads, villages gaining access to the digital world. This isn't just growth; it’s a coordinated surge towards shared prosperity, ensuring that progress lifts entire communities, not just a fortunate few. The focus remains unwavering: improving the tangible well-being of ordinary citizens.</a><br>
-  <a>  Beyond bricks and bridges, this path fosters a powerful unity of purpose. It recognizes that true strength lies in harmony – between vibrant urban centers and revitalized countryside, between breathtaking economic momentum and the nurturing cradle of social stability. Ancient wisdom, like the cherished ideal of "harmony is precious" (hé wéi guì), finds modern expression in a society striving for balance. We see it in the green spaces reclaiming industrial areas, in the social safety nets being carefully woven, and in the profound cultural confidence that allows us to embrace our heritage while boldly innovating. This synergy creates a resilient foundation where diverse voices contribute to a collective national narrative.</a><br>
-  <a>  Furthermore, this vision extends beyond our borders, embracing a global perspective of shared destiny. Initiatives fostering international connectivity and cooperation reflect a deep understanding: true progress in our interconnected world is collaborative. It’s about building bridges, not walls; fostering mutual growth, not isolation. This commitment to peaceful development and win-win partnerships positions China not as a solitary giant, but as a responsible stakeholder actively shaping a more balanced future for all nations. It’s the spirit of "a just cause should be pursued for the common good" (dàodào duō zhù) guiding international engagement.</a><br>
-  <a>  To me, Socialism with Chinese Characteristics is not a rigid dogma, but a dynamic, living philosophy. It’s the palpable sense of security walking home at night, the pride in our technological leaps witnessed daily, the shared determination to overcome challenges like environmental protection or technological self-reliance. It’s the framework that channels our collective energy towards national rejuvenation while ensuring the fruits of labor are widely shared. This path, rooted in our reality yet ever-evolving, offers profound hope – not just for the continued flourishing of China, but as a unique perspective on human progress itself. It is our blossoming path forward, cultivated with care and walked together.</a>
+<body class="bg-gray-50 dark:bg-dark text-gray-800 dark:text-gray-100 min-h-screen">
+    <div class="flex flex-col h-screen max-h-screen overflow-hidden">
+        <!-- 顶部导航 -->
+        <header class="bg-white dark:bg-gray-900 shadow-sm py-3 px-4 md:px-6 flex items-center justify-between border-b border-gray-200 dark:border-gray-800">
+            <div class="flex items-center space-x-2">
+                <<i class="fa fa-comments text-primary text-2xl"></</i>
+                <h1 class="text-xl font-bold text-primary">GPT对话助手</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <<i class="fa fa-moon-o dark:hidden"></</i>
+                    <<i class="fa fa-sun-o hidden dark:inline"></</i>
+                </button>
+                <button id="clear-chat" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <<i class="fa fa-trash-o"></</i>
+                </button>
+            </div>
+        </header>
+
+        <!-- 对话区域 -->
+        <main class="flex-1 overflow-y-auto p-4 md:p-6 scrollbar-hide" id="chat-container">
+            <div class="max-w-3xl mx-auto space-y-6">
+                <!-- 欢迎消息 -->
+                <div class="flex items-start space-x-3">
+                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">
+                        <<i class="fa fa-robot"></</i>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 rounded-lg rounded-tl-none p-4 shadow-sm max-w-[85%]">
+                        <p>你好！我是GPT对话助手，有什么可以帮助你的吗？</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 输入区域 -->
+        <footer class="bg-white dark:bg-gray-900 p-4 border-t border-gray-200 dark:border-gray-800">
+            <div class="max-w-3xl mx-auto">
+                <form id="chat-form" class="relative">
+                    <textarea 
+                        id="user-input" 
+                        placeholder="输入你的问题..." 
+                        class="w-full p-4 pr-12 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                        rows="3"
+                        maxlength="1000"
+                    ></textarea>
+                    <button 
+                        type="submit" 
+                        class="absolute right-3 bottom-3 p-2 bg-primary text-white rounded-full hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        id="send-button"
+                    >
+                        <<i class="fa fa-paper-plane"></</i>
+                    </button>
+                </form>
+                <div class="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
+                    提示：按Shift+Enter换行，按Enter发送消息
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // DOM元素
+        const chatContainer = document.getElementById('chat-container');
+        const chatForm = document.getElementById('chat-form');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+        const themeToggle = document.getElementById('theme-toggle');
+        const clearChat = document.getElementById('clear-chat');
+        
+        // API配置
+        const API_KEY = 'sk-qyhKM9JqnrVPDi0uhWpjDiio2yAThQsS43blis8tk3rs9zrm';
+        const API_URL = 'https://api.openai.com/v1/chat/completions';
+        
+        // 初始化主题
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        
+        // 切换主题
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+        });
+        
+        // 清空对话
+        clearChat.addEventListener('click', () => {
+            if (confirm('确定要清空所有对话吗？')) {
+                chatContainer.innerHTML = `
+                    <div class="max-w-3xl mx-auto space-y-6">
+                        <div class="flex items-start space-x-3">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">
+                                <<i class="fa fa-robot"></</i>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 rounded-lg rounded-tl-none p-4 shadow-sm max-w-[85%]">
+                                <p>你好！我是GPT对话助手，有什么可以帮助你的吗？</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                scrollToBottom();
+            }
+        });
+        
+        // 提交表单
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const message = userInput.value.trim();
+            
+            if (message) {
+                // 添加用户消息
+                addMessageToChat(message, 'user');
+                userInput.value = '';
+                
+                // 发送请求
+                try {
+                    sendButton.disabled = true;
+                    sendButton.innerHTML = '<<i class="fa fa-spinner fa-spin"></</i>';
+                    
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${API_KEY}`
+                        },
+                        body: JSON.stringify({
+                            model: 'gpt-3.5-turbo',
+                            messages: [
+                                { role: 'user', content: message }
+                            ]
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('请求失败，请稍后再试');
+                    }
+                    
+                    const data = await response.json();
+                    const botMessage = data.choices[0].message.content;
+                    
+                    // 添加机器人消息
+                    addMessageToChat(botMessage, 'bot');
+                } catch (error) {
+                    addMessageToChat(`抱歉，发生错误：${error.message}`, 'bot');
+                } finally {
+                    sendButton.disabled = false;
+                    sendButton.innerHTML = '<<i class="fa fa-paper-plane"></</i>';
+                }
+            }
+        });
+        
+        // 支持Shift+Enter换行
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                chatForm.dispatchEvent(new Event('submit'));
+            }
+        });
+        
+        // 添加消息到聊天窗口
+        function addMessageToChat(message, sender) {
+            const maxWidth = sender === 'user' ? 'max-w-[85%] ml-auto' : 'max-w-[85%]';
+            const roundedClass = sender === 'user' ? 'rounded-lg rounded-tr-none' : 'rounded-lg rounded-tl-none';
+            const bgClass = sender === 'user' ? 'bg-primary text-white' : 'bg-white dark:bg-gray-800';
+            const icon = sender === 'user' ? '<<i class="fa fa-user"></</i>' : '<<i class="fa fa-robot"></</i>';
+            const avatarBg = sender === 'user' ? 'bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-200' : 'bg-primary text-white';
+            
+            const messageHTML = `
+                <div class="flex items-start space-x-3 ${sender === 'user' ? 'flex-row-reverse' : ''}">
+                    <div class="flex-shrink-0 w-8 h-8 rounded-full ${avatarBg} flex items-center justify-center">
+                        ${icon}
+                    </div>
+                    <div class="${bgClass} ${roundedClass} p-4 shadow-sm ${maxWidth}">
+                        <p>${formatMessage(message)}</p>
+                    </div>
+                </div>
+            `;
+            
+            const chatMessages = chatContainer.querySelector('.max-w-3xl');
+            chatMessages.insertAdjacentHTML('beforeend', messageHTML);
+            scrollToBottom();
+        }
+        
+        // 格式化消息（简单处理换行）
+        function formatMessage(message) {
+            return message.replace(/\n/g, '<br>');
+        }
+        
+        // 滚动到底部
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        // 自动调整文本框高度
+        userInput.addEventListener('input', () => {
+            userInput.style.height = 'auto';
+            userInput.style.height = Math.min(userInput.scrollHeight, 200) + 'px';
+        });
+    </script>
 </body>
-<html>
-    
+</html>
