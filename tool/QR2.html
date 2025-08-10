@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多功能二维码生成器</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .control-panel {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .theme-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .theme-option {
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .theme-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .theme-option.active {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .color-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .color-group {
+            text-align: center;
+        }
+
+        .color-group input[type="color"] {
+            width: 60px;
+            height: 60px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            margin: 0 auto;
+        }
+
+        .preview-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+        }
+
+        .qr-container {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        #qrcode {
+            margin: 0 auto;
+        }
+
+        .download-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .logo-upload {
+            margin-bottom: 15px;
+        }
+
+        .logo-preview {
+            width: 80px;
+            height: 80px;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            margin: 10px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+        }
+
+        .logo-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 5px;
+        }
+
+        .pattern-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .pattern-option {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .pattern-option.active {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .theme-selector {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .download-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            color: #27ae60;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✨ 多功能二维码生成器</h1>
+            <p>支持多种主题、自定义样式、Logo插入和高质量下载</p>
+        </div>
+
+        <div class="main-content">
+            <div class="control-panel">
+                <div class="form-group">
+                    <label for="qrText">二维码内容</label>
+                    <textarea id="qrText" rows="3" placeholder="输入要生成二维码的内容...">https://example.com</textarea>
+                    <div class="error-message" id="textError">请输入有效的内容</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="qrSize">二维码尺寸</label>
+                    <select id="qrSize">
+                        <option value="200">200x200 (小)</option>
+                        <option value="300" selected>300x300 (中)</option>
+                        <option value="400">400x400 (大)</option>
+                        <option value="500">500x500 (超大)</option>
+                        <option value="800">800x800 (高清)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>主题选择</label>
+                    <div class="theme-selector">
+                        <div class="theme-option active" data-theme="classic">经典黑白</div>
+                        <div class="theme-option" data-theme="blue">蓝色渐变</div>
+                        <div class="theme-option" data-theme="purple">紫色梦幻</div>
+                        <div class="theme-option" data-theme="green">自然绿色</div>
+                        <div class="theme-option" data-theme="red">热情红色</div>
+                        <div class="theme-option" data-theme="custom">自定义</div>
+                    </div>
+                </div>
+
+                <div class="form-group" id="customColors" style="display: none;">
+                    <label>自定义颜色</label>
+                    <div class="color-inputs">
+                        <div class="color-group">
+                            <label>前景色</label>
+                            <input type="color" id="foregroundColor" value="#000000">
+                        </div>
+                        <div class="color-group">
+                            <label>背景色</label>
+                            <input type="color" id="backgroundColor" value="#ffffff">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>二维码样式</label>
+                    <div class="pattern-selector">
+                        <div class="pattern-option active" data-pattern="square">■</div>
+                        <div class="pattern-option" data-pattern="circle">●</div>
+                        <div class="pattern-option" data-pattern="rounded">⬛</div>
+                        <div class="pattern-option" data-pattern="dot">•</div>
+                    </div>
+                </div>
+
+                <div class="form-group logo-upload">
+                    <label for="logoUpload">中心Logo (可选)</label>
+                    <input type="file" id="logoUpload" accept="image/*">
+                    <div class="logo-preview" id="logoPreview">
+                        <span>预览</span>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="generateQR()" style="width: 100%; margin-bottom: 10px;">
+                    🎨 生成二维码
+                </button>
+                <div class="success-message" id="generateSuccess">二维码生成成功！</div>
+            </div>
+
+            <div class="preview-panel">
+                <h3>二维码预览</h3>
+                <div class="qr-container">
+                    <div id="qrcode"></div>
+                </div>
+
+                <div class="download-section">
+                    <button class="btn" onclick="downloadQR('png')">
+                        📥 下载 PNG
+                    </button>
+                    <button class="btn" onclick="downloadQR('jpg')">
+                        📥 下载 JPG
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQR = null;
+        let currentLogo = null;
+        let currentTheme = 'classic';
+        let currentPattern = 'square';
+
+        // 主题配置
+        const themes = {
+            classic: { fg: '#000000', bg: '#ffffff' },
+            blue: { fg: '#1e3a8a', bg: '#dbeafe' },
+            purple: { fg: '#7c3aed', bg: '#f3e8ff' },
+            green: { fg: '#059669', bg: '#d1fae5' },
+            red: { fg: '#dc2626', bg: '#fee2e2' }
+        };
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            generateQR();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // 主题选择
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelector('.theme-option.active').classList.remove('active');
+                    this.classList.add('active');
+                    currentTheme = this.dataset.theme;
+                    
+                    const customColors = document.getElementById('customColors');
+                    if (currentTheme === 'custom') {
+                        customColors.style.display = 'block';
+                    } else {
+                        customColors.style.display = 'none';
+                    }
+                    generateQR();
+                });
+            });
+
+            // 样式选择
+            document.querySelectorAll('.pattern-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelector('.pattern-option.active').classList.remove('active');
+                    this.classList.add('active');
+                    currentPattern = this.dataset.pattern;
+                    generateQR();
+                });
+            });
+
+            // 实时更新
+            document.getElementById('qrText').addEventListener('input', generateQR);
+            document.getElementById('qrSize').addEventListener('change', generateQR);
+            document.getElementById('foregroundColor').addEventListener('change', generateQR);
+            document.getElementById('backgroundColor').addEventListener('change', generateQR);
+
+            // Logo上传
+            document.getElementById('logoUpload').addEventListener('change', handleLogoUpload);
+        }
+
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentLogo = e.target.result;
+                    const preview = document.getElementById('logoPreview');
+                    preview.innerHTML = `<img src="${currentLogo}" alt="Logo">`;
+                    generateQR();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function generateQR() {
+            const text = document.getElementById('qrText').value.trim();
+            const size = parseInt(document.getElementById('qrSize').value);
+            
+            // 验证输入
+            if (!text) {
+                document.getElementById('textError').style.display = 'block';
+                return;
+            } else {
+                document.getElementById('textError').style.display = 'none';
+            }
+
+            try {
+                // 清空之前的二维码
+                const qrcodeDiv = document.getElementById('qrcode');
+                qrcodeDiv.innerHTML = '';
+
+                // 创建二维码
+                const qr = qrcode(0, 'M');
+                qr.addData(text);
+                qr.make();
+
+                // 获取颜色
+                let fgColor, bgColor;
+                if (currentTheme === 'custom') {
+                    fgColor = document.getElementById('foregroundColor').value;
+                    bgColor = document.getElementById('backgroundColor').value;
+                } else {
+                    fgColor = themes[currentTheme].fg;
+                    bgColor = themes[currentTheme].bg;
+                }
+
+                // 创建Canvas
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = size;
+                canvas.height = size;
+
+                // 绘制二维码
+                drawQRCode(ctx, qr, size, fgColor, bgColor, currentPattern);
+
+                // 添加Logo
+                if (currentLogo) {
+                    addLogoToCanvas(ctx, currentLogo, size);
+                }
+
+                // 显示二维码
+                qrcodeDiv.appendChild(canvas);
+                currentQR = canvas;
+
+                // 显示成功消息
+                const successMsg = document.getElementById('generateSuccess');
+                successMsg.style.display = 'block';
+                setTimeout(() => successMsg.style.display = 'none', 2000);
+
+            } catch (error) {
+                console.error('生成二维码时出错:', error);
+                document.getElementById('textError').textContent = '生成二维码时出错，请检查输入内容';
+                document.getElementById('textError').style.display = 'block';
+            }
+        }
+
+        function drawQRCode(ctx, qr, size, fgColor, bgColor, pattern) {
+            const modules = qr.getModuleCount();
+            const moduleSize = size / modules;
+
+            // 填充背景
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(0, 0, size, size);
+
+            // 绘制二维码模块
+            ctx.fillStyle = fgColor;
+            for (let row = 0; row < modules; row++) {
+                for (let col = 0; col < modules; col++) {
+                    if (qr.isDark(row, col)) {
+                        const x = col * moduleSize;
+                        const y = row * moduleSize;
+                        
+                        switch (pattern) {
+                            case 'circle':
+                                ctx.beginPath();
+                                ctx.arc(x + moduleSize/2, y + moduleSize/2, moduleSize/2 * 0.8, 0, 2 * Math.PI);
+                                ctx.fill();
+                                break;
+                            case 'rounded':
+                                drawRoundedRect(ctx, x, y, moduleSize * 0.9, moduleSize * 0.9, moduleSize * 0.2);
+                                break;
+                            case 'dot':
+                                ctx.beginPath();
+                                ctx.arc(x + moduleSize/2, y + moduleSize/2, moduleSize/4, 0, 2 * Math.PI);
+                                ctx.fill();
+                                break;
+                            default: // square
+                                ctx.fillRect(x, y, moduleSize, moduleSize);
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+        function drawRoundedRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function addLogoToCanvas(ctx, logoSrc, canvasSize) {
+            const img = new Image();
+            img.onload = function() {
+                const logoSize = canvasSize * 0.2;
+                const x = (canvasSize - logoSize) / 2;
+                const y = (canvasSize - logoSize) / 2;
+
+                // 绘制白色背景圆形
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(canvasSize/2, canvasSize/2, logoSize/2 + 5, 0, 2 * Math.PI);
+                ctx.fill();
+
+                // 绘制Logo
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(canvasSize/2, canvasSize/2, logoSize/2, 0, 2 * Math.PI);
+                ctx.clip();
+                ctx.drawImage(img, x, y, logoSize, logoSize);
+                ctx.restore();
+            };
+            img.src = logoSrc;
+        }
+
+        function downloadQR(format) {
+            if (!currentQR) {
+                alert('请先生成二维码');
+                return;
+            }
+
+            try {
+                const link = document.createElement('a');
+                const timestamp = new Date().getTime();
+                
+                if (format === 'png') {
+                    link.download = `qrcode_${timestamp}.png`;
+                    link.href = currentQR.toDataURL('image/png');
+                } else if (format === 'jpg') {
+                    link.download = `qrcode_${timestamp}.jpg`;
+                    link.href = currentQR.toDataURL('image/jpeg', 0.9);
+                }
+                
+                link.click();
+            } catch (error) {
+                console.error('下载失败:', error);
+                alert('下载失败，请重试');
+            }
+        }
+    </script>
+</body>
+</html>
