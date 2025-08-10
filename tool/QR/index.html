@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多功能二维码生成器</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✨ 多功能二维码生成器</h1>
+            <p>支持多种主题、自定义样式、Logo插入和高质量下载</p>
+        </div>
+
+        <div class="main-content">
+            <div class="control-panel">
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('single')">单个生成</button>
+                    <button class="tab" onclick="switchTab('batch')">批量生成</button>
+                </div>
+
+                <!-- 单个生成 -->
+                <div id="singleTab" class="tab-content active">
+                    <div class="form-group">
+                        <label for="qrText">二维码内容</label>
+                        <textarea id="qrText" rows="3" placeholder="输入要生成二维码的内容...">https://example.com</textarea>
+                        <div class="error-message" id="textError">请输入有效的内容</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="qrSize">二维码尺寸</label>
+                        <select id="qrSize">
+                            <option value="200">200x200 (小)</option>
+                            <option value="300" selected>300x300 (中)</option>
+                            <option value="400">400x400 (大)</option>
+                            <option value="500">500x500 (超大)</option>
+                            <option value="800">800x800 (高清)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>主题选择</label>
+                        <div class="theme-selector">
+                            <div class="theme-option active" data-theme="classic">经典黑白</div>
+                            <div class="theme-option" data-theme="blue">蓝色渐变</div>
+                            <div class="theme-option" data-theme="purple">紫色梦幻</div>
+                            <div class="theme-option" data-theme="green">自然绿色</div>
+                            <div class="theme-option" data-theme="red">热情红色</div>
+                            <div class="theme-option" data-theme="custom">自定义</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="customColors" style="display: none;">
+                        <label>自定义颜色</label>
+                        <div class="color-inputs">
+                            <div class="color-group">
+                                <label>前景色</label>
+                                <input type="color" id="foregroundColor" value="#000000">
+                            </div>
+                            <div class="color-group">
+                                <label>背景色</label>
+                                <input type="color" id="backgroundColor" value="#ffffff">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>二维码样式</label>
+                        <div class="pattern-selector">
+                            <div class="pattern-option active" data-pattern="square">■</div>
+                            <div class="pattern-option" data-pattern="circle">●</div>
+                            <div class="pattern-option" data-pattern="rounded">⬛</div>
+                            <div class="pattern-option" data-pattern="dot">•</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group logo-upload">
+                        <label>中心Logo (可选)</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="logoUpload" accept="image/*">
+                            <div class="file-input-button">📁 选择Logo文件</div>
+                        </div>
+                        <div class="logo-preview" id="logoPreview">
+                            <span>预览</span>
+                        </div>
+                    </div>
+
+                    <button class="btn" onclick="generateQR()" style="width: 100%; margin-bottom: 10px;">
+                        🎨 生成二维码
+                    </button>
+                    <div class="success-message" id="generateSuccess">二维码生成成功！</div>
+                </div>
+
+                <!-- 批量生成 -->
+                <div id="batchTab" class="tab-content">
+                    <div class="form-group">
+                        <label>批量二维码内容 (每行一个)</label>
+                        <div class="batch-area">
+                            <textarea class="batch-textarea" id="batchText" placeholder="输入要批量生成的内容，每行一个：&#10;https://example1.com&#10;https://example2.com&#10;联系人：张三&#10;电话：138-0000-0000"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="batch-controls">
+                        <button class="btn" onclick="generateBatchQR()">
+                            🚀 批量生成
+                        </button>
+                        <button class="btn" onclick="downloadAllQR()">
+                            📦 打包下载
+                        </button>
+                    </div>
+
+                    <div id="batchPreview" class="batch-preview"></div>
+                </div>
+            </div>
+
+            <div class="preview-panel">
+                <h3>二维码预览</h3>
+                <div class="qr-container">
+                    <div id="qrcode"></div>
+                </div>
+
+                <div class="download-section">
+                    <button class="btn" onclick="downloadQR('png')">
+                        📥 下载 PNG
+                    </button>
+                    <button class="btn" onclick="downloadQR('jpg')">
+                        📥 下载 JPG
+                    </button>
+                </div>
+
+                <!-- 历史记录 -->
+                <div class="history-panel">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h4>历史记录</h4>
+                        <button class="clear-history" onclick="clearHistory()">🗑️ 清空</button>
+                    </div>
+                    <div id="historyList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
