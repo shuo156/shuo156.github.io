@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>WebNFC Reader/Writer — 简洁版</title>
+<link rel="icon" href="data:," />
+<style>
+  :root{
+    --bg:#0f1724; --card:#0b1220; --accent:#3b82f6; --muted:#93c5fd;
+    color-scheme: dark;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans",arial;background:linear-gradient(180deg,var(--bg),#071024);color:#e6eef8;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .app{width:100%;max-width:920px;}
+  header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#60a5fa);display:flex;align-items:center;justify-content:center;font-weight:700;color:#052237}
+  h1{font-size:18px;margin:0}
+  .card{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));padding:14px;border-radius:12px;box-shadow:0 6px 24px rgba(2,6,23,0.6);margin-bottom:12px}
+  .controls{display:flex;gap:8px;flex-wrap:wrap}
+  button{background:var(--accent);border:0;padding:10px 14px;border-radius:10px;color:#03203a;font-weight:600;cursor:pointer}
+  button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+  .area{display:flex;gap:12px;flex-wrap:wrap}
+  .panel{flex:1;min-width:260px}
+  label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+  input[type="file"]{color:inherit}
+  textarea{width:100%;height:120px;border-radius:10px;padding:10px;border:0;background:transparent;color:inherit;resize:vertical;border:1px solid rgba(255,255,255,0.03)}
+  .log{font-family:monospace;font-size:13px;padding:10px;border-radius:8px;background:rgba(0,0,0,0.15);max-height:220px;overflow:auto}
+  .preview{margin-top:10px;border-radius:8px;overflow:hidden}
+  img.preview-img{max-width:100%;display:block}
+  audio,video{width:100%;display:block}
+  .note{font-size:12px;color:#9fbbe8;margin-top:8px}
+  footer{font-size:13px;color:var(--muted);margin-top:8px;text-align:center}
+  @media (max-width:640px){header h1{font-size:16px}.area{flex-direction:column}}
+</style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="logo">NFC</div>
+      <div>
+        <h1>WebNFC Reader / Writer</h1>
+        <div class="note">提示：仅在支持 Web NFC 的 Android Chromium 浏览器生效。页面须为 HTTPS。</div>
+      </div>
+    </header>
+
+    <div class="card">
+      <div class="controls">
+        <button id="startScan">启动读取（Scan）</button>
+        <button id="stopScan" class="ghost">停止读取</button>
+        <button id="writeText">写文本到标签</button>
+        <button id="writeURL" class="ghost">写 URL 到标签</button>
+        <button id="writeFile" class="ghost">写文件到标签（小文件）</button>
+      </div>
+
+      <div class="area" style="margin-top:12px">
+        <div class="panel">
+          <label>写入：文本</label>
+          <textarea id="textToWrite" placeholder="这里输入要写入 NFC 标签的文字（短文本优先）">测试 Web NFC 文本</textarea>
+          <label style="margin-top:10px">写入：URL</label>
+          <input id="urlToWrite" type="url" placeholder="https://example.com/your-file.jpg" style="width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit" />
+          <label style="margin-top:10px">写入：文件（小于 3KB 推荐）</label>
+          <input id="fileToWrite" type="file" accept="image/*,audio/*,video/*,text/*" />
+          <div class="note">建议：如果文件较大，先上传到服务器并写入 URL。直接写文件有容量限制。</div>
+        </div>
+
+        <div class="panel">
+          <label>读取日志 / 反馈</label>
+          <div class="log" id="log"></div>
+
+          <div class="preview" id="preview"></div>
+        </div>
+      </div>
+    </div>
+
+    <footer>部署提示：将此文件放到 GitHub 仓库并开启 GitHub Pages（HTTPS）后，在 Android Chrome 打开即可测试。</footer>
+  </div>
+
+<script>
+const logEl = document.getElementById('log');
+const previewEl = document.getElementById('preview');
+function log(...args){ logEl.innerText = args.map(a => typeof a==='object'? JSON.stringify(a,null,2):String(a)).join(' ') + '\\n' + logEl.innerText; }
+
+async function startScan(){
+  if(!('NDEFReader' in window)){ alert('当前浏览器不支持 Web NFC (NDEFReader 未发现)。'); return; }
+  try{
+    window._ndef = new NDEFReader();
+    await window._ndef.scan();
+    log('已开始扫描 — 将标签靠近设备');
+    _ndef.onreading = event => {
+      const msg = event.message;
+      log('读取到标签，records:', msg.records.length, 'serial:', event.serialNumber);
+      previewEl.innerHTML = '';
+      msg.records.forEach((r, i) => {
+        log('record', i, r.recordType, r.mediaType ?? '');
+        if(r.recordType === 'text'){
+          // text 解码
+          const textDecoder = new TextDecoder(r.encoding || 'utf-8');
+          const text = textDecoder.decode(r.data);
+          const div = document.createElement('div'); div.innerText = '文本：' + text;
+          previewEl.appendChild(div);
+        } else if(r.recordType === 'url'){
+          const textDecoder = new TextDecoder();
+          const url = textDecoder.decode(r.data);
+          const a = document.createElement('a'); a.href = url; a.innerText = url; a.target='_blank';
+          previewEl.appendChild(a);
+        } else if(r.recordType === 'mime'){
+          // 尝试按 mediaType 处理
+          const mt = r.mediaType || 'application/octet-stream';
+          // r.data is a DataView or ArrayBuffer
+          const arr = new Uint8Array(r.data.buffer || r.data);
+          log('mime record, mediaType=', mt, 'bytes=', arr.byteLength);
+          const blob = new Blob([arr], {type: mt});
+          if(mt.startsWith('image/')){
+            const img = document.createElement('img'); img.className='preview-img';
+            img.src = URL.createObjectURL(blob); previewEl.appendChild(img);
+          } else if(mt.startsWith('audio/')){
+            const au = document.createElement('audio'); au.controls=true; au.src = URL.createObjectURL(blob); previewEl.appendChild(au);
+          } else if(mt.startsWith('video/')){
+            const v = document.createElement('video'); v.controls=true; v.src=URL.createObjectURL(blob); previewEl.appendChild(v);
+          } else {
+            const p = document.createElement('pre'); p.innerText = '[MIME ' + mt + '] 大小: ' + arr.byteLength + ' bytes'; previewEl.appendChild(p);
+          }
+        } else {
+          const p = document.createElement('pre'); p.innerText = '未识别 recordType: ' + r.recordType;
+          previewEl.appendChild(p);
+        }
+      });
+    };
+    _ndef.onreadingerror = () => log('读取错误：无法读取标签。');
+  }catch(e){
+    log('开启扫描失败：', e);
+    alert('开启扫描失败：' + e);
+  }
+}
+
+async function stopScan(){
+  if(window._ndef && window._ndef.onreading){
+    try{
+      // 没有 stop API，覆盖回调即可
+      window._ndef.onreading = null;
+      window._ndef.onreadingerror = null;
+      window._ndef = null;
+      log('已停止扫描（若浏览器仍挂载，请刷新页面）。');
+    }catch(e){ log('停止失败', e); }
+  } else log('未在扫描中。');
+}
+
+async function writeText(){
+  const t = document.getElementById('textToWrite').value || '';
+  if(!t){ alert('先输入要写的文本'); return; }
+  if(!('NDEFReader' in window)){ alert('当前浏览器不支持 Web NFC (NDEFReader 未发现)。'); return; }
+  try{
+    const ndef = new NDEFReader();
+    await ndef.write({records: [{recordType: 'text', data: t}]});
+    log('写入文本成功', t);
+  }catch(e){ log('写入文本失败', e); alert('写入失败: ' + e); }
+}
+
+async function writeURL(){
+  const u = document.getElementById('urlToWrite').value || '';
+  if(!u){ alert('先输入要写的 URL'); return; }
+  try{
+    const ndef = new NDEFReader();
+    await ndef.write({records: [{recordType: 'url', data: u}]});
+    log('写入 URL 成功', u);
+  }catch(e){ log('写入 URL 失败', e); alert('写入失败: ' + e); }
+}
+
+async function writeFile(){
+  const file = document.getElementById('fileToWrite').files[0];
+  if(!file){ alert('先选择一个文件'); return; }
+  // 容量警告：多数标签只有几 KB
+  if(file.size > 4096){
+    if(!confirm('文件大于4KB，标签可能无法保存。是否继续（建议先上传到服务器并写入 URL）？')) return;
+  }
+  try{
+    const arr = await file.arrayBuffer();
+    const ndef = new NDEFReader();
+    // 写入 MIME record；某些浏览器或标签可能只接受短文本/URL
+    await ndef.write({records: [{recordType: 'mime', mediaType: file.type || 'application/octet-stream', data: arr}]});
+    log('写入文件成功：', file.name, file.type, file.size);
+  }catch(e){ log('写入文件失败', e); alert('写入失败: ' + e); }
+}
+
+// 绑定
+document.getElementById('startScan').addEventListener('click', startScan);
+document.getElementById('stopScan').addEventListener('click', stopScan);
+document.getElementById('writeText').addEventListener('click', writeText);
+document.getElementById('writeURL').addEventListener('click', writeURL);
+document.getElementById('writeFile').addEventListener('click', writeFile);
+
+// 页面可见性提醒
+document.addEventListener('visibilitychange', () => {
+  if(document.hidden) log('页面不可见：部分 NFC 操作可能被阻止。');
+});
+</script>
+</body>
+</html>
