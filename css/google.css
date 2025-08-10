@@ -2,7 +2,6 @@
 
 /* 页面整体背景与字体 */
 body {
-    font-family: 'Roboto', 'Noto Sans SC', sans-serif;
     background-color: #f3f4f8; /* 浅灰蓝背景 */
     color: #202124;
     margin: 0;
