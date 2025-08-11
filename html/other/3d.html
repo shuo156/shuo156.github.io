@@ -2,29 +2,125 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>手机性能检测3D</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+<title>高负载性能检测3D</title>
 <style>
   body,html{margin:0;padding:0;overflow:hidden;background:#000;}
-  #fps{position:absolute;top:5px;left:5px;color:#0f0;font-family:monospace;font-size:16px;z-index:10;}
+  #fps{
+    position: fixed;
+    top: 5px;
+    right: 5px;
+    color: #0f0;
+    font-family: monospace;
+    font-size: 16px;
+    z-index: 9999;
+    user-select:none;
+  }
 </style>
 </head>
 <body>
 <div id="fps">FPS: 0</div>
 <script src="https://shuo156.github.io/js/three.js"></script>
 <script>
-let scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,.1,1000),renderer=new THREE.WebGLRenderer({antialias:true});
+let scene=new THREE.Scene();
+let camera=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,.1,2000);
+let renderer=new THREE.WebGLRenderer({antialias:true});
 renderer.setSize(innerWidth,innerHeight);
 document.body.appendChild(renderer.domElement);
-camera.position.z=4;
-let geom=new THREE.IcosahedronGeometry(1,0),mat=new THREE.MeshNormalMaterial(),mesh=new THREE.Mesh(geom,mat);
-scene.add(mesh);
+camera.position.z=30;
+
+let group=new THREE.Group();
+scene.add(group);
+
+let geometries=[
+  new THREE.IcosahedronGeometry(0.5,0),
+  new THREE.TetrahedronGeometry(0.4,0),
+  new THREE.OctahedronGeometry(0.45,0),
+  new THREE.TorusGeometry(0.4,0.1,8,30)
+];
+
+let material=new THREE.MeshNormalMaterial();
+
+for(let i=0;i<200;i++){
+  let geo=geometries[i%geometries.length];
+  let mesh=new THREE.Mesh(geo,material);
+  mesh.position.set(
+    (Math.random()-0.5)*60,
+    (Math.random()-0.5)*60,
+    (Math.random()-0.5)*60
+  );
+  mesh.rotation.set(
+    Math.random()*Math.PI*2,
+    Math.random()*Math.PI*2,
+    Math.random()*Math.PI*2
+  );
+  mesh.userData = {
+    speedX: (Math.random()-0.5)*0.02,
+    speedY: (Math.random()-0.5)*0.02,
+    speedZ: (Math.random()-0.5)*0.02
+  };
+  group.add(mesh);
+}
+
 let fpsEl=document.getElementById('fps'),lastTime=performance.now(),frames=0,fps=0;
+
+let isDragging=false,lastX=0,lastY=0;
+let rotX=0,rotY=0;
+let targetRotX=0,targetRotY=0;
+let scale=1;
+const minScale=0.5,maxScale=3;
+
+function clamp(value,min,max){return value<min?min:value>max?max:value;}
+
+function onPointerDown(e){
+  isDragging=true;
+  lastX=e.clientX||e.touches[0].clientX;
+  lastY=e.clientY||e.touches[0].clientY;
+}
+function onPointerMove(e){
+  if(!isDragging)return;
+  let x=e.clientX||e.touches[0].clientX;
+  let y=e.clientY||e.touches[0].clientY;
+  let dx=(x-lastX)/window.innerWidth*Math.PI*2;
+  let dy=(y-lastY)/window.innerHeight*Math.PI*2;
+  targetRotY+=dx;
+  targetRotX+=dy;
+  targetRotX=clamp(targetRotX,-Math.PI/2,Math.PI/2);
+  lastX=x;
+  lastY=y;
+}
+function onPointerUp(e){isDragging=false;}
+
+function onWheel(e){
+  e.preventDefault();
+  scale-=e.deltaY*0.0015;
+  scale=clamp(scale,minScale,maxScale);
+}
+
+renderer.domElement.addEventListener('mousedown',onPointerDown);
+renderer.domElement.addEventListener('touchstart',onPointerDown);
+renderer.domElement.addEventListener('mousemove',onPointerMove);
+renderer.domElement.addEventListener('touchmove',onPointerMove,{passive:false});
+renderer.domElement.addEventListener('mouseup',onPointerUp);
+renderer.domElement.addEventListener('touchend',onPointerUp);
+renderer.domElement.addEventListener('wheel',onWheel,{passive:false});
+
 function animate(){
   requestAnimationFrame(animate);
-  mesh.rotation.x+=0.01;
-  mesh.rotation.y+=0.013;
+  rotX+= (targetRotX - rotX)*0.1;
+  rotY+= (targetRotY - rotY)*0.1;
+  group.rotation.x=rotX;
+  group.rotation.y=rotY;
+  group.scale.set(scale,scale,scale);
+
+  for(let mesh of group.children){
+    mesh.rotation.x += mesh.userData.speedX;
+    mesh.rotation.y += mesh.userData.speedY;
+    mesh.rotation.z += mesh.userData.speedZ;
+  }
+
   renderer.render(scene,camera);
+
   frames++;
   let now=performance.now();
   if(now-lastTime>=1000){
@@ -35,6 +131,7 @@ function animate(){
   }
 }
 animate();
+
 window.addEventListener('resize',()=>{
   camera.aspect=innerWidth/innerHeight;
   camera.updateProjectionMatrix();
