@@ -1,169 +1,200 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<title>复杂体积着色器 + 粒子 + 光影性能测试</title>
+<title>极致性能检测3D-持续旋转</title>
 <style>
-  body,html { margin:0; padding:0; overflow:hidden; background:#131115; }
-  #container {
-    position: fixed; top:0; left:0;
-    width: 1024px; height: 1024px;
-    transform-origin: 0 0;
+  body,html{margin:0;padding:0;overflow:hidden;background:#111;}
+  #fps{
+    position: fixed;
+    top: 5px;
+    right: 5px;
+    color: #0f0;
+    font-family: monospace;
+    font-size: 16px;
+    z-index: 9999;
+    user-select:none;
   }
-  #fpsStats { position: fixed; top: 5px; right: 5px; color: #0f0; font-family: monospace; font-weight: bold; font-size: 14px; z-index: 100; }
-  #info { position: fixed; top: 5px; left: 5px; color: #0f0; font-family: monospace; font-weight: bold; font-size: 14px; z-index: 100; }
+  canvas{
+    display:block;
+  }
 </style>
 </head>
 <body>
-<div id="container"></div>
-<div id="info">滑动旋转，鼠标滚轮缩放</div>
-<div id="fpsStats"></div>
-
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/controls/OrbitControls.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/stats.js/build/stats.min.js"></script>
-
+<div id="fps">FPS: 0</div>
+<script src="https://shuo156.github.io/js/three.js"></script>
 <script>
-  const container = document.getElementById('container');
-  let width = window.innerWidth;
-  let height = window.innerHeight;
-  if(width > height) width = height;
-  else height = width;
-  container.style.transform = `scale(${width/1024},${height/1024})`;
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
 
-  const scene = new THREE.Scene();
+const renderer = new THREE.WebGLRenderer({antialias:true, powerPreference:"high-performance"});
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
 
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-  camera.position.set(0, 0, 5);
+camera.position.set(0,3,8);
 
-  const renderer = new THREE.WebGLRenderer({antialias: true});
-  renderer.setSize(1024, 1024);
-  container.appendChild(renderer.domElement);
+const envTexture = new THREE.CubeTextureLoader()
+  .setPath('https://threejs.org/examples/textures/cube/Bridge2/')
+  .load([
+    'posx.jpg','negx.jpg',
+    'posy.jpg','negy.jpg',
+    'posz.jpg','negz.jpg'
+  ]);
+scene.background = envTexture;
 
-  // OrbitControls
-  const controls = new THREE.OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.05;
-  controls.minDistance = 1;
-  controls.maxDistance = 20;
+const ambientLight = new THREE.AmbientLight(0x404040, 1.2);
+scene.add(ambientLight);
 
-  // 环境光和点光源
-  const ambientLight = new THREE.AmbientLight(0x222222);
-  scene.add(ambientLight);
+const pointLight = new THREE.PointLight(0xffffff, 1.5);
+pointLight.position.set(0,5,5);
+pointLight.castShadow = true;
+pointLight.shadow.mapSize.width = 16384;
+pointLight.shadow.mapSize.height = 16384;
+pointLight.shadow.camera.near = 0.5;
+pointLight.shadow.camera.far = 50;
+scene.add(pointLight);
 
-  const pointLight = new THREE.PointLight(0xffffff, 1);
-  pointLight.position.set(5, 5, 5);
-  scene.add(pointLight);
+const floorGeo = new THREE.PlaneGeometry(50,50);
+const floorMat = new THREE.ShadowMaterial({opacity:0.4});
+const floor = new THREE.Mesh(floorGeo, floorMat);
+floor.rotation.x = -Math.PI/2;
+floor.position.y = -1.5;
+floor.receiveShadow = true;
+scene.add(floor);
 
-  // 体积着色器材质 (简化毒蘑菇风格)
-  const vertexShader = `
-    varying vec3 vPos;
-    void main() {
-      vPos = position;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
-    }
-  `;
+const geom = new THREE.IcosahedronGeometry(1,4);
+const mat = new THREE.MeshPhysicalMaterial({
+  color: 0x2266cc,
+  roughness: 0.2,
+  metalness: 1,
+  clearcoat: 1,
+  clearcoatRoughness: 0.1,
+  envMap: envTexture,
+  envMapIntensity: 1
+});
+const mesh = new THREE.Mesh(geom, mat);
+mesh.castShadow = true;
+mesh.receiveShadow = true;
+scene.add(mesh);
 
-  const fragmentShader = `
-    precision highp float;
-    varying vec3 vPos;
-    uniform float time;
+const particleCount = 20000;
+const particlesGeom = new THREE.BufferGeometry();
+const positions = new Float32Array(particleCount * 3);
+const velocities = new Float32Array(particleCount * 3);
+for(let i=0; i<particleCount; i++){
+  positions[i*3] = (Math.random()-0.5)*15;
+  positions[i*3+1] = (Math.random()-0.5)*10 + 1;
+  positions[i*3+2] = (Math.random()-0.5)*15;
+  velocities[i*3] = (Math.random()-0.5)*0.02;
+  velocities[i*3+1] = (Math.random()-0.5)*0.02;
+  velocities[i*3+2] = (Math.random()-0.5)*0.02;
+}
+particlesGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
-    // 简单的迭代函数，增加复杂度可自己改
-    float kernel(vec3 p){
-      vec3 a = p;
-      float b,c,d,e;
-      for(int i=0;i<6;i++){
-        b=length(a);
-        c=atan(a.y,a.x)*8.0;
-        d=acos(a.z/b)*8.0;
-        b=pow(b,8.0);
-        a=vec3(b*sin(d)*cos(c),b*sin(d)*sin(c),b*cos(d))+p;
-        if(b>6.0) break;
-      }
-      return 4.0 - dot(a,a);
-    }
+const particlesMat = new THREE.PointsMaterial({
+  color: 0x66aaff,
+  size: 0.06,
+  transparent: true,
+  opacity: 0.7,
+  sizeAttenuation: true,
+  depthWrite: false,
+  blending: THREE.AdditiveBlending
+});
 
-    void main() {
-      vec3 dir = normalize(vPos);
-      float v = kernel(dir * 0.8);
-      vec3 color = vec3(0.0);
-      if(v > 0.0) {
-        color = vec3(0.1, 0.7, 0.2) * pow(v, 3.0);
-        color += vec3(0.3, 0.5, 0.2) * abs(sin(time));
-      }
-      gl_FragColor = vec4(color, 1.0);
-    }
-  `;
+const particles = new THREE.Points(particlesGeom, particlesMat);
+scene.add(particles);
 
-  const uniforms = {
-    time: { value: 0 }
-  };
+let fpsEl = document.getElementById('fps'), lastTime = performance.now(), frames = 0;
 
-  const material = new THREE.ShaderMaterial({
-    vertexShader,
-    fragmentShader,
-    uniforms,
-    side: THREE.DoubleSide
-  });
+let isDragging = false, lastX = 0, lastY = 0;
+let rotX = 0, rotY = 0;
+let targetRotX = 0, targetRotY = 0;
+let scale = 1;
+const minScale = 0.4, maxScale = 3;
 
-  // 用一个细分平面承载体积着色器，保证像素密度高
-  const geometry = new THREE.PlaneGeometry(3,3,256,256);
-  const mesh = new THREE.Mesh(geometry, material);
-  scene.add(mesh);
+function clamp(value,min,max){return value<min?min:value>max?max:value;}
 
-  // 简单粒子系统
-  const particleCount = 1500;
-  const particlesGeometry = new THREE.BufferGeometry();
-  const positions = new Float32Array(particleCount * 3);
+function onPointerDown(e){
+  isDragging = true;
+  lastX = e.clientX || e.touches[0].clientX;
+  lastY = e.clientY || e.touches[0].clientY;
+}
+function onPointerMove(e){
+  if(!isDragging)return;
+  let x = e.clientX || e.touches[0].clientX;
+  let y = e.clientY || e.touches[0].clientY;
+  let dx = (x - lastX) / window.innerWidth * Math.PI * 2;
+  let dy = (y - lastY) / window.innerHeight * Math.PI * 2;
+  targetRotY += dx;
+  targetRotX += dy;
+  targetRotX = clamp(targetRotX, -Math.PI/2, Math.PI/2);
+  lastX = x;
+  lastY = y;
+}
+function onPointerUp(e){isDragging = false;}
 
+function onWheel(e){
+  e.preventDefault();
+  scale -= e.deltaY * 0.002;
+  scale = clamp(scale, minScale, maxScale);
+}
+
+renderer.domElement.addEventListener('mousedown', onPointerDown);
+renderer.domElement.addEventListener('touchstart', onPointerDown);
+renderer.domElement.addEventListener('mousemove', onPointerMove);
+renderer.domElement.addEventListener('touchmove', onPointerMove, {passive:false});
+renderer.domElement.addEventListener('mouseup', onPointerUp);
+renderer.domElement.addEventListener('touchend', onPointerUp);
+renderer.domElement.addEventListener('wheel', onWheel, {passive:false});
+
+function animate(){
+  requestAnimationFrame(animate);
+  rotX += (targetRotX - rotX) * 0.1;
+  rotY += (targetRotY - rotY) * 0.1;
+
+  rotX += 0.002;
+  rotY += 0.003;
+
+  mesh.rotation.x = rotX;
+  mesh.rotation.y = rotY;
+  mesh.scale.set(scale, scale, scale);
+
+  const time = performance.now() * 0.001;
+  pointLight.position.x = 5 * Math.cos(time);
+  pointLight.position.z = 5 * Math.sin(time);
+
+  const positions = particles.geometry.attributes.position.array;
   for(let i=0; i<particleCount; i++){
-    positions[i*3] = (Math.random()-0.5)*6;
-    positions[i*3+1] = (Math.random()-0.5)*6;
-    positions[i*3+2] = (Math.random()-0.5)*6;
+    positions[i*3] += velocities[i*3];
+    if(positions[i*3] > 7 || positions[i*3] < -7) velocities[i*3] *= -1;
+    positions[i*3+1] += velocities[i*3+1];
+    if(positions[i*3+1] > 5 || positions[i*3+1] < -3) velocities[i*3+1] *= -1;
+    positions[i*3+2] += velocities[i*3+2];
+    if(positions[i*3+2] > 7 || positions[i*3+2] < -7) velocities[i*3+2] *= -1;
   }
+  particles.geometry.attributes.position.needsUpdate = true;
 
-  particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  const particlesMaterial = new THREE.PointsMaterial({
-    color: 0x88ff88,
-    size: 0.03,
-    sizeAttenuation: true,
-    transparent: true,
-    opacity: 0.8,
-  });
+  renderer.render(scene, camera);
 
-  const particleSystem = new THREE.Points(particlesGeometry, particlesMaterial);
-  scene.add(particleSystem);
-
-  // FPS显示
-  const stats = new Stats();
-  stats.showPanel(0); // 0: fps
-  document.getElementById('fpsStats').appendChild(stats.dom);
-
-  // 动画循环
-  function animate(time=0){
-    stats.begin();
-    uniforms.time.value = time * 0.001;
-
-    mesh.rotation.y += 0.005;
-    particleSystem.rotation.y += 0.002;
-
-    controls.update();
-    renderer.render(scene, camera);
-    stats.end();
-    requestAnimationFrame(animate);
+  frames++;
+  let now = performance.now();
+  if(now - lastTime >= 1000){
+    fpsEl.textContent = 'FPS: ' + frames;
+    frames = 0;
+    lastTime = now;
   }
+}
+animate();
 
-  animate();
-
-  window.addEventListener('resize', ()=>{
-    let w = window.innerWidth;
-    let h = window.innerHeight;
-    if(w > h) w = h;
-    else h = w;
-    container.style.transform = `scale(${w/1024},${h/1024})`;
-  });
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
 </script>
 </body>
 </html>
