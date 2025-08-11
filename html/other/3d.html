@@ -3,198 +3,189 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<title>极致性能检测3D-持续旋转</title>
+<title>极限性能检测3D - 超多模型爆CPU爆GPU</title>
 <style>
-  body,html{margin:0;padding:0;overflow:hidden;background:#111;}
-  #fps{
+  body,html {margin:0; padding:0; overflow:hidden; background:#111;}
+  #fps {
     position: fixed;
-    top: 5px;
-    right: 5px;
+    top: 5px; right: 5px;
     color: #0f0;
     font-family: monospace;
     font-size: 16px;
     z-index: 9999;
     user-select:none;
   }
-  canvas{
-    display:block;
-  }
+  canvas { display:block; }
 </style>
 </head>
 <body>
 <div id="fps">FPS: 0</div>
 <script src="https://shuo156.github.io/js/three.js"></script>
 <script>
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
-
-const renderer = new THREE.WebGLRenderer({antialias:true, powerPreference:"high-performance"});
-renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-document.body.appendChild(renderer.domElement);
-
-camera.position.set(0,3,8);
-
-const envTexture = new THREE.CubeTextureLoader()
-  .setPath('https://threejs.org/examples/textures/cube/Bridge2/')
-  .load([
-    'posx.jpg','negx.jpg',
-    'posy.jpg','negy.jpg',
-    'posz.jpg','negz.jpg'
-  ]);
-scene.background = envTexture;
-
-const ambientLight = new THREE.AmbientLight(0x404040, 1.2);
-scene.add(ambientLight);
-
-const pointLight = new THREE.PointLight(0xffffff, 1.5);
-pointLight.position.set(0,5,5);
-pointLight.castShadow = true;
-pointLight.shadow.mapSize.width = 262144000;
-pointLight.shadow.mapSize.height = 262144000;
-pointLight.shadow.camera.near = 0.5;
-pointLight.shadow.camera.far = 50;
-scene.add(pointLight);
-
-const floorGeo = new THREE.PlaneGeometry(50,50);
-const floorMat = new THREE.ShadowMaterial({opacity:0.4});
-const floor = new THREE.Mesh(floorGeo, floorMat);
-floor.rotation.x = -Math.PI/2;
-floor.position.y = -1.5;
-floor.receiveShadow = true;
-scene.add(floor);
-
-const geom = new THREE.IcosahedronGeometry(1,4);
-const mat = new THREE.MeshPhysicalMaterial({
-  color: 0x2266cc,
-  roughness: 0.2,
-  metalness: 1,
-  clearcoat: 1,
-  clearcoatRoughness: 0.1,
-  envMap: envTexture,
-  envMapIntensity: 1
-});
-const mesh = new THREE.Mesh(geom, mat);
-mesh.castShadow = true;
-mesh.receiveShadow = true;
-scene.add(mesh);
-
-const particleCount = 4000;
-const particlesGeom = new THREE.BufferGeometry();
-const positions = new Float32Array(particleCount * 3);
-const velocities = new Float32Array(particleCount * 3);
-for(let i=0; i<particleCount; i++){
-  positions[i*3] = (Math.random()-0.5)*15;
-  positions[i*3+1] = (Math.random()-0.5)*10 + 1;
-  positions[i*3+2] = (Math.random()-0.5)*15;
-  velocities[i*3] = (Math.random()-0.5)*0.02;
-  velocities[i*3+1] = (Math.random()-0.5)*0.02;
-  velocities[i*3+2] = (Math.random()-0.5)*0.02;
-}
-particlesGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-
-const particlesMat = new THREE.PointsMaterial({
-  color: 0x66aaff,
-  size: 0.06,
-  transparent: true,
-  opacity: 0.7,
-  sizeAttenuation: true,
-  depthWrite: false,
-  blending: THREE.AdditiveBlending
-});
-
-const particles = new THREE.Points(particlesGeom, particlesMat);
-scene.add(particles);
-
-let fpsEl = document.getElementById('fps'), lastTime = performance.now(), frames = 0;
-
-let isDragging = false, lastX = 0, lastY = 0;
-let rotX = 0, rotY = 0;
-let targetRotX = 0, targetRotY = 0;
-let scale = 1;
-const minScale = 0.4, maxScale = 3;
-
-function clamp(value,min,max){return value<min?min:value>max?max:value;}
-
-function onPointerDown(e){
-  isDragging = true;
-  lastX = e.clientX || e.touches[0].clientX;
-  lastY = e.clientY || e.touches[0].clientY;
-}
-function onPointerMove(e){
-  if(!isDragging)return;
-  let x = e.clientX || e.touches[0].clientX;
-  let y = e.clientY || e.touches[0].clientY;
-  let dx = (x - lastX) / window.innerWidth * Math.PI * 2;
-  let dy = (y - lastY) / window.innerHeight * Math.PI * 2;
-  targetRotY += dx;
-  targetRotX += dy;
-  targetRotX = clamp(targetRotX, -Math.PI/2, Math.PI/2);
-  lastX = x;
-  lastY = y;
-}
-function onPointerUp(e){isDragging = false;}
-
-function onWheel(e){
-  e.preventDefault();
-  scale -= e.deltaY * 0.002;
-  scale = clamp(scale, minScale, maxScale);
-}
-
-renderer.domElement.addEventListener('mousedown', onPointerDown);
-renderer.domElement.addEventListener('touchstart', onPointerDown);
-renderer.domElement.addEventListener('mousemove', onPointerMove);
-renderer.domElement.addEventListener('touchmove', onPointerMove, {passive:false});
-renderer.domElement.addEventListener('mouseup', onPointerUp);
-renderer.domElement.addEventListener('touchend', onPointerUp);
-renderer.domElement.addEventListener('wheel', onWheel, {passive:false});
-
-function animate(){
-  requestAnimationFrame(animate);
-  rotX += (targetRotX - rotX) * 0.1;
-  rotY += (targetRotY - rotY) * 0.1;
-
-  rotX += 0.002;
-  rotY += 0.003;
-
-  mesh.rotation.x = rotX;
-  mesh.rotation.y = rotY;
-  mesh.scale.set(scale, scale, scale);
-
-  const time = performance.now() * 0.001;
-  pointLight.position.x = 5 * Math.cos(time);
-  pointLight.position.z = 5 * Math.sin(time);
-
-  const positions = particles.geometry.attributes.position.array;
-  for(let i=0; i<particleCount; i++){
-    positions[i*3] += velocities[i*3];
-    if(positions[i*3] > 7 || positions[i*3] < -7) velocities[i*3] *= -1;
-    positions[i*3+1] += velocities[i*3+1];
-    if(positions[i*3+1] > 5 || positions[i*3+1] < -3) velocities[i*3+1] *= -1;
-    positions[i*3+2] += velocities[i*3+2];
-    if(positions[i*3+2] > 7 || positions[i*3+2] < -7) velocities[i*3+2] *= -1;
-  }
-  particles.geometry.attributes.position.needsUpdate = true;
-
-  renderer.render(scene, camera);
-
-  frames++;
-  let now = performance.now();
-  if(now - lastTime >= 1000){
-    fpsEl.textContent = 'FPS: ' + frames;
-    frames = 0;
-    lastTime = now;
-  }
-}
-animate();
-
-window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth/window.innerHeight;
-  camera.updateProjectionMatrix();
+(() => {
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer({antialias:true, powerPreference:"high-performance"});
+  renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
-});
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  document.body.appendChild(renderer.domElement);
+  
+  camera.position.set(0, 10, 40);
+
+  // 环境光
+  scene.add(new THREE.AmbientLight(0x404040, 1.5));
+
+  // 多阴影光源
+  const lights = [];
+  for(let i=0; i<5; i++){
+    const l = new THREE.PointLight(0xffffff, 1, 100);
+    l.position.set(Math.cos(i*1.2)*20, 15, Math.sin(i*1.2)*20);
+    l.castShadow = true;
+    l.shadow.mapSize.width = 2048;
+    l.shadow.mapSize.height = 2048;
+    l.shadow.camera.near = 0.5;
+    l.shadow.camera.far = 100;
+    scene.add(l);
+    lights.push(l);
+  }
+
+  // 地面
+  const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(200,200),
+    new THREE.ShadowMaterial({opacity:0.6})
+  );
+  floor.rotation.x = -Math.PI/2;
+  floor.position.y = -5;
+  floor.receiveShadow = true;
+  scene.add(floor);
+
+  // 超高细节几何体 基础几何体（用Icosahedron 3细分避免顶点太多）
+  const baseGeom = new THREE.IcosahedronGeometry(1, 3);
+  
+  // 1000个独立Mesh，爆drawcall，爆CPU
+  const meshes = [];
+  const meshCount = 1000;
+
+  for(let i=0; i<meshCount; i++){
+    const mat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color(`hsl(${(i*10)%360}, 80%, 50%)`),
+      roughness: 0.3,
+      metalness: 0.7,
+    });
+    const mesh = new THREE.Mesh(baseGeom.clone(), mat);
+    mesh.position.set(
+      (Math.random()-0.5)*50,
+      (Math.random()*10),
+      (Math.random()-0.5)*50
+    );
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    scene.add(mesh);
+    meshes.push(mesh);
+  }
+
+  // CPU侧顶点动态修改，制造CPU瓶颈
+  // 预先缓存顶点原始位置
+  const originalPositions = [];
+  meshes.forEach(mesh => {
+    const posAttr = mesh.geometry.attributes.position;
+    originalPositions.push(new Float32Array(posAttr.array));
+  });
+
+  // 粒子系统降低数量以节约资源
+  const particleCount = 5000;
+  const particlesGeom = new THREE.BufferGeometry();
+  const positions = new Float32Array(particleCount * 3);
+  const velocities = new Float32Array(particleCount * 3);
+  for(let i=0; i<particleCount; i++){
+    positions[i*3] = (Math.random()-0.5)*60;
+    positions[i*3+1] = (Math.random()-0.5)*20 + 5;
+    positions[i*3+2] = (Math.random()-0.5)*60;
+    velocities[i*3] = (Math.random()-0.5)*0.02;
+    velocities[i*3+1] = (Math.random()-0.5)*0.02;
+    velocities[i*3+2] = (Math.random()-0.5)*0.02;
+  }
+  particlesGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  const particlesMat = new THREE.PointsMaterial({
+    color: 0x66aaff,
+    size: 0.05,
+    transparent: true,
+    opacity: 0.6,
+    sizeAttenuation: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+  const particles = new THREE.Points(particlesGeom, particlesMat);
+  scene.add(particles);
+
+  // FPS显示
+  let fpsEl = document.getElementById('fps'), lastTime = performance.now(), frames = 0;
+
+  // 旋转变量
+  let rotY = 0;
+
+  function animate() {
+    requestAnimationFrame(animate);
+
+    rotY += 0.005;
+
+    // 动态移动灯光轨迹
+    lights.forEach((l,i) => {
+      l.position.x = 20 * Math.cos(rotY + i*1.5);
+      l.position.z = 20 * Math.sin(rotY + i*1.5);
+    });
+
+    // CPU顶点波动，每个模型顶点都动，制造CPU压力
+    meshes.forEach((mesh, idx) => {
+      const posAttr = mesh.geometry.attributes.position;
+      const orig = originalPositions[idx];
+      const array = posAttr.array;
+      for(let i=0; i<array.length; i+=3){
+        // 基于时间和顶点索引波动顶点Y
+        array[i+1] = orig[i+1] + Math.sin(performance.now()*0.002 + i + idx)*0.15;
+      }
+      posAttr.needsUpdate = true;
+
+      mesh.rotation.y = rotY * (1 + idx*0.001);
+    });
+
+    // 粒子位置更新
+    const pos = particles.geometry.attributes.position.array;
+    for(let i=0; i<particleCount; i++){
+      let idx = i*3;
+      pos[idx] += velocities[idx];
+      if(pos[idx] > 30 || pos[idx] < -30) velocities[idx] *= -1;
+
+      pos[idx+1] += velocities[idx+1];
+      if(pos[idx+1] > 15 || pos[idx+1] < 0) velocities[idx+1] *= -1;
+
+      pos[idx+2] += velocities[idx+2];
+      if(pos[idx+2] > 30 || pos[idx+2] < -30) velocities[idx+2] *= -1;
+    }
+    particles.geometry.attributes.position.needsUpdate = true;
+
+    renderer.render(scene, camera);
+
+    frames++;
+    let now = performance.now();
+    if(now - lastTime >= 1000){
+      fpsEl.textContent = 'FPS: ' + frames;
+      frames = 0;
+      lastTime = now;
+    }
+  }
+
+  animate();
+
+  // 窗口自适应
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+})();
 </script>
 </body>
 </html>
