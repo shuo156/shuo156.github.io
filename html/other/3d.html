@@ -2,8 +2,8 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
-<title>复杂光影粒子性能检测</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<title>极致性能检测3D</title>
 <style>
   body,html{margin:0;padding:0;overflow:hidden;background:#111;}
   #fps{
@@ -16,7 +16,10 @@
     z-index: 9999;
     user-select:none;
   }
-  canvas{display:block;}
+  canvas{
+    display:block;
+    image-rendering: auto;
+  }
 </style>
 </head>
 <body>
@@ -25,70 +28,82 @@
 <script>
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({antialias:true});
+
+const renderer = new THREE.WebGLRenderer({antialias:true, powerPreference:"high-performance"});
+renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
 
-camera.position.set(0,2,5);
+camera.position.set(0,3,8);
 
-const ambientLight = new THREE.AmbientLight(0x404040, 0.7);
+const envTexture = new THREE.CubeTextureLoader()
+  .setPath('https://threejs.org/examples/textures/cube/Bridge2/')
+  .load([
+    'posx.jpg','negx.jpg',
+    'posy.jpg','negy.jpg',
+    'posz.jpg','negz.jpg'
+  ]);
+scene.background = envTexture;
+
+const ambientLight = new THREE.AmbientLight(0x404040, 1.2);
 scene.add(ambientLight);
 
-const pointLight = new THREE.PointLight(0xffffff, 1);
-pointLight.position.set(5,5,5);
+const pointLight = new THREE.PointLight(0xffffff, 1.5);
+pointLight.position.set(0,5,5);
 pointLight.castShadow = true;
-pointLight.shadow.mapSize.width = 512;
-pointLight.shadow.mapSize.height = 512;
+pointLight.shadow.mapSize.width = 2048;
+pointLight.shadow.mapSize.height = 2048;
 pointLight.shadow.camera.near = 0.5;
-pointLight.shadow.camera.far = 20;
+pointLight.shadow.camera.far = 50;
 scene.add(pointLight);
 
-const floorGeo = new THREE.PlaneGeometry(20, 20);
+const floorGeo = new THREE.PlaneGeometry(50,50);
 const floorMat = new THREE.ShadowMaterial({opacity:0.4});
 const floor = new THREE.Mesh(floorGeo, floorMat);
-floor.rotation.x = -Math.PI / 2;
-floor.position.y = -1;
+floor.rotation.x = -Math.PI/2;
+floor.position.y = -1.5;
 floor.receiveShadow = true;
 scene.add(floor);
 
-const geom = new THREE.IcosahedronGeometry(1,2);
-for(let i=0; i<geom.attributes.position.count; i++){
-  let v = new THREE.Vector3().fromBufferAttribute(geom.attributes.position, i);
-  v.multiplyScalar(1 + 0.1*Math.sin(i*5));
-  geom.attributes.position.setXYZ(i, v.x, v.y, v.z);
-}
-geom.computeVertexNormals();
-
-const mat = new THREE.MeshStandardMaterial({
-  color: 0x2194ce,
-  roughness: 0.3,
-  metalness: 0.7,
-  flatShading: false
+const geom = new THREE.IcosahedronGeometry(1,4);
+const mat = new THREE.MeshPhysicalMaterial({
+  color: 0x2266cc,
+  roughness: 0.2,
+  metalness: 1,
+  clearcoat: 1,
+  clearcoatRoughness: 0.1,
+  envMap: envTexture,
+  envMapIntensity: 1
 });
-
 const mesh = new THREE.Mesh(geom, mat);
 mesh.castShadow = true;
 mesh.receiveShadow = true;
 scene.add(mesh);
 
-const particleCount = 500;
+const particleCount = 3000;
 const particlesGeom = new THREE.BufferGeometry();
 const positions = new Float32Array(particleCount * 3);
+const velocities = new Float32Array(particleCount * 3);
 for(let i=0; i<particleCount; i++){
-  positions[i*3] = (Math.random() - 0.5) * 6;
-  positions[i*3+1] = (Math.random() - 0.5) * 4 + 1;
-  positions[i*3+2] = (Math.random() - 0.5) * 6;
+  positions[i*3] = (Math.random()-0.5)*15;
+  positions[i*3+1] = (Math.random()-0.5)*10 + 1;
+  positions[i*3+2] = (Math.random()-0.5)*15;
+  velocities[i*3] = (Math.random()-0.5)*0.01;
+  velocities[i*3+1] = (Math.random()-0.5)*0.01;
+  velocities[i*3+2] = (Math.random()-0.5)*0.01;
 }
 particlesGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
 const particlesMat = new THREE.PointsMaterial({
-  color: 0x44aaff,
-  size: 0.05,
+  color: 0x66aaff,
+  size: 0.06,
   transparent: true,
-  opacity: 0.8,
-  sizeAttenuation: true
+  opacity: 0.7,
+  sizeAttenuation: true,
+  depthWrite: false,
+  blending: THREE.AdditiveBlending
 });
 
 const particles = new THREE.Points(particlesGeom, particlesMat);
@@ -100,7 +115,7 @@ let isDragging = false, lastX = 0, lastY = 0;
 let rotX = 0, rotY = 0;
 let targetRotX = 0, targetRotY = 0;
 let scale = 1;
-const minScale = 0.5, maxScale = 2.5;
+const minScale = 0.4, maxScale = 3;
 
 function clamp(value,min,max){return value<min?min:value>max?max:value;}
 
@@ -125,7 +140,7 @@ function onPointerUp(e){isDragging = false;}
 
 function onWheel(e){
   e.preventDefault();
-  scale -= e.deltaY * 0.0015;
+  scale -= e.deltaY * 0.002;
   scale = clamp(scale, minScale, maxScale);
 }
 
@@ -145,8 +160,21 @@ function animate(){
   mesh.rotation.y = rotY;
   mesh.scale.set(scale, scale, scale);
 
-  particles.rotation.y += 0.002;
-  particles.rotation.x += 0.001;
+  // 光源绕Y轴旋转，产生动态阴影效果
+  pointLight.position.x = 5 * Math.cos(performance.now()*0.001);
+  pointLight.position.z = 5 * Math.sin(performance.now()*0.001);
+
+  // 粒子位置更新，往返运动
+  const positions = particles.geometry.attributes.position.array;
+  for(let i=0; i<particleCount; i++){
+    positions[i*3] += velocities[i*3];
+    if(positions[i*3] > 7 || positions[i*3] < -7) velocities[i*3] *= -1;
+    positions[i*3+1] += velocities[i*3+1];
+    if(positions[i*3+1] > 5 || positions[i*3+1] < -3) velocities[i*3+1] *= -1;
+    positions[i*3+2] += velocities[i*3+2];
+    if(positions[i*3+2] > 7 || positions[i*3+2] < -7) velocities[i*3+2] *= -1;
+  }
+  particles.geometry.attributes.position.needsUpdate = true;
 
   renderer.render(scene, camera);
 
