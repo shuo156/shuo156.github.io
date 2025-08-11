@@ -1,0 +1,350 @@
+<!doctype html>
+
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>宇宙缩放视图 — Earth → Universe</title>
+  <style>
+    :root{--bg:#0b1020;--fg:#e6f0ff;--muted:#9fb0d6}
+    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
+    body{background:linear-gradient(180deg,#03040a 0%,var(--bg) 60%);color:var(--fg);display:flex;align-items:stretch}
+    .app{flex:1;display:flex;flex-direction:column}
+    header{padding:12px 14px;display:flex;align-items:center;gap:12px}
+    header h1{font-size:16px;margin:0}
+    header .controls{margin-left:auto;display:flex;gap:8px;align-items:center}
+    button{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.04);color:var(--fg);padding:8px 10px;border-radius:10px;font-size:13px}
+    main{flex:1;display:flex;min-height:0}
+    /* svg container */
+    .viewport{flex:1;display:flex;align-items:center;justify-content:center;padding:8px}
+    svg{width:100%;height:100%;touch-action:none;user-select:none}
+    .hud{position:absolute;right:12px;top:64px;background:rgba(10,14,22,0.5);padding:8px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);font-size:13px}
+    .legend{position:absolute;left:12px;bottom:12px;background:rgba(0,0,0,0.35);padding:8px;border-radius:8px;font-size:13px}
+    .label{font-size:12px;fill:var(--fg);pointer-events:none;text-shadow:0 1px 0 rgba(0,0,0,0.6)}
+    .small{font-size:11px;fill:var(--muted)}
+    @media (max-width:640px){header h1{font-size:14px}button{padding:7px 8px;font-size:12px}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>宇宙缩放视图 — 从地球到宇宙</h1>
+      <div class="controls">
+        <button id="zoomIn">放大（向内）</button>
+        <button id="zoomOut">缩小（向外）</button>
+        <button id="reset">重置</button>
+      </div>
+    </header>
+    <main>
+      <div class="viewport">
+        <!-- SVG 作为矢量画布，使用 viewBox 便于缩放与转换 -->
+        <svg id="canvas" viewBox="-500 -300 1000 600" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <radialGradient id="sunGrad"><stop offset="0%" stop-color="#fff2cc"/><stop offset="60%" stop-color="#ffb84d"/><stop offset="100%" stop-color="#ff7a00"/></radialGradient>
+            <linearGradient id="space" x1="0" x2="1"><stop offset="0%" stop-color="#081122"/><stop offset="100%" stop-color="#021025"/></linearGradient>
+            <filter id="glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs><!-- 背景星帧 -->
+      <rect x="-2000" y="-1200" width="4000" height="2400" fill="url(#space)" />
+
+      <!-- 星点（用少量随机位置以示例，更多点可用程序生成） -->
+      <g id="stars" opacity="0.9">
+        <!-- some handcrafted stars -->
+        <circle cx="-300" cy="-100" r="1.6" fill="#fff"/>
+        <circle cx="280" cy="150" r="1.2" fill="#fff"/>
+        <circle cx="40" cy="-160" r="2" fill="#fff"/>
+        <circle cx="-420" cy="200" r="1.1" fill="#dbe9ff"/>
+        <circle cx="-180" cy="90" r="0.9" fill="#cde1ff"/>
+      </g>
+
+      <!-- 从最内层（地球）到最外层（宇宙）的分层组 -->
+      <g id="universe-root">
+        <!-- Level: Local (Earth + Moon + near objects) -->
+        <g id="level-earth" data-level="Earth">
+          <!-- 地球 -->
+          <g id="earth" transform="translate(-200,40)">
+            <circle r="18" fill="#2f6fb2" stroke="#132635" stroke-width="1.2"/>
+            <text x="26" y="6" class="label">地球 · Earth</text>
+          </g>
+
+          <!-- 月球 -->
+          <g id="moon" transform="translate(-160,20)">
+            <circle r="6" fill="#cfcfcf"/>
+            <text x="10" y="4" class="small">月球 · Moon</text>
+          </g>
+
+          <!-- 人造卫星示例 -->
+          <g id="sat" transform="translate(-220,-30)">
+            <rect x="-2" y="-2" width="4" height="4" rx="0.6"/>
+            <text x="8" y="4" class="small">国际空间站 ISS</text>
+          </g>
+        </g>
+
+        <!-- Level: Planetary (Solar System) -->
+        <g id="level-solar" data-level="Solar System">
+          <!-- 太阳 位于中心右侧示例 -->
+          <g id="sun" transform="translate(120,-40)">
+            <circle r="40" fill="url(#sunGrad)" filter="url(#glow)"/>
+            <text x="52" y="10" class="label">太阳 · Sun</text>
+          </g>
+
+          <!-- 内行星示例（按比例已经简化） -->
+          <g transform="translate(120,-40)">
+            <g id="mercury" transform="translate(70,-10)"><circle r="3"/><text x="6" y="4" class="small">水星 Mercury</text></g>
+            <g id="venus" transform="translate(95,10)"><circle r="5"/><text x="8" y="5" class="small">金星 Venus</text></g>
+            <g id="mars" transform="translate(145,30)"><circle r="6" fill="#b24b3f"/><text x="8" y="6" class="small">火星 Mars</text></g>
+            <g id="jupiter" transform="translate(230,90)"><circle r="18" fill="#d8b48a"/><text x="22" y="6" class="small">木星 Jupiter</text></g>
+            <g id="saturn" transform="translate(320,120)"><circle r="15" fill="#e6d1aa"/><ellipse rx="26" ry="6" cx="0" cy="0" fill="#cdb58a" transform="rotate(20)"/><text x="30" y="6" class="small">土星 Saturn</text></g>
+            <g id="uranus" transform="translate(420,150)"><circle r="10" fill="#80c8d8"/><text x="14" y="6" class="small">天王星 Uranus</text></g>
+            <g id="neptune" transform="translate(480,170)"><circle r="10" fill="#4a74d6"/><text x="14" y="6" class="small">海王星 Neptune</text></g>
+            <g id="pluto" transform="translate(540,190)"><circle r="4" fill="#9e8b8b"/><text x="8" y="4" class="small">冥王星 Pluto</text></g>
+          </g>
+        </g>
+
+        <!-- Level: Stellar neighborhood / Nearby stars -->
+        <g id="level-stars" data-level="Stars">
+          <g transform="translate(0,-120)">
+            <g id="alpha-centauri" transform="translate(-80,-60)"><circle r="6" fill="#ffd"/><text x="10" y="4" class="small">半人马座 α (Alpha Centauri)</text></g>
+            <g id="sirius" transform="translate(180,-180)"><circle r="5" fill="#fff7e0"/><text x="10" y="4" class="small">天狼星 Sirius</text></g>
+            <g id="vega" transform="translate(260,-40)"><circle r="5" fill="#fff7e0"/><text x="10" y="4" class="small">织女星 Vega</text></g>
+            <g id="betelgeuse" transform="translate(80,-220)"><circle r="7" fill="#ffccaa"/><text x="10" y="4" class="small">参宿四 Betelgeuse</text></g>
+          </g>
+        </g>
+
+        <!-- Level: Galaxy (Milky Way) -->
+        <g id="level-galaxy" data-level="Galaxy">
+          <!-- 简单的旋臂示意 -->
+          <g transform="translate(0,120) scale(1.2)">
+            <g id="milkyway">
+              <path d="M -200 0 C -120 -30 -60 -40 0 -30 C 60 -20 120 -30 200 0 C 120 30 60 40 0 30 C -60 20 -120 30 -200 0 Z" fill="none" stroke="#bfcff5" stroke-width="1" opacity="0.7"/>
+              <circle cx="0" cy="0" r="28" fill="#ffffff" opacity="0.15"/>
+              <text x="34" y="6" class="label">银河系 · Milky Way</text>
+            </g>
+          </g>
+        </g>
+
+        <!-- Level: Local Group / Galaxy Cluster -->
+        <g id="level-localgroup" data-level="Local Group">
+          <g transform="translate(0,250) scale(1)">
+            <text x="-20" y="10" class="label">本星系群 · Local Group</text>
+            <g transform="translate(160,40)"><rect x="-6" y="-6" width="12" height="12" rx="2"/><text x="16" y="6" class="small">仙女座 M31 (Andromeda)</text></g>
+          </g>
+        </g>
+
+        <!-- Level: Supercluster -->
+        <g id="level-supercluster" data-level="Supercluster">
+          <g transform="translate(-80,360) scale(1.1)">
+            <text x="0" y="6" class="label">室女座超星系团 · Virgo Supercluster</text>
+          </g>
+        </g>
+
+        <!-- Level: Observable Universe -->
+        <g id="level-universe" data-level="Observable Universe">
+          <g transform="translate(0,420) scale(1)">
+            <text x="-40" y="6" class="label">可观测宇宙 · Observable Universe</text>
+            <text x="-40" y="26" class="small">包含数十亿星系与宇宙微波背景</text>
+          </g>
+        </g>
+
+      </g>
+    </svg>
+    <div class="hud" id="hud">层级: <strong id="levelName">Earth</strong><br/>缩放: <span id="scaleVal">1.00</span>x</div>
+    <div class="legend">双击/双指点按：聚焦/放大<br/>双指捏合：缩放<br/>拖动：平移</div>
+  </div>
+</main>
+
+  </div>  <script>
+    // 交互控制与层级逻辑（放在单文件中，便于修改与扩展）
+    (function(){
+      const svg = document.getElementById('canvas');
+      const root = document.getElementById('universe-root');
+      const levelName = document.getElementById('levelName');
+      const scaleVal = document.getElementById('scaleVal');
+
+      // 初始 transform 状态
+      let state = { x:0, y:0, k:1 };
+      const minK = 0.06; // 最小缩放（看到宇宙全貌）
+      const maxK = 60;   // 最大放大（放到地表或更小）
+
+      // 定义层级的理想缩放值（k）和中心点，用于一键跳转
+      const levels = [
+        {id:'level-earth', name:'Earth', k:28, cx:-200, cy:40},
+        {id:'level-solar', name:'Solar System', k:3.2, cx:120, cy:-40},
+        {id:'level-stars', name:'Nearby Stars', k:0.9, cx:0, cy:-120},
+        {id:'level-galaxy', name:'Milky Way', k:0.2, cx:0, cy:120},
+        {id:'level-localgroup', name:'Local Group', k:0.11, cx:0, cy:250},
+        {id:'level-supercluster', name:'Supercluster', k:0.065, cx:-80, cy:360},
+        {id:'level-universe', name:'Observable Universe', k:0.04, cx:0, cy:420}
+      ];
+
+      // 应用 transform 到 root（中心化 transform-origin 到画布中心更容易控制）
+      function applyTransform() {
+        root.setAttribute('transform', `translate(${state.x},${state.y}) scale(${state.k})`);
+        scaleVal.textContent = state.k.toFixed(3);
+      }
+      applyTransform();
+
+      // 平滑动画到目标
+      function animateTo(target, duration=650) {
+        const start = {x: state.x, y: state.y, k: state.k};
+        const dx = target.x - start.x, dy = target.y - start.y, dk = target.k - start.k;
+        const t0 = performance.now();
+        function step(t){
+          const p = Math.min(1,(t - t0)/duration);
+          const eased = 1 - Math.pow(1-p,3); // ease-out cubic
+          state.x = start.x + dx*eased;
+          state.y = start.y + dy*eased;
+          state.k = start.k + dk*eased;
+          applyTransform();
+          if (p<1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+
+      // 将 canvas 坐标系中某点移动到中心并缩放到 k
+      function zoomToPoint(k, cx, cy){
+        // 目标是把 (cx,cy) 在变换后映射到 svg 中心 (viewBox 中心)
+        // viewBox center 在当前 viewBox 为 (-500,-300,1000,600) 即 (0,0)
+        const target = {k:k};
+        // state.x + cx*state.k = 0  -> for new k: newX + cx*k = 0 => newX = -cx*k
+        target.x = -cx * k;
+        target.y = -cy * k;
+        // clamp k
+        target.k = Math.max(minK, Math.min(maxK, target.k));
+        animateTo(target);
+        updateLevelNameByK(target.k);
+      }
+
+      // 找到最接近的层级并更新 HUD
+      function updateLevelNameByK(k){
+        let best = levels[0];
+        let mind = Infinity;
+        for(const L of levels){
+          const d = Math.abs(Math.log(L.k) - Math.log(k));
+          if (d < mind){ mind = d; best = L; }
+        }
+        levelName.textContent = best.name;
+      }
+
+      // 按钮事件
+      document.getElementById('zoomIn').addEventListener('click', ()=>{
+        const newK = Math.min(maxK, state.k * 1.8);
+        const target = {k:newK,x:state.x*newK/state.k,y:state.y*newK/state.k};
+        animateTo(target);
+        updateLevelNameByK(newK);
+      });
+      document.getElementById('zoomOut').addEventListener('click', ()=>{
+        const newK = Math.max(minK, state.k / 1.8);
+        const target = {k:newK,x:state.x*newK/state.k,y:state.y*newK/state.k};
+        animateTo(target);
+        updateLevelNameByK(newK);
+      });
+      document.getElementById('reset').addEventListener('click', ()=>{
+        animateTo({x:0,y:0,k:1});
+        updateLevelNameByK(1);
+      });
+
+      // 快速跳转层级（通过双击或双指点按）
+      svg.addEventListener('dblclick', (ev)=>{
+        ev.preventDefault();
+        // 找到下一个更内或更外的层级——简单策略：如果当前k>level.k，则进入内层，否则进入外层
+        let curK = state.k;
+        // pick nearest level and then choose next inward
+        let idx = 0; let mind=Infinity;
+        for(let i=0;i<levels.length;i++){
+          const d = Math.abs(Math.log(levels[i].k)-Math.log(curK)); if(d<mind){mind=d;idx=i}
+        }
+        // 如果已经是最内层就 reset
+        let targetIdx = Math.max(0, idx-1);
+        // 如果 dblclick with shift pressed -> outward
+        if (ev.shiftKey) targetIdx = Math.min(levels.length-1, idx+1);
+        const L = levels[targetIdx];
+        zoomToPoint(L.k, L.cx, L.cy);
+      });
+
+      // 触摸与拖拽 + 捏合缩放（支持移动端）
+      let pointerState = {down:false, x:0, y:0};
+      let touchDist = null;
+
+      function getPointFromEvent(e){
+        if (e.touches && e.touches.length) return {x:e.touches[0].clientX,y:e.touches[0].clientY};
+        return {x:e.clientX,y:e.clientY};
+      }
+
+      svg.addEventListener('pointerdown', (e)=>{ svg.setPointerCapture(e.pointerId); pointerState.down=true; pointerState.x=e.clientX; pointerState.y=e.clientY; });
+      svg.addEventListener('pointermove', (e)=>{
+        if (!pointerState.down) return;
+        const dx = e.clientX - pointerState.x; const dy = e.clientY - pointerState.y;
+        // 将像素移动转换到 svg 坐标系（近似）: svg coords scale with k (viewbox center at 0,0)
+        state.x += dx/ (svg.clientWidth/1000) ; state.y += dy/ (svg.clientHeight/600);
+        pointerState.x = e.clientX; pointerState.y = e.clientY;
+        applyTransform();
+      });
+      svg.addEventListener('pointerup', (e)=>{ pointerState.down=false; svg.releasePointerCapture(e.pointerId); });
+      svg.addEventListener('pointercancel', ()=>{ pointerState.down=false; });
+
+      // Wheel 缩放（桌面）
+      svg.addEventListener('wheel', (e)=>{
+        e.preventDefault();
+        const delta = -e.deltaY;
+        const zoomFactor = Math.exp(delta * 0.0012);
+        const newK = Math.max(minK, Math.min(maxK, state.k * zoomFactor));
+        // 把鼠标位置作为聚焦点
+        const rect = svg.getBoundingClientRect();
+        const mx = e.clientX - rect.left - rect.width/2; // px relative to center
+        const my = e.clientY - rect.top - rect.height/2;
+        // convert to svg coords approx
+        const sx = mx * (1000/rect.width) / state.k;
+        const sy = my * (600/rect.height) / state.k;
+        // 调整 state.x,y 以让 (sx,sy) 保持在视图中的相对位置
+        state.x = state.x - sx*(newK - state.k);
+        state.y = state.y - sy*(newK - state.k);
+        state.k = newK;
+        applyTransform();
+        updateLevelNameByK(state.k);
+      }, {passive:false});
+
+      // 简单的触摸捏合支持（两个触点）
+      svg.addEventListener('touchstart', (e)=>{
+        if (e.touches.length===2){
+          const dx = e.touches[0].clientX - e.touches[1].clientX;
+          const dy = e.touches[0].clientY - e.touches[1].clientY;
+          touchDist = Math.hypot(dx,dy);
+        }
+      }, {passive:false});
+      svg.addEventListener('touchmove', (e)=>{
+        if (e.touches.length===2 && touchDist){
+          const dx = e.touches[0].clientX - e.touches[1].clientX;
+          const dy = e.touches[0].clientY - e.touches[1].clientY;
+          const nd = Math.hypot(dx,dy);
+          const factor = nd / touchDist;
+          const newK = Math.max(minK, Math.min(maxK, state.k * factor));
+          state.k = newK; applyTransform(); updateLevelNameByK(state.k);
+          touchDist = nd;
+          e.preventDefault();
+        }
+      }, {passive:false});
+      svg.addEventListener('touchend', (e)=>{ if (e.touches.length<2) touchDist = null; });
+
+      // 初始化：将视图对齐到中心
+      animateTo({x:0,y:0,k:1}, 10);
+
+      // 便捷入口：用户可以通过 JS 控制跳转到某个层级，例如 window.jumpTo('Milky Way')
+      window.jumpTo = function(nameOrId){
+        const L = levels.find(l => l.name.toLowerCase().includes(String(nameOrId).toLowerCase()) || l.id===nameOrId);
+        if (!L) return console.warn('找不到层级', nameOrId);
+        zoomToPoint(L.k, L.cx, L.cy);
+      };
+
+      // 给外部扩展：添加更多天体名的函数示例（非必要）
+      window.addLabel = function(x,y,text,cls='small'){
+        const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+        t.setAttribute('x', x); t.setAttribute('y', y); t.setAttribute('class', cls); t.textContent = text;
+        root.appendChild(t);
+      };
+
+      // 使用说明输出
+      console.log('宇宙缩放视图已加载 — 使用 jumpTo("Milky Way") 或 jumpTo("Earth") 直接跳转；双击切换层级；shift+双击向外切换');
+
+    })();
+  </script></body>
+</html>
