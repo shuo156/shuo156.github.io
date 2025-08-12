@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<title>极限性能检测 - 三档压测</title>
+<style>
+  body,html{margin:0;padding:0;overflow:hidden;background:#111;}
+  #fps{
+    position: fixed;top: 5px;right: 5px;color: #0f0;
+    font-family: monospace;font-size: 16px;z-index: 9999;user-select:none;
+  }
+</style>
+</head>
+<body>
+<div id="fps">FPS: 0</div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/ShaderPass.js"></script>
+
+<script>
+// ===================== 用户可调参数 =====================
+// 档位：1=轻量，2=中量，3=重度
+let LEVEL = 2;  
+
+// 档位对应参数
+const SETTINGS = {
+  1: { MODELS: 500,  MODEL_DETAIL: 2, PARTICLES: 20000,  LIGHTS: 2, SHADOW_SIZE: 1024, SHADER_COMPLEXITY: 8 },
+  2: { MODELS: 1200, MODEL_DETAIL: 3, PARTICLES: 50000,  LIGHTS: 5, SHADOW_SIZE: 2048, SHADER_COMPLEXITY: 16 },
+  3: { MODELS: 3000, MODEL_DETAIL: 4, PARTICLES: 200000, LIGHTS: 8, SHADOW_SIZE: 8192, SHADER_COMPLEXITY: 32 }
+};
+
+// 选当前档位配置
+let cfg = SETTINGS[LEVEL];
+// ========================================================
+
+// 基本场景
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 2000);
+camera.position.set(0, 3, 10);
+const renderer = new THREE.WebGLRenderer({antialias:false, powerPreference:"high-performance"});
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
+
+// 光源
+for(let i=0;i<cfg.LIGHTS;i++){
+  const light = new THREE.PointLight(0xffffff, 1, 100);
+  light.position.set(Math.random()*20-10, Math.random()*10+5, Math.random()*20-10);
+  light.castShadow = true;
+  light.shadow.mapSize.width = cfg.SHADOW_SIZE;
+  light.shadow.mapSize.height = cfg.SHADOW_SIZE;
+  scene.add(light);
+}
+
+// 地面
+const floorMat = new THREE.MeshStandardMaterial({color:0x333333});
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(200,200), floorMat);
+floor.rotation.x = -Math.PI/2;
+floor.receiveShadow = true;
+scene.add(floor);
+
+// 高面模型
+const meshes = [];
+const baseGeo = new THREE.IcosahedronGeometry(0.5, cfg.MODEL_DETAIL);
+const baseMat = new THREE.MeshStandardMaterial({color:0x2266cc, metalness:0.8, roughness:0.2});
+for(let i=0;i<cfg.MODELS;i++){
+  const m = new THREE.Mesh(baseGeo, baseMat.clone());
+  m.position.set(Math.random()*50-25, Math.random()*10, Math.random()*50-25);
+  m.castShadow = true;
+  scene.add(m);
+  meshes.push(m);
+}
+
+// 粒子系统
+const pCount = cfg.PARTICLES;
+const pGeo = new THREE.BufferGeometry();
+const pPos = new Float32Array(pCount*3);
+for(let i=0;i<pCount;i++){
+  pPos[i*3] = (Math.random()-0.5)*100;
+  pPos[i*3+1] = (Math.random()-0.5)*50;
+  pPos[i*3+2] = (Math.random()-0.5)*100;
+}
+pGeo.setAttribute('position', new THREE.BufferAttribute(pPos,3));
+const pMat = new THREE.PointsMaterial({color:0x66aaff, size:0.1, transparent:true, opacity:0.5});
+const particles = new THREE.Points(pGeo, pMat);
+scene.add(particles);
+
+// 后期处理（高负载 Shader）
+const composer = new THREE.EffectComposer(renderer);
+composer.addPass(new THREE.RenderPass(scene, camera));
+const heavyShader = {
+  uniforms: { tDiffuse: { value: null }, time: { value: 0 }, complexity: { value: cfg.SHADER_COMPLEXITY } },
+  vertexShader: `varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+  fragmentShader: `
+    varying vec2 vUv;uniform sampler2D tDiffuse;uniform float time;uniform float complexity;
+    float noise(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453);}
+    void main(){
+      vec4 col=vec4(0.0);
+      for(float i=0.0;i<32.0;i+=1.0){
+        if(i>=complexity) break;
+        float angle = i*0.1963495;
+        vec2 offset = vec2(cos(angle), sin(angle))*0.005;
+        col += texture2D(tDiffuse, vUv + offset*noise(vUv*angle+time));
+      }
+      gl_FragColor = col/complexity;
+    }`
+};
+composer.addPass(new THREE.ShaderPass(heavyShader, 'tDiffuse'));
+
+// FPS 监控
+let fpsEl = document.getElementById('fps'), frames = 0, lastTime = performance.now();
+
+// 动画
+function animate(){
+  requestAnimationFrame(animate);
+
+  // 模型旋转 + 顶点位移（模拟CPU压力）
+  meshes.forEach(m=>{
+    m.rotation.x += 0.01;
+    m.rotation.y += 0.01;
+    m.geometry.attributes.position.needsUpdate = true;
+  });
+
+  // 粒子漂移
+  let pos = particles.geometry.attributes.position.array;
+  for(let i=0;i<pos.length;i++){
+    pos[i] += (Math.random()-0.5)*0.05;
+  }
+  particles.geometry.attributes.position.needsUpdate = true;
+
+  // 渲染
+  heavyShader.uniforms.time.value = performance.now()/1000;
+  composer.render();
+
+  frames++;
+  let now = performance.now();
+  if(now-lastTime>=1000){
+    fpsEl.textContent = `FPS: ${frames}`;
+    frames=0;
+    lastTime=now;
+  }
+}
+animate();
+
+window.addEventListener('resize',()=>{
+  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  composer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>
