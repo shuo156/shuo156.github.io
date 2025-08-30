@@ -221,3 +221,64 @@ a:hover{color:var(--primary-700)}
   h1{font-size:28px}
   .card{padding:22px}
 }
+
+/* ---------------------------
+   1) 无点化（移除 ul/ol 的默认小圆点/数字）
+   用法：给父元素加 .no-bullet （<ul class="no-bullet">）
+   --------------------------- */
+.no-bullet {
+  list-style: none;      /* 去掉点或数字 */
+  padding-left: 0;       /* 去掉左侧缩进 */
+  margin: 0;             /* 根据需要调整外边距 */
+}
+
+/* 子 li 的基础间距（可修改） */
+.no-bullet > li {
+  margin: 0.35rem 0;
+}
+
+/* ---------------------------
+   2) li 按钮化（蓝色系）
+   用法：把列表设为 <ul class="li-button">，可在 <li> 上添加 tabindex="0" 或 role="button" 以便键盘访问
+   --------------------------- */
+.li-button {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: max-content; /* 列表宽度随内容而定，必要时改为 100% */
+}
+
+.li-button > li {
+  display: block;                  /* 块级，整行可点 */
+  padding: 10px 14px;              /* 内边距 */
+  margin: 8px 0;                   /* 行间距 */
+  background: linear-gradient(#e8f1ff, #cfe4ff); /* 轻微渐变的蓝 */
+  border: 1px solid #9fc0ff;       /* 边框 */
+  border-radius: 8px;              /* 圆角 */
+  color: #033a71;                  /* 字体颜色（深蓝） */
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+  transition: transform .08s ease, box-shadow .12s ease, background .12s ease;
+  outline: none;                   /* focus 用自定义样式 */
+}
+
+/* 悬停 / 聚焦 / 按下效果 —— 手感要干脆 */
+.li-button > li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(15,40,90,0.08);
+  background: linear-gradient(#f0f7ff, #d9ecff);
+}
+
+.li-button > li:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+/* 可通过键盘聚焦（需要在 HTML 上给 li 添加 tabindex="0" 或 role="button"） */
+.li-button > li:focus,
+.li-button > li[tabindex]:focus {
+  box-shadow: 0 0 0 4px rgba(60,120,255,0.18);
+  background: linear-gradient(#eef6ff, #dbefff);
+}
