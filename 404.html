@@ -1,53 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404</title>
-    <style>
-  @font-face {
-    font-family: 'CustomFont';
-    src: url('https://shuo156.github.io/font/fontmain.ttf') format('truetype');
-    font-display: swap;
-  }
-
-    /* 样式 */
-  body {
-    font-family: 'CustomFont', sans-serif;
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    background: linear-gradient(to bottom,
-        #FBCACA,
-        #F0F8FF
-    );
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    /* 文本居中 */
-    text-align: center;
-  }
-
-   /* 文本样式 */
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'CustomFont', sans-serif;
-    text-align: center;
-  }
-
-  /* 图片居中 */
-  img {
-    display: block;
-    margin: 0 auto;
-    max-width: 100%;
-    height: auto;
-  }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - 页面未找到</title>
+  <link rel="stylesheet" href="css/blue.css">
+  <style>
+    /* 局部小补充，保证404在全屏居中 */
+    body{display:flex;align-items:center;justify-content:center;min-height:100vh}
+    .error-box{text-align:center;max-width:420px}
+    .error-code{
+      font-size:80px;font-weight:800;color:var(--primary-600);line-height:1
+    }
+    .error-msg{
+      font-size:20px;color:var(--text-strong);margin:20px 0 10px
+    }
+    .error-desc{
+      color:var(--muted);margin-bottom:24px
+    }
+  </style>
 </head>
-  <body>
-  <h1>404 ERROR</h1>
-  <img src="https://shuo156.github.io/images/manbo.png" alt="error" />
-  <a>您的页面逃走了！</a><br>
-  <a>Your page has escaped!</a><br>
-  <a>Github@shuo156</a><br>
-  <a href="https://shuo156.github.io/">https://shuo156.github.io/</a>
+<body>
+  <div class="error-box">
+    <div class="card shadow">
+      <div class="error-code">404</div>
+      <div class="error-msg">页面未找到</div>
+      <div class="error-desc">抱歉，您访问的页面不存在或已被移除。</div>
+      <a href="/" class="btn btn-primary btn-block">返回首页</a>
+    </div>
+  </div>
 </body>
-<html>
+</html>
