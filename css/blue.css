@@ -282,3 +282,10 @@ a:hover{color:var(--primary-700)}
   box-shadow: 0 0 0 4px rgba(60,120,255,0.18);
   background: linear-gradient(#eef6ff, #dbefff);
 }
+
+/* 自定义字体 */
+@font-face {
+    font-family: 'CustomFont';
+    src: url('https://shuo156.github.io/font/fontmain.ttf') format('truetype');
+    font-display: swap;
+}
