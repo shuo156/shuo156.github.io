@@ -1,1 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>活着弄熊</title>
+  <style>
+    html,body{height:100%;margin:0;background:#e9e9e9;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Microsoft YaHei",sans-serif;color:#111}
+    .wrap{
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      align-items:center;    /* 水平居中子元素（包括文字） */
+      justify-content:space-between;
+      text-align:center;     /* 使块内文字居中 */
+      padding:4vh 5vw 24px;
+      box-sizing:border-box;
+    }
+    .title{
+      font-weight:700;
+      font-size: clamp(28px, 9vw, 64px);
+      line-height:1;
+      margin-top:4vh;
+      user-select:none;
+    }
+    .main img{
+      max-width:90%;
+      height:auto;
+      display:block;        /* 使 margin:auto 生效 */
+      margin: 2vh auto;     /* 垂直间距 + 水平居中 */
+      border-radius:8px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.08);
+    }
+    .small{font-size:14px;color:#666;padding:8px 12px;margin-bottom:8px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title">嗯对</div>
 
+    <div class="main">
+      <img src="https://shuo156.github.io/html/shui/shui.png" alt="水水">
+    </div>
+
+    <div class="small">赶紧找个楼跳了吧，活着也没啥意义</div>
+  </div>
+</body>
+</html>
