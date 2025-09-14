@@ -26,19 +26,16 @@
   input[type="file"]{color:inherit}
   textarea{width:100%;height:120px;border-radius:10px;padding:10px;border:0;background:transparent;color:inherit;resize:vertical;border:1px solid rgba(255,255,255,0.03)}
   .log{font-family:monospace;font-size:13px;padding:10px;border-radius:8px;background:rgba(0,0,0,0.15);max-height:220px;overflow:auto}
-  .preview{margin-top:10px;border-radius:8px;overflow:hidden}
-  img.preview-img{max-width:100%;display:block}
-  audio,video{width:100%;display:block}
+  .preview{margin-top:10px;border-radius:8px;overflow:auto;padding:12px;background:rgba(0,0,0,0.06);min-height:120px;display:flex;flex-direction:column;gap:12px}
+  img.preview-img{max-width:100%;height:auto;display:block;margin:0 auto;border-radius:6px}
+  audio,video{width:100%;display:block;border-radius:6px}
   .note{font-size:12px;color:#9fbbe8;margin-top:8px}
   footer{font-size:13px;color:var(--muted);margin-top:8px;text-align:center}
   @media (max-width:640px){header h1{font-size:16px}.area{flex-direction:column}}
-  /* 新增：让用于显示读取结果的 textarea 看起来像日志框，支持换行滚动 */
-  textarea#preview {
-    height:220px;
-    resize:vertical;
-    overflow:auto;
-    white-space:pre-wrap;
-  }
+  /* 让下载链接看起来适配 */
+  .download-link{display:inline-block;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,0.03);color:var(--muted);text-decoration:none}
+  /* 纯文本内容样式 */
+  .text-content{white-space:pre-wrap;word-break:break-word;color:inherit}
 </style>
 </head>
 <body>
@@ -47,7 +44,7 @@
       <div class="logo">NFC</div>
       <div>
         <h1>WebNFC Reader / Writer</h1>
-        <div class="note">提示：仅在支持 Web NFC 的 Android Chromium 浏览器生效。页面须为 HTTPS。</div>
+        <div class="note">仅将 NFC 中的实际内容显示在下方（每次读取会清空上次结果）。支持文本、URL、图片、音频、视频及其他 MIME 文件的下载。</div>
       </div>
     </header>
 
@@ -72,24 +69,38 @@
         </div>
 
         <div class="panel">
-          <label>读取日志 / 反馈</label>
-          <div class="log" id="log"></div>
+          <label>读取结果（只显示 NFC 内的真实内容）</label>
+          <!-- 读取结果容器：每次读取会先清空此容器，只显示 NFC 的真正内容 -->
+          <div id="preview" class="preview" aria-live="polite"></div>
 
-          <!-- 将原来的 preview 区改为 textarea，用于显示读出的文本化信息 -->
-          <div class="preview" style="margin-top:10px">
-            <textarea id="preview" class="log" readonly placeholder="读取结果会显示在这里..."></textarea>
-          </div>
+          <!-- 可保留调试日志（非读取内容），如果不需要可隐藏 -->
+          <div class="note" style="margin-top:8px">调试日志（仅启动/停止/错误）：</div>
+          <div class="log" id="log"></div>
         </div>
       </div>
     </div>
 
-    <footer>部署提示：将此文件放到 GitHub 仓库并开启 GitHub Pages（HTTPS）后，在 Android Chrome 打开即可测试。</footer>
+    <footer>部署提示：页面须为 HTTPS；测试请在支持 Web NFC 的 Android Chromium 浏览器中打开。</footer>
   </div>
 
 <script>
 const logEl = document.getElementById('log');
-const previewEl = document.getElementById('preview'); // 现在是 textarea
-function log(...args){ logEl.innerText = args.map(a => typeof a==='object'? JSON.stringify(a,null,2):String(a)).join(' ') + '\n' + logEl.innerText; }
+const previewEl = document.getElementById('preview');
+
+function log(...args){ 
+  logEl.innerText = args.map(a => typeof a === 'object' ? JSON.stringify(a,null,2) : String(a)).join(' ') + '\n' + logEl.innerText;
+  // 限制日志长度
+  if (logEl.innerText.length > 20000) logEl.innerText = logEl.innerText.slice(0, 20000);
+}
+
+function toArrayBuffer(dataLike){
+  // r.data 可能是 DataView, ArrayBuffer, or other typed view
+  if (!dataLike) return null;
+  if (dataLike instanceof ArrayBuffer) return dataLike;
+  if (ArrayBuffer.isView(dataLike)) return dataLike.buffer;
+  if (dataLike.buffer) return dataLike.buffer;
+  return null;
+}
 
 async function startScan(){
   if(!('NDEFReader' in window)){ alert('当前浏览器不支持 Web NFC (NDEFReader 未发现)。'); return; }
@@ -98,56 +109,168 @@ async function startScan(){
     await window._ndef.scan();
     log('已开始扫描 — 将标签靠近设备');
     _ndef.onreading = event => {
+      // 每次读取清空上次显示（一次性）
+      previewEl.innerHTML = '';
+
       const msg = event.message;
-      log('读取到标签，records:', msg.records.length, 'serial:', event.serialNumber);
-
-      // 将读取结果格式化为文本，写入 preview textarea
-      const lines = [];
-      lines.push('--- 新标签 ---');
-      lines.push('序列号: ' + (event.serialNumber || '[未知]'));
-      lines.push('记录数: ' + msg.records.length);
-
+      // 遍历记录并仅显示记录的实际内容（不显示额外元信息）
       msg.records.forEach((r, i) => {
-        lines.push('');
-        lines.push(`Record ${i}: type=${r.recordType}${r.mediaType ? ', mediaType=' + r.mediaType : ''}`);
-        try{
-          if(r.recordType === 'text'){
-            const textDecoder = new TextDecoder(r.encoding || 'utf-8');
-            const text = textDecoder.decode(r.data);
-            lines.push('文本：' + text);
-          } else if(r.recordType === 'url'){
-            const textDecoder = new TextDecoder();
-            const url = textDecoder.decode(r.data);
-            lines.push('URL：' + url);
-          } else if(r.recordType === 'mime'){
+        try {
+          if (r.recordType === 'text') {
+            // 解码并显示文本
+            const decoder = new TextDecoder(r.encoding || 'utf-8');
+            const buf = toArrayBuffer(r.data);
+            let text = '';
+            if (buf) {
+              const view = new Uint8Array(buf, r.data.byteOffset || 0, r.data.byteLength || buf.byteLength);
+              text = decoder.decode(view);
+            } else {
+              // 备用：直接尝试 decode r.data
+              try { text = decoder.decode(r.data); } catch(e){ text = String(r.data); }
+            }
+            const p = document.createElement('div');
+            p.className = 'text-content';
+            p.textContent = text;
+            previewEl.appendChild(p);
+
+          } else if (r.recordType === 'url') {
+            // URL 记录：显示为链接（仅显示 URL 本身）
+            const decoder = new TextDecoder();
+            const buf = toArrayBuffer(r.data);
+            let url = '';
+            if (buf) {
+              const view = new Uint8Array(buf, r.data.byteOffset || 0, r.data.byteLength || buf.byteLength);
+              url = decoder.decode(view);
+            } else {
+              try { url = decoder.decode(r.data); } catch(e){ url = String(r.data); }
+            }
+            const a = document.createElement('a');
+            a.href = url;
+            a.textContent = url;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            a.style.wordBreak = 'break-all';
+            a.className = 'download-link';
+            previewEl.appendChild(a);
+
+          } else if (r.recordType === 'mime') {
+            // MIME record：根据 mediaType 显示图片/音频/视频，否则提供下载
             const mt = r.mediaType || 'application/octet-stream';
-            const arr = new Uint8Array(r.data.buffer || r.data);
-            lines.push(`MIME (${mt})，大小: ${arr.byteLength} bytes`);
-            // 如果是小文本类 mime，可以尝试解码并显示（例如 text/plain）
-            if(mt.startsWith('text/')){
-              try{
-                const textDecoder = new TextDecoder('utf-8');
-                const text = textDecoder.decode(arr);
-                lines.push('内容：' + text);
-              }catch(e){
-                lines.push('内容：无法解码为文本');
+            const buf = toArrayBuffer(r.data);
+            const arr = buf ? new Uint8Array(buf, r.data.byteOffset || 0, r.data.byteLength || buf.byteLength) : (r.data instanceof Uint8Array ? r.data : null);
+            const blob = arr ? new Blob([arr], {type: mt}) : null;
+
+            if (blob && mt.startsWith('image/')) {
+              const img = document.createElement('img');
+              img.className = 'preview-img';
+              img.alt = '';
+              img.src = URL.createObjectURL(blob);
+              previewEl.appendChild(img);
+
+            } else if (blob && mt.startsWith('audio/')) {
+              const au = document.createElement('audio');
+              au.controls = true;
+              au.src = URL.createObjectURL(blob);
+              previewEl.appendChild(au);
+
+            } else if (blob && mt.startsWith('video/')) {
+              const v = document.createElement('video');
+              v.controls = true;
+              v.src = URL.createObjectURL(blob);
+              previewEl.appendChild(v);
+
+            } else if (blob && mt.startsWith('text/')) {
+              // 小文本类 MIME，尝试以文本显示
+              try {
+                const text = await blob.text();
+                const p = document.createElement('div');
+                p.className = 'text-content';
+                p.textContent = text;
+                previewEl.appendChild(p);
+              } catch(e) {
+                // fallback to download link
+                const dl = document.createElement('a');
+                dl.href = URL.createObjectURL(blob);
+                dl.download = 'file';
+                dl.className = 'download-link';
+                dl.textContent = '下载';
+                previewEl.appendChild(dl);
+              }
+
+            } else if (blob) {
+              // 其他 MIME 类型：提供下载（不显示额外 metadata）
+              const dl = document.createElement('a');
+              dl.href = URL.createObjectURL(blob);
+              dl.download = 'file';
+              dl.className = 'download-link';
+              dl.textContent = '下载';
+              previewEl.appendChild(dl);
+            } else {
+              // 如果无法构造 blob，尝试解码为文本显示；否则显示不可解析信息（最小化额外信息）
+              try {
+                const decoder = new TextDecoder();
+                const buf2 = toArrayBuffer(r.data);
+                if (buf2) {
+                  const view2 = new Uint8Array(buf2, r.data.byteOffset || 0, r.data.byteLength || buf2.byteLength);
+                  const text = decoder.decode(view2);
+                  const p = document.createElement('div');
+                  p.className = 'text-content';
+                  p.textContent = text;
+                  previewEl.appendChild(p);
+                } else {
+                  // 最终回退：显示不可直接解析的占位（不包含元信息）
+                  const p = document.createElement('div');
+                  p.className = 'text-content';
+                  p.textContent = '[无法直接显示该记录内容，如需保存请写入可下载格式或 URL]';
+                  previewEl.appendChild(p);
+                }
+              } catch(e) {
+                const p = document.createElement('div');
+                p.className = 'text-content';
+                p.textContent = '[无法直接显示该记录内容]';
+                previewEl.appendChild(p);
               }
             }
-          } else {
-            lines.push('未识别 recordType: ' + r.recordType);
-          }
-        }catch(err){
-          lines.push('处理该 record 时出错: ' + String(err));
-        }
-      });
 
-      // 将新读取结果放到 textarea 顶部（最近读取在上面）
-      const prev = previewEl.value || '';
-      previewEl.value = lines.join('\n') + '\n\n' + prev;
-    };
+          } else {
+            // 其他 recordType：尝试解码为文本并显示，如果失败则提供下载
+            const buf = toArrayBuffer(r.data);
+            if (buf) {
+              try {
+                const decoder = new TextDecoder('utf-8');
+                const view = new Uint8Array(buf, r.data.byteOffset || 0, r.data.byteLength || buf.byteLength);
+                const text = decoder.decode(view);
+                const p = document.createElement('div');
+                p.className = 'text-content';
+                p.textContent = text;
+                previewEl.appendChild(p);
+              } catch(e) {
+                // 提供下载
+                const blob = new Blob([new Uint8Array(buf)], {type: 'application/octet-stream'});
+                const dl = document.createElement('a');
+                dl.href = URL.createObjectURL(blob);
+                dl.download = 'file';
+                dl.className = 'download-link';
+                dl.textContent = '下载';
+                previewEl.appendChild(dl);
+              }
+            } else {
+              const p = document.createElement('div');
+              p.className = 'text-content';
+              p.textContent = '[该 recordType 无可显示内容]';
+              previewEl.appendChild(p);
+            }
+          }
+        } catch(err) {
+          // 出错时在日志中记录错误，但不在预览里输出任何多余信息
+          log('处理 record 时出错：', String(err));
+        }
+      }); // end records.forEach
+
+    }; // end onreading
     _ndef.onreadingerror = () => log('读取错误：无法读取标签。');
   }catch(e){
-    log('开启扫描失败：', e);
+    log('开启扫描失败：' + String(e));
     alert('开启扫描失败：' + e);
   }
 }
@@ -155,11 +278,10 @@ async function startScan(){
 async function stopScan(){
   if(window._ndef && window._ndef.onreading){
     try{
-      // 没有 stop API，覆盖回调即可
       window._ndef.onreading = null;
       window._ndef.onreadingerror = null;
       window._ndef = null;
-      log('已停止扫描（若浏览器仍挂载，请刷新页面）。');
+      log('已停止扫描。');
     }catch(e){ log('停止失败', e); }
   } else log('未在扫描中。');
 }
@@ -171,8 +293,8 @@ async function writeText(){
   try{
     const ndef = new NDEFReader();
     await ndef.write({records: [{recordType: 'text', data: t}]});
-    log('写入文本成功', t);
-  }catch(e){ log('写入文本失败', e); alert('写入失败: ' + e); }
+    log('写入文本成功');
+  }catch(e){ log('写入文本失败：' + String(e)); alert('写入失败: ' + e); }
 }
 
 async function writeURL(){
@@ -181,24 +303,22 @@ async function writeURL(){
   try{
     const ndef = new NDEFReader();
     await ndef.write({records: [{recordType: 'url', data: u}]});
-    log('写入 URL 成功', u);
-  }catch(e){ log('写入 URL 失败', e); alert('写入失败: ' + e); }
+    log('写入 URL 成功');
+  }catch(e){ log('写入 URL 失败：' + String(e)); alert('写入失败: ' + e); }
 }
 
 async function writeFile(){
   const file = document.getElementById('fileToWrite').files[0];
   if(!file){ alert('先选择一个文件'); return; }
-  // 容量警告：多数标签只有几 KB
   if(file.size > 4096){
     if(!confirm('文件大于4KB，标签可能无法保存。是否继续（建议先上传到服务器并写入 URL）？')) return;
   }
   try{
     const arr = await file.arrayBuffer();
     const ndef = new NDEFReader();
-    // 写入 MIME record；某些浏览器或标签可能只接受短文本/URL
     await ndef.write({records: [{recordType: 'mime', mediaType: file.type || 'application/octet-stream', data: arr}]});
-    log('写入文件成功：', file.name, file.type, file.size);
-  }catch(e){ log('写入文件失败', e); alert('写入失败: ' + e); }
+    log('写入文件成功：' + file.name);
+  }catch(e){ log('写入文件失败：' + String(e)); alert('写入失败: ' + e); }
 }
 
 // 绑定
