@@ -32,6 +32,13 @@
   .note{font-size:12px;color:#9fbbe8;margin-top:8px}
   footer{font-size:13px;color:var(--muted);margin-top:8px;text-align:center}
   @media (max-width:640px){header h1{font-size:16px}.area{flex-direction:column}}
+  /* 新增：让用于显示读取结果的 textarea 看起来像日志框，支持换行滚动 */
+  textarea#preview {
+    height:220px;
+    resize:vertical;
+    overflow:auto;
+    white-space:pre-wrap;
+  }
 </style>
 </head>
 <body>
@@ -68,7 +75,10 @@
           <label>读取日志 / 反馈</label>
           <div class="log" id="log"></div>
 
-          <div class="preview" id="preview"></div>
+          <!-- 将原来的 preview 区改为 textarea，用于显示读出的文本化信息 -->
+          <div class="preview" style="margin-top:10px">
+            <textarea id="preview" class="log" readonly placeholder="读取结果会显示在这里..."></textarea>
+          </div>
         </div>
       </div>
     </div>
@@ -78,8 +88,8 @@
 
 <script>
 const logEl = document.getElementById('log');
-const previewEl = document.getElementById('preview');
-function log(...args){ logEl.innerText = args.map(a => typeof a==='object'? JSON.stringify(a,null,2):String(a)).join(' ') + '\\n' + logEl.innerText; }
+const previewEl = document.getElementById('preview'); // 现在是 textarea
+function log(...args){ logEl.innerText = args.map(a => typeof a==='object'? JSON.stringify(a,null,2):String(a)).join(' ') + '\n' + logEl.innerText; }
 
 async function startScan(){
   if(!('NDEFReader' in window)){ alert('当前浏览器不支持 Web NFC (NDEFReader 未发现)。'); return; }
@@ -90,42 +100,50 @@ async function startScan(){
     _ndef.onreading = event => {
       const msg = event.message;
       log('读取到标签，records:', msg.records.length, 'serial:', event.serialNumber);
-      previewEl.innerHTML = '';
+
+      // 将读取结果格式化为文本，写入 preview textarea
+      const lines = [];
+      lines.push('--- 新标签 ---');
+      lines.push('序列号: ' + (event.serialNumber || '[未知]'));
+      lines.push('记录数: ' + msg.records.length);
+
       msg.records.forEach((r, i) => {
-        log('record', i, r.recordType, r.mediaType ?? '');
-        if(r.recordType === 'text'){
-          // text 解码
-          const textDecoder = new TextDecoder(r.encoding || 'utf-8');
-          const text = textDecoder.decode(r.data);
-          const div = document.createElement('div'); div.innerText = '文本：' + text;
-          previewEl.appendChild(div);
-        } else if(r.recordType === 'url'){
-          const textDecoder = new TextDecoder();
-          const url = textDecoder.decode(r.data);
-          const a = document.createElement('a'); a.href = url; a.innerText = url; a.target='_blank';
-          previewEl.appendChild(a);
-        } else if(r.recordType === 'mime'){
-          // 尝试按 mediaType 处理
-          const mt = r.mediaType || 'application/octet-stream';
-          // r.data is a DataView or ArrayBuffer
-          const arr = new Uint8Array(r.data.buffer || r.data);
-          log('mime record, mediaType=', mt, 'bytes=', arr.byteLength);
-          const blob = new Blob([arr], {type: mt});
-          if(mt.startsWith('image/')){
-            const img = document.createElement('img'); img.className='preview-img';
-            img.src = URL.createObjectURL(blob); previewEl.appendChild(img);
-          } else if(mt.startsWith('audio/')){
-            const au = document.createElement('audio'); au.controls=true; au.src = URL.createObjectURL(blob); previewEl.appendChild(au);
-          } else if(mt.startsWith('video/')){
-            const v = document.createElement('video'); v.controls=true; v.src=URL.createObjectURL(blob); previewEl.appendChild(v);
+        lines.push('');
+        lines.push(`Record ${i}: type=${r.recordType}${r.mediaType ? ', mediaType=' + r.mediaType : ''}`);
+        try{
+          if(r.recordType === 'text'){
+            const textDecoder = new TextDecoder(r.encoding || 'utf-8');
+            const text = textDecoder.decode(r.data);
+            lines.push('文本：' + text);
+          } else if(r.recordType === 'url'){
+            const textDecoder = new TextDecoder();
+            const url = textDecoder.decode(r.data);
+            lines.push('URL：' + url);
+          } else if(r.recordType === 'mime'){
+            const mt = r.mediaType || 'application/octet-stream';
+            const arr = new Uint8Array(r.data.buffer || r.data);
+            lines.push(`MIME (${mt})，大小: ${arr.byteLength} bytes`);
+            // 如果是小文本类 mime，可以尝试解码并显示（例如 text/plain）
+            if(mt.startsWith('text/')){
+              try{
+                const textDecoder = new TextDecoder('utf-8');
+                const text = textDecoder.decode(arr);
+                lines.push('内容：' + text);
+              }catch(e){
+                lines.push('内容：无法解码为文本');
+              }
+            }
           } else {
-            const p = document.createElement('pre'); p.innerText = '[MIME ' + mt + '] 大小: ' + arr.byteLength + ' bytes'; previewEl.appendChild(p);
+            lines.push('未识别 recordType: ' + r.recordType);
           }
-        } else {
-          const p = document.createElement('pre'); p.innerText = '未识别 recordType: ' + r.recordType;
-          previewEl.appendChild(p);
+        }catch(err){
+          lines.push('处理该 record 时出错: ' + String(err));
         }
       });
+
+      // 将新读取结果放到 textarea 顶部（最近读取在上面）
+      const prev = previewEl.value || '';
+      previewEl.value = lines.join('\n') + '\n\n' + prev;
     };
     _ndef.onreadingerror = () => log('读取错误：无法读取标签。');
   }catch(e){
