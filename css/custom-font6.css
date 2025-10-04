@@ -14,7 +14,7 @@
 /* 自定义字体 */
 @font-face {
     font-family: 'CustomFont';
-    src: url('https://shuo156.github.io/font/fontmain.ttf') format('truetype');
+    src: url('../font/fontmain.ttf') format('truetype');
     font-display: swap;
 }
 

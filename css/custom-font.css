@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'CustomFont';
-    src: url('https://shuo156.github.io/font/font.ttf') format('truetype');
+    src: url('../font/font.ttf') format('truetype');
 }
 
 body, h1 {
