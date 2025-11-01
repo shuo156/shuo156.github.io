@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>跨过防火墙详细教程</title>
+
+  <!-- 字体 -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&family=Inter:wght@300;400;600&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <h1 class="title">教你跨过防火墙</h1>
+      <button id="tocToggle" class="toc-toggle" aria-expanded="false">目录</button>
+    </div>
+  </header>
+
+  <div class="wrap layout">
+    <aside class="sidebar" id="sidebar" aria-hidden="true">
+      <nav>
+        <h2 class="sidebar-title">目录</h2>
+        <ul id="toc" class="toc-list"></ul>
+      </nav>
+      <div class="meta">作者：秋秋 · 最后更新：2025-11-01</div>
+    </aside>
+
+    <main class="content" id="content">
+      <article class="card">
+        <h1 id="intro">教程</h1>
+        <p class="lead">下面是详细步骤</p>
+
+        <section>
+          <h2 id="step1">步骤 1：点击下方链接下载vpn</h2>
+          <p><a href="https://vxvpn.app/file/v2vpn.apk">点击这里下载</a></p>
+        </section>
+
+        <section>
+          <h2 id="step2">步骤 2：打开VPN选择节点，也可以用默认的，手机上方出现VPN图标即是连接成功</h2>
+        </section>
+
+        <section>
+          <h2 id="step3">步骤 3：在浏览器搜GO安装器，安装谷歌三件套</h2>
+        </section>
+
+        <section>
+          <h2 id="step4">步骤 4：安装完成后打开play商店，点登录，去注册一个账号，选择你自己喜欢的邮箱，按步骤来就行</h2>
+          <p>注意：部分中国大陆手机号可能无法注册</p>
+        </section>
+        
+        <section>
+          <h2 id="step5">步骤 5：注册完成后即可正常使用，再在play商店下一个Gmail，方便管理邮箱</h2>
+        </section>
+        
+        <p>以上为全部步骤，若出现事故，本人不承担责任</p>
+        
+      </article>
+    </main>
+  </div>
+  
+  <script>
+  // 自动生成目录（h1-h3）
+(function(){
+  const content = document.getElementById('content');
+  if(!content) return;
+  const tocRoot = document.getElementById('toc');
+  const headings = content.querySelectorAll('h1[id], h2[id], h3[id]');
+  headings.forEach(h=>{
+    if(!h.id) {
+      h.id = h.textContent.trim().toLowerCase().replace(/\s+/g,'-').replace(/[^\w-]/g,'');
+    }
+    const li = document.createElement('li');
+    li.className = 'toc-' + h.tagName.toLowerCase();
+    const a = document.createElement('a');
+    a.href = '#' + h.id;
+    a.textContent = h.textContent;
+    li.appendChild(a);
+    tocRoot.appendChild(li);
+  });
+
+  // 移动端切换侧栏
+  const tocToggle = document.getElementById('tocToggle');
+  const sidebar = document.getElementById('sidebar');
+  if(tocToggle && sidebar){
+    tocToggle.addEventListener('click', ()=>{
+      const shown = sidebar.style.display === 'block';
+      sidebar.style.display = shown ? 'none' : 'block';
+      tocToggle.setAttribute('aria-expanded', String(!shown));
+    });
+  }
+})();
+  </script>
+  
+  <style>
+  :root{
+  --bg: #f6fbff;        /* very light blue */
+  --panel: #ffffff;     /* white cards */
+  --text: #073763;      /* deep blue text */
+  --muted: #6b86a8;
+  --accent: #66a6ff;    /* light blue accent */
+  --code-bg: #eef6ff;
+  --radius: 10px;
+  --max-width: 900px;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:"Noto Sans SC","Inter",system-ui, -apple-system, "Segoe UI", Roboto, Arial; background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased}
+.wrap{max-width:1100px;margin:0 auto;padding:20px}
+
+/* header */
+.site-header{border-bottom:1px solid rgba(6,58,112,0.06);background:transparent}
+.site-header .wrap{display:flex;align-items:center;justify-content:space-between;padding:14px 20px}
+.title{font-size:20px;margin:0;font-weight:700;color:var(--text)}
+.toc-toggle{background:var(--panel);border:1px solid rgba(6,58,112,0.06);padding:8px 10px;border-radius:8px;color:var(--text);cursor:pointer}
+
+/* layout */
+.layout{display:grid;grid-template-columns:260px 1fr;gap:20px;padding-top:18px}
+.sidebar{background:var(--panel);padding:14px;border-radius:var(--radius);box-shadow:0 6px 18px rgba(6,58,112,0.06)}
+.sidebar-title{font-size:13px;color:var(--muted);margin:0 0 8px 0}
+.toc-list{list-style:none;padding:0;margin:0;font-size:14px}
+.toc-list a{display:block;padding:6px 8px;border-radius:6px;color:var(--text);text-decoration:none}
+.toc-list a:hover{background:rgba(102,166,255,0.08)}
+
+.meta{margin-top:12px;font-size:13px;color:var(--muted)}
+
+/* content */
+.content{padding:0}
+.card{background:var(--panel);padding:26px;border-radius:var(--radius);box-shadow:0 6px 18px rgba(6,58,112,0.06)}
+.content h1{font-size:26px;margin:0 0 6px 0}
+.lead{color:var(--muted);margin-bottom:14px}
+.content h2{font-size:18px;margin-top:20px;margin-bottom:8px;border-bottom:1px solid rgba(6,58,112,0.06);padding-bottom:8px}
+
+/* images */
+.tutorial-img{display:block;max-width:300px;width:100%;height:auto;border-radius:8px;margin:10px 0;box-shadow:0 6px 18px rgba(6,58,112,0.04)}
+.img-caption{font-size:13px;color:var(--muted);margin-bottom:8px}
+
+/* code */
+pre{background:var(--code-bg);padding:14px;border-radius:8px;overflow:auto;font-family:"Fira Code",ui-monospace,SFMono-Regular,Menlo,Monaco,monospace;font-size:13px}
+code{background:rgba(6,58,112,0.04);padding:0.12em 0.4em;border-radius:6px;font-family:"Fira Code",monospace}
+
+/* admonition */
+.admonition{background:#eaf4ff;border-left:4px solid var(--accent);padding:12px;border-radius:8px;color:var(--text);margin:8px 0}
+
+/* muted text */
+.muted{color:var(--muted);font-size:13px}
+
+/* responsive */
+@media (max-width:900px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .toc-toggle{display:inline-block}
+}
+  </style>
+  
+</body>
+</html>
