@@ -1,0 +1,101 @@
+:root{
+  --link-bg: linear-gradient(180deg,#e9f7ff 0%,#d7efff 100%);
+  --link-text: #044ea8;
+  --link-accent: #0b66ff;
+  --link-border: rgba(11,102,255,0.14);
+  --link-radius: 10px;
+  --link-padding-y: 6px;
+  --link-padding-x: 12px;
+  --link-shadow: 0 6px 18px rgba(11,102,255,0.06);
+  --link-inset: 0 1px 0 rgba(255,255,255,0.6) inset;
+  --link-transition: 160ms cubic-bezier(.2,.9,.2,1);
+}
+
+/* Apply button-like styles to all anchors that have an href attribute */
+a[href]{
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: var(--link-padding-y) var(--link-padding-x);
+  color: var(--link-text);
+  background: var(--link-bg);
+  border: 1px solid var(--link-border);
+  border-radius: var(--link-radius);
+  box-shadow: var(--link-inset), var(--link-shadow);
+  text-decoration: none;
+  font-weight: 600;
+  line-height: 1;
+  vertical-align: middle;
+  transition: transform var(--link-transition), box-shadow var(--link-transition), background-position var(--link-transition), color var(--link-transition);
+  background-size: 200% 100%;
+  background-position: 0% 0%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* subtle arrow added with pure CSS */
+a[href]::after{
+  content: "";
+  display: inline-block;
+  width: .52rem;
+  height: .52rem;
+  margin-left: .35rem;
+  border-right: 2px solid var(--link-accent);
+  border-bottom: 2px solid var(--link-accent);
+  transform: rotate(-45deg);
+  transition: transform var(--link-transition), opacity var(--link-transition);
+  opacity: .9;
+}
+
+/* Hover/Focus/Active states */
+a[href]:hover,
+a[href]:focus{
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(11,102,255,0.10);
+  background-position: 100% 0%;
+  color: var(--link-accent);
+  text-decoration: none;
+}
+
+a[href]:active{
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(11,102,255,0.08);
+}
+
+/* Accessible focus for keyboard users */
+a[href]:focus-visible{
+  outline: 3px solid rgba(11,102,255,0.16);
+  outline-offset: 4px;
+  border-color: rgba(11,102,255,0.22);
+}
+
+/* Visited state - keep theme harmonious */
+a[href]:visited{
+  color: #0a4b8a;
+  border-color: rgba(10,75,138,0.12);
+}
+
+/* Hover effect for the arrow */
+a[href]:hover::after,
+a[href]:focus::after{
+  transform: translateX(4px) rotate(-45deg);
+}
+
+/* Make buttons that are full-width on small screens when used as block-level controls */
+@media (max-width:520px){
+  a[href].full-width,
+  a[href][data-fullwidth="true"]{
+    display: inline-flex;
+    width: 100%;
+    justify-content: center;
+    padding-left: calc(var(--link-padding-x) + .2rem);
+    padding-right: calc(var(--link-padding-x) + .2rem);
+  }
+}
+
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce){
+  a[href],
+  a[href]::after{
+    transition: none !important;
+  }
+}
