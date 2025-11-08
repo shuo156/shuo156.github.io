@@ -1,1 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>字体混合编辑器</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/opentype.js@latest/dist/opentype.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>字体混合编辑器</h1>
 
+        <div class="file-upload">
+            <div>
+                <label for="font1">上传字体 1：</label>
+                <input type="file" id="font1" accept=".ttf,.otf">
+            </div>
+            <div>
+                <label for="font2">上传字体 2：</label>
+                <input type="file" id="font2" accept=".ttf,.otf">
+            </div>
+        </div>
+
+        <label for="textInput">输入要混合的文字：</label>
+        <textarea id="textInput" placeholder="例如：你好，世界！"></textarea>
+
+        <button id="exportFont">导出新字体</button>
+
+        <div id="preview"></div>
+    </div>
+
+    <script src="script1.js"></script>
+    <script src="script2.js"></script>
+</body>
+</html>

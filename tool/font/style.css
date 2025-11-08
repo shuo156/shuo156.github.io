@@ -1,0 +1,109 @@
+/* style.css —— 字体编辑器界面样式 */
+
+body {
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #f7f9fb;
+    margin: 0;
+    padding: 0;
+    color: #222;
+}
+
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    padding: 30px;
+}
+
+h1 {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 30px;
+    color: #3a3a3a;
+}
+
+.file-upload {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.file-upload label {
+    font-size: 15px;
+    margin-bottom: 8px;
+    display: block;
+    color: #444;
+}
+
+input[type="file"] {
+    background: #f1f3f5;
+    border: 1px solid #ccc;
+    padding: 8px;
+    border-radius: 6px;
+    width: 48%;
+}
+
+textarea {
+    width: 100%;
+    min-height: 60px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-size: 16px;
+    resize: none;
+}
+
+button {
+    background: dodgerblue;
+    border: none;
+    color: white;
+    font-size: 16px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: background 0.25s ease;
+}
+
+button:hover {
+    background: #0073ff;
+}
+
+#preview {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-top: 30px;
+    gap: 20px;
+    min-height: 100px;
+}
+
+.char-block {
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 12px;
+    width: 80px;
+    background: #fafafa;
+    transition: transform 0.2s ease;
+}
+
+.char-block:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.char-label {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+#exportFont {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+}
