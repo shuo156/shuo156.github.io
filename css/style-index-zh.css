@@ -1,9 +1,6 @@
 /* css/style-index-zh.css - 黑白极简个人博客（纯 CSS 注入 Google Fonts） */
 
-/* 1. 引入 Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono&display=swap');
-
-/* 2. 全局变量（支持暗色模式） */
+/* 全局变量（支持暗色模式） */
 :root {
   --bg: #ffffff;
   --text: #1a1a1a;
