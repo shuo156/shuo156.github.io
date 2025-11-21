@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>秋秋的页 | QiūQiū's Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
+    <script>LA.init({id:"3MeiU5nIDHpPFL1N",ck:"3MeiU5nIDHpPFL1N"})</script>
+
+    <style>
+        /* --- CSS 样式重置与变量 --- */
+        :root {
+            --bg-color: #f0f2f5;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-main: #333333;
+            --text-sub: #666666;
+            --accent-color: #4a90e2;
+            --accent-hover: #357abd;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            --radius: 16px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-main);
+        }
+
+        /* --- 主容器卡片 --- */
+        .container {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 600px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        /* --- 头部区域 --- */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            margin: 0 0 10px 0;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .datetime {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            font-family: 'Fira Code', monospace; /* 如果你有引入 monospace 字体 */
+            background: #f0f0f0;
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        /* --- 分区标题 --- */
+        .section-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-sub);
+            margin: 25px 0 15px 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 5px;
+            display: block;
+        }
+
+        /* --- 链接网格 --- */
+        .link-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+            list-style: none;
+            padding: 0;
+        }
+
+        .link-grid li a {
+            display: block;
+            text-decoration: none;
+            background: white;
+            border: 1px solid #eee;
+            color: var(--text-main);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+
+        .link-grid li a:hover {
+            background: var(--accent-color);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+            border-color: var(--accent-color);
+        }
+
+        /* --- 底部联系信息 --- */
+        .footer-info {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            line-height: 1.8;
+        }
+
+        .footer-info a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .footer-info a:hover {
+            color: var(--accent-hover);
+            text-decoration: underline;
+        }
+
+        /* --- 评论区 --- */
+        .comments-wrapper {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px dashed #ddd;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 480px) {
+            .container { padding: 25px; }
+            h1 { font-size: 1.5rem; }
+            .link-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>秋秋的页</h1>
+            <div class="datetime" id="current-time">加载时间中...</div>
+        </header>
+
+        <span class="section-title">探索</span>
+        <ul class="link-grid">
+            <li><a href="./html/daohang">🚀 导航</a></li>
+            <li><a href="./html/2048">🎮 2048</a></li>
+            <li><a href="./html/DeepSeek">🤖 DeepSeek?</a></li>
+            <li><a href="./html/chat">💬 局域网聊天</a></li>
+            <li><a href="./html/math-ques">📐 高中数学</a></li>
+            <li><a href="./tool/index.html">🛠️ 实用工具</a></li>
+            <li><a href="https://wea-1.github.io/">📂 我的项目</a></li>
+        </ul>
+
+        <span class="section-title">关于</span>
+        <div class="footer-info">
+            <div>From <strong>秋秋</strong></div>
+            <div>邮箱: <a href="#"><span class="__cf_email__" data-cfemail="44372c312b332b362f757171042b3130282b2b2f6a272b29">[email&#160;protected]</span></a></div>
+            <div style="margin-top: 10px;">
+                <a href="./html/me">关于我</a> | <a href="./index_en.html">English</a>
+            </div>
+        </div>
+
+        <div class="comments-wrapper">
+            <span class="section-title">留言</span>
+            <div id="cusdis_thread" 
+                data-host="https://cusdis.com" 
+                data-app-id="96e7f43c-b20e-43e4-b4eb-4e697bf57f2e" 
+                data-page-id="zh" 
+                data-page-url="shuo156.github.io/index_zh.html" 
+                data-page-title="评论">
+            </div>
+        </div>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+
+    <script>
+        const thread = document.getElementById('cusdis_thread');
+        thread.dataset.pageId = location.pathname;
+        thread.dataset.pageUrl = location.href;
+        thread.dataset.pageTitle = document.title;
+    </script>
+    <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
+
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            // 使用 Intl API 自动格式化为中国时间，更加准确且代码简洁
+            const options = { 
+                timeZone: 'Asia/Shanghai', 
+                year: 'numeric', 
+                month: '2-digit', 
+                day: '2-digit', 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit',
+                hour12: false 
+            };
+            const formatter = new Intl.DateTimeFormat('zh-CN', options);
+            document.getElementById('current-time').innerHTML = "北京时间: " + formatter.format(now);
+        }
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+    </script>
+
+    </body>
+</html>
