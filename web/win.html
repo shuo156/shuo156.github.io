@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows 10 Web OS - Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- 基础样式保持不变 --- */
+        :root {
+            --taskbar-height: 45px;
+            --win-blue: #0078D7;
+            --win-dark: #1e1e1e;
+            --win-taskbar-bg: rgba(16, 16, 16, 0.95);
+            --win-hover: rgba(255, 255, 255, 0.1);
+        }
+        * { box-sizing: border-box; user-select: none; }
+        body {
+            margin: 0; padding: 0; overflow: hidden; height: 100vh;
+            font-family: "Segoe UI", sans-serif; color: white;
+            background: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        /* --- 桌面 --- */
+        .desktop { height: calc(100vh - var(--taskbar-height)); padding: 10px; display: flex; flex-direction: column; flex-wrap: wrap; align-content: flex-start; }
+        .desktop-icon {
+            width: 80px; height: 90px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 1px solid transparent; margin-bottom: 10px; border-radius: 2px; transition: 0.1s;
+        }
+        .desktop-icon:hover { background-color: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); }
+        .desktop-icon i { font-size: 32px; margin-bottom: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .desktop-icon span { font-size: 12px; text-shadow: 0 1px 3px rgba(0,0,0,0.8); text-align: center; }
+
+        /* --- 动态窗口通用样式 --- */
+        .window {
+            position: absolute; background-color: #ffffff; color: black;
+            border: 1px solid #0078D7; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column; overflow: hidden;
+            animation: popIn 0.15s ease-out; min-width: 200px; min-height: 150px;
+        }
+        @keyframes popIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        .title-bar {
+            height: 30px; background-color: white; display: flex; justify-content: space-between; align-items: center;
+            padding-left: 10px; border-bottom: 1px solid #eee;
+        }
+        .title-drag-area { flex-grow: 1; height: 100%; display: flex; align-items: center; font-size: 12px; cursor: default; }
+        .window-controls { display: flex; height: 100%; }
+        .control-btn { width: 45px; height: 100%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
+        .control-btn:hover { background-color: #e5e5e5; }
+        .control-btn.close:hover { background-color: #e81123; color: white; }
+        
+        .window-content { flex-grow: 1; position: relative; background: #f9f9f9; }
+
+        /* --- 应用特定样式 --- */
+        /* 记事本 */
+        .notepad-area { width: 100%; height: 100%; border: none; padding: 10px; font-family: Consolas, monospace; outline: none; resize: none; background: white; }
+        
+        /* 浏览器 */
+        .browser-iframe { width: 100%; height: 100%; border: none; background: white; }
+        
+        /* 计算器 */
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: 50px repeat(5, 1fr); height: 100%; gap: 1px; background: #bbb; }
+        .calc-display { grid-column: span 4; background: #333; color: white; font-size: 24px; display: flex; align-items: center; justify-content: flex-end; padding: 0 10px; }
+        .calc-btn { background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; }
+        .calc-btn:hover { background: #ddd; }
+        .calc-btn.orange { background: #f0f0f0; font-weight: bold; }
+        .calc-btn.equal { background: #0078D7; color: white; }
+        .calc-btn.equal:hover { background: #005a9e; }
+
+        /* --- 任务栏 --- */
+        .taskbar {
+            position: absolute; bottom: 0; width: 100%; height: var(--taskbar-height);
+            background-color: var(--win-taskbar-bg); backdrop-filter: blur(10px);
+            display: flex; justify-content: space-between; align-items: center; z-index: 9999;
+        }
+        .taskbar-left { display: flex; height: 100%; align-items: center; }
+        .start-btn, .task-icon {
+            width: 48px; height: 100%; display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 18px; transition: 0.2s; cursor: pointer;
+        }
+        .start-btn:hover, .task-icon:hover { background-color: var(--win-hover); }
+        
+        /* 动态生成的任务栏图标样式 */
+        .task-entry {
+            width: 48px; height: 100%; display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 18px; position: relative; cursor: pointer; transition: 0.2s;
+        }
+        .task-entry:hover { background-color: var(--win-hover); }
+        .task-entry.active { background-color: rgba(255,255,255,0.1); }
+        .task-entry::after {
+            content: ''; position: absolute; bottom: 0; width: 100%; height: 3px;
+            background-color: var(--win-blue);
+        }
+
+        /* --- 右键菜单 --- */
+        .context-menu {
+            position: absolute; width: 200px; background: #eee; border: 1px solid #aaa;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2); display: none; flex-direction: column; padding: 5px 0; z-index: 10000;
+        }
+        .menu-item { padding: 8px 20px; cursor: pointer; display: flex; align-items: center; color: #333; font-size: 13px;}
+        .menu-item:hover { background-color: #ccc; }
+        .menu-item i { width: 20px; margin-right: 10px; text-align: center; }
+        .menu-separator { height: 1px; background: #d9d9d9; margin: 4px 0; }
+
+        /* --- 开始菜单 (简化) --- */
+        .start-menu {
+            position: absolute; bottom: var(--taskbar-height); left: 0; width: 320px; height: 400px;
+            background: rgba(30,30,30,0.95); backdrop-filter: blur(10px); display: none; z-index: 9998;
+            padding: 10px; color: white;
+        }
+        .start-menu.open { display: block; }
+
+    </style>
+</head>
+<body>
+
+    <div class="desktop" id="desktop">
+        <div class="desktop-icon" onclick="appManager.open('pc')">
+            <i class="fa-solid fa-computer" style="color: #bbf;"></i><span>此电脑</span>
+        </div>
+        <div class="desktop-icon" onclick="appManager.open('edge')">
+            <i class="fa-brands fa-edge" style="color: #3af;"></i><span>Edge 浏览器</span>
+        </div>
+        <div class="desktop-icon" onclick="appManager.open('notepad')">
+            <i class="fa-solid fa-file-lines" style="color: #fec;"></i><span>记事本</span>
+        </div>
+        <div class="desktop-icon" onclick="appManager.open('calc')">
+            <i class="fa-solid fa-calculator" style="color: #888;"></i><span>计算器</span>
+        </div>
+    </div>
+
+    <div class="context-menu" id="contextMenu">
+        <div class="menu-item" onclick="location.reload()"><i class="fa-solid fa-rotate-right"></i> 刷新(R)</div>
+        <div class="menu-separator"></div>
+        <div class="menu-item" onclick="changeWallpaper()"><i class="fa-regular fa-image"></i> 下一张背景</div>
+        <div class="menu-item"><i class="fa-solid fa-desktop"></i> 显示设置</div>
+        <div class="menu-item"><i class="fa-solid fa-paintbrush"></i> 个性化</div>
+    </div>
+
+    <div class="taskbar">
+        <div class="taskbar-left" id="taskbarList">
+            <div class="start-btn" onclick="toggleStartMenu()"><i class="fa-brands fa-windows"></i></div>
+            <div class="task-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+        </div>
+        <div class="taskbar-right" style="color:white; padding-right:15px; font-size:12px; display:flex; align-items:center;">
+            <i class="fa-solid fa-wifi" style="margin-right:10px;"></i>
+            <i class="fa-solid fa-volume-high" style="margin-right:10px;"></i>
+            <div id="clock">12:00</div>
+        </div>
+    </div>
+
+    <div class="start-menu" id="startMenu">
+        <h3>开始</h3>
+        <p>这是一个基于 Web 的 Windows 10 模拟。</p>
+    </div>
+
+    <script>
+        // --- 系统状态管理 ---
+        let zIndexCounter = 100; // 用于管理窗口层级
+        const desktop = document.body;
+        const taskbarList = document.getElementById('taskbarList');
+
+        // --- App 配置与工厂 ---
+        const appManager = {
+            apps: {
+                'notepad': {
+                    title: '无标题 - 记事本',
+                    icon: 'fa-file-lines',
+                    width: 500, height: 350,
+                    content: '<textarea class="notepad-area" placeholder="在此输入..."></textarea>'
+                },
+                'calc': {
+                    title: '计算器',
+                    icon: 'fa-calculator',
+                    width: 260, height: 360,
+                    content: `
+                        <div class="calc-grid" id="calc-instance">
+                            <div class="calc-display" id="calc-disp">0</div>
+                            <div class="calc-btn" onclick="calcInput('C')">C</div>
+                            <div class="calc-btn" onclick="calcInput('/')">/</div>
+                            <div class="calc-btn" onclick="calcInput('*')">*</div>
+                            <div class="calc-btn" onclick="calcInput('DEL')">←</div>
+                            <div class="calc-btn" onclick="calcInput('7')">7</div>
+                            <div class="calc-btn" onclick="calcInput('8')">8</div>
+                            <div class="calc-btn" onclick="calcInput('9')">9</div>
+                            <div class="calc-btn" onclick="calcInput('-')">-</div>
+                            <div class="calc-btn" onclick="calcInput('4')">4</div>
+                            <div class="calc-btn" onclick="calcInput('5')">5</div>
+                            <div class="calc-btn" onclick="calcInput('6')">6</div>
+                            <div class="calc-btn" onclick="calcInput('+')">+</div>
+                            <div class="calc-btn" onclick="calcInput('1')">1</div>
+                            <div class="calc-btn" onclick="calcInput('2')">2</div>
+                            <div class="calc-btn" onclick="calcInput('3')">3</div>
+                            <div class="calc-btn equal" style="grid-row: span 2" onclick="calcInput('=')">=</div>
+                            <div class="calc-btn" style="grid-column: span 2" onclick="calcInput('0')">0</div>
+                            <div class="calc-btn" onclick="calcInput('.')">.</div>
+                        </div>
+                    `
+                },
+                'edge': {
+                    title: '欢迎 - Microsoft Edge',
+                    icon: 'fa-brands fa-edge',
+                    width: 800, height: 500,
+                    // 注意：很多网站拒绝 iframe 嵌入，这里用 Bing 示例或 data URI
+                    content: '<iframe src="https://cn.bing.com" class="browser-iframe"></iframe>'
+                },
+                'pc': {
+                    title: '此电脑',
+                    icon: 'fa-computer',
+                    width: 600, height: 400,
+                    content: '<div style="padding:20px; color:#333;"><h4>C: 本地磁盘</h4><div style="width:200px; height:20px; background:#ddd; border-radius:4px; overflow:hidden;"><div style="width:60%; height:100%; background:#0078D7;"></div></div><p>60GB 可用，共 100GB</p></div>'
+                }
+            },
+            
+            // 打开应用：动态创建 DOM
+            open: function(appType) {
+                const config = this.apps[appType];
+                const id = 'win-' + Date.now(); // 生成唯一ID
+
+                // 1. 创建窗口 HTML
+                const win = document.createElement('div');
+                win.className = 'window';
+                win.id = id;
+                win.style.width = config.width + 'px';
+                win.style.height = config.height + 'px';
+                // 随机位置
+                win.style.top = (50 + Math.random() * 50) + 'px';
+                win.style.left = (100 + Math.random() * 50) + 'px';
+                win.style.zIndex = ++zIndexCounter;
+                
+                // 允许点击置顶
+                win.onmousedown = () => {
+                    win.style.zIndex = ++zIndexCounter;
+                    highlightTaskbar(id);
+                };
+
+                win.innerHTML = `
+                    <div class="title-bar">
+                        <div class="title-drag-area">
+                            <i class="fa-solid ${config.icon}" style="margin-right:8px; color:#666;"></i>
+                            ${config.title}
+                        </div>
+                        <div class="window-controls">
+                            <div class="control-btn" onclick="minimizeWindow('${id}')"><i class="fa-solid fa-minus"></i></div>
+                            <div class="control-btn"><i class="fa-regular fa-square"></i></div>
+                            <div class="control-btn close" onclick="closeWindow('${id}')"><i class="fa-solid fa-xmark"></i></div>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        ${config.content}
+                    </div>
+                `;
+
+                document.body.appendChild(win);
+
+                // 2. 创建任务栏图标
+                const taskItem = document.createElement('div');
+                taskItem.className = 'task-entry active';
+                taskItem.id = 'task-' + id;
+                taskItem.innerHTML = `<i class="fa-solid ${config.icon}"></i>`;
+                taskItem.onclick = () => toggleWindow(id);
+                taskbarList.appendChild(taskItem);
+
+                // 3. 绑定拖拽事件
+                makeDraggable(win);
+
+                // 4. 针对计算器的特殊修正 (因为 ID 是动态的，这里简化处理，实际应绑定到实例)
+                if(appType === 'calc') {
+                    // 简单处理：全局只支持一个活动计算器的逻辑
+                    window.currentCalcDisplay = win.querySelector('.calc-display');
+                }
+            }
+        };
+
+        // --- 窗口操作逻辑 ---
+        function closeWindow(id) {
+            const win = document.getElementById(id);
+            const task = document.getElementById('task-' + id);
+            if(win) win.remove();
+            if(task) task.remove();
+        }
+
+        function minimizeWindow(id) {
+            const win = document.getElementById(id);
+            const task = document.getElementById('task-' + id);
+            win.style.display = 'none';
+            task.classList.remove('active');
+        }
+
+        function toggleWindow(id) {
+            const win = document.getElementById(id);
+            const task = document.getElementById('task-' + id);
+            if (win.style.display === 'none') {
+                win.style.display = 'flex';
+                win.style.zIndex = ++zIndexCounter;
+                task.classList.add('active');
+            } else {
+                // 如果已经在最上层，则最小化；否则置顶
+                if (parseInt(win.style.zIndex) === zIndexCounter) {
+                    win.style.display = 'none';
+                    task.classList.remove('active');
+                } else {
+                    win.style.zIndex = ++zIndexCounter;
+                    task.classList.add('active');
+                }
+            }
+        }
+
+        function highlightTaskbar(activeId) {
+            document.querySelectorAll('.task-entry').forEach(el => el.classList.remove('active'));
+            const task = document.getElementById('task-' + activeId);
+            if(task) task.classList.add('active');
+        }
+
+        // --- 拖拽逻辑 (通用) ---
+        function makeDraggable(elmnt) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            const header = elmnt.querySelector(".title-drag-area");
+            header.onmousedown = dragMouseDown;
+
+            function dragMouseDown(e) {
+                e = e || window.event;
+                e.preventDefault();
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+                // 置顶
+                elmnt.style.zIndex = ++zIndexCounter;
+                highlightTaskbar(elmnt.id);
+            }
+
+            function elementDrag(e) {
+                e = e || window.event;
+                e.preventDefault();
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+                elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+            }
+
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+        }
+
+        // --- 计算器逻辑 ---
+        let calcState = "";
+        function calcInput(val) {
+            const disp = window.currentCalcDisplay; 
+            if(!disp) return;
+
+            if (val === 'C') {
+                calcState = "";
+                disp.innerText = "0";
+            } else if (val === '=') {
+                try {
+                    calcState = eval(calcState).toString();
+                    disp.innerText = calcState;
+                } catch {
+                    disp.innerText = "Error";
+                    calcState = "";
+                }
+            } else if (val === 'DEL') {
+                calcState = calcState.slice(0, -1);
+                disp.innerText = calcState || "0";
+            } else {
+                calcState += val;
+                disp.innerText = calcState;
+            }
+        }
+
+        // --- 右键菜单逻辑 ---
+        const contextMenu = document.getElementById('contextMenu');
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            // 只有在桌面或非交互区域点击才弹出
+            if (e.target.closest('.window') || e.target.closest('.taskbar')) return;
+
+            contextMenu.style.top = e.clientY + 'px';
+            contextMenu.style.left = e.clientX + 'px';
+            contextMenu.style.display = 'flex';
+        });
+
+        document.addEventListener('click', function() {
+            contextMenu.style.display = 'none';
+            // 顺便关闭开始菜单
+            const startMenu = document.getElementById('startMenu');
+            // 简单处理：如果在外面点击，关闭菜单（需完善点击判断）
+        });
+        
+        function toggleStartMenu() {
+            const sm = document.getElementById('startMenu');
+            sm.classList.toggle('open');
+            // 阻止冒泡，防止立即被 click 监听器关闭
+            event.stopPropagation();
+        }
+
+        // --- 其他工具 ---
+        function changeWallpaper() {
+            const wallpapers = [
+                'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?ixlib=rb-4.0.3&q=80&w=1920', // Blue
+                'https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&q=80&w=1920', // Landscape
+                'https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&q=80&w=1920', // Tech
+                'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&q=80&w=1920'  // Abstract
+            ];
+            const current = document.body.style.backgroundImage;
+            const random = wallpapers[Math.floor(Math.random() * wallpapers.length)];
+            document.body.style.backgroundImage = `url('${random}')`;
+        }
+
+        // 时钟
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('clock').innerText = 
+                now.getHours().toString().padStart(2,'0') + ':' + 
+                now.getMinutes().toString().padStart(2,'0');
+        }, 1000);
+
+    </script>
+</body>
+</html>
