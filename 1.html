@@ -2,295 +2,429 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>秋秋的页</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     
     <script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
     <script>LA.init({id:"3MeiU5nIDHpPFL1N",ck:"3MeiU5nIDHpPFL1N"})</script>
 
     <style>
         :root {
-            /* Apple Light Mode Colors */
-            --bg-body: #f5f5f7; /* 经典的 Apple 浅灰背景 */
+            /* 亮色模式变量 */
+            --bg-body: #f5f5f7;
             --bg-card: #ffffff;
-            --text-primary: #1d1d1f; /* Apple 近黑色 */
-            --text-secondary: #86868b; /* Apple 灰色 */
-            --accent: #0066cc; /* Apple Link Blue */
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --nav-bg: rgba(251, 251, 253, 0.8); /* 官网导航栏底色 */
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --accent: #0066cc;
+            --divider: rgba(0,0,0,0.1);
+            --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.04);
             --shadow-hover: 0 12px 24px rgba(0, 0, 0, 0.08);
-            --radius: 18px; /* 更加圆润的圆角 */
-            --transition: cubic-bezier(0.4, 0, 0.2, 1); /* 平滑的贝塞尔曲线 */
+            --radius: 18px;
+            --nav-height: 48px;
         }
 
-        /* Apple Dark Mode Colors (自动适配系统) */
         @media (prefers-color-scheme: dark) {
             :root {
+                /* 深色模式变量 */
                 --bg-body: #000000;
                 --bg-card: #1c1c1e;
+                --nav-bg: rgba(20, 20, 20, 0.8);
                 --text-primary: #f5f5f7;
                 --text-secondary: #86868b;
                 --accent: #2997ff;
-                --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+                --divider: rgba(255,255,255,0.1);
+                --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.2);
                 --shadow-hover: 0 12px 24px rgba(0, 0, 0, 0.4);
             }
         }
 
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             margin: 0;
-            padding: 40px 20px;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Noto Sans SC", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Inter", "PingFang SC", sans-serif;
             background-color: var(--bg-body);
             color: var(--text-primary);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            -webkit-font-smoothing: antialiased; /* 让字体在 Mac 上更锐利 */
+            -webkit-font-smoothing: antialiased;
+            padding-top: var(--nav-height); /* 为导航栏留出空间 */
         }
 
-        /* --- 头部设计 --- */
-        header {
-            text-align: center;
-            margin-bottom: 50px;
-            max-width: 600px;
+        /* --- 顶部导航栏 (Frosted Glass) --- */
+        .global-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            animation: fadeIn 0.8s ease-out;
+            height: var(--nav-height);
+            background-color: var(--nav-bg);
+            backdrop-filter: saturate(180%) blur(20px); /* 核心磨砂效果 */
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            z-index: 9999;
+            border-bottom: 1px solid var(--divider);
+            transition: background-color 0.3s;
         }
 
-        h1 {
-            font-size: 48px;
-            font-weight: 700;
-            margin: 0 0 10px 0;
-            letter-spacing: -0.02em; /* 紧凑的字间距显得更现代 */
-        }
-
-        .datetime {
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            background: var(--bg-card);
-            padding: 8px 16px;
-            border-radius: 20px;
-            display: inline-block;
-            box-shadow: var(--shadow-sm);
-            margin-top: 10px;
-        }
-
-        /* --- 网格布局 (Bento Box) --- */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            max-width: 900px;
-            width: 100%;
-            margin-bottom: 60px;
-        }
-
-        /* --- 卡片设计 --- */
-        .card-link {
-            text-decoration: none;
-            background-color: var(--bg-card);
-            padding: 30px;
-            border-radius: var(--radius);
-            color: var(--text-primary);
-            box-shadow: var(--shadow-sm);
-            transition: all 0.3s var(--transition);
+        .nav-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            height: 100%;
             display: flex;
-            flex-direction: column;
             justify-content: space-between;
-            height: 160px;
-            position: relative;
-            overflow: hidden;
+            align-items: center;
+            padding: 0 20px;
         }
 
-        .card-link:hover {
-            transform: scale(1.02); /* 极其微小的放大 */
-            box-shadow: var(--shadow-hover);
-            z-index: 10;
-        }
-
-        .card-title {
-            font-size: 24px;
+        .nav-logo {
             font-weight: 600;
-            letter-spacing: -0.01em;
+            font-size: 17px;
+            color: var(--text-primary);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+            z-index: 1001;
         }
 
-        .card-desc {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-top: 8px;
-            font-weight: 400;
+        /* 桌面端菜单链接 */
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
         }
 
-        /* 模拟 Apple 的箭头图标 */
-        .arrow-icon {
-            align-self: flex-end;
-            font-size: 20px;
-            color: var(--accent);
-            opacity: 0;
-            transform: translateX(-10px);
-            transition: all 0.3s var(--transition);
-        }
-
-        .card-link:hover .arrow-icon {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        /* --- 分区标题 --- */
-        .section-header {
-            width: 100%;
-            max-width: 900px;
-            font-size: 28px;
-            font-weight: 600;
-            margin-bottom: 24px;
-            letter-spacing: -0.01em;
-            padding-left: 5px;
-        }
-
-        /* --- 底部 --- */
-        footer {
-            text-align: center;
-            font-size: 12px;
-            color: var(--text-secondary);
-            border-top: 1px solid rgba(0,0,0,0.1);
-            padding-top: 30px;
-            width: 100%;
-            max-width: 600px;
-        }
-
-        @media (prefers-color-scheme: dark) {
-            footer { border-top: 1px solid rgba(255,255,255,0.1); }
-        }
-
-        footer a {
+        .nav-links li a {
             color: var(--text-secondary);
             text-decoration: none;
-            margin: 0 10px;
+            font-size: 12px;
             transition: color 0.2s;
         }
 
-        footer a:hover {
+        .nav-links li a:hover { color: var(--text-primary); }
+
+        /* 图标按钮 (搜索/菜单) */
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
             color: var(--text-primary);
-            text-decoration: underline;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        .icon-btn:hover { opacity: 1; }
+        
+        /* SVG 图标通用样式 */
+        .svg-icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
         }
 
-        /* 评论区容器 */
-        .comments-container {
-            max-width: 700px;
-            width: 100%;
-            margin-top: 20px;
+        /* 移动端菜单触发器 */
+        .mobile-menu-toggle { display: none; z-index: 1001; }
+
+        /* --- 搜索覆盖层 (Spotlight Style) --- */
+        .search-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(5px);
+            z-index: 9000;
+            display: none; /* 默认隐藏 */
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 100px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .search-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .search-box {
+            width: 90%;
+            max-width: 600px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+
+        .search-overlay.active .search-box { transform: scale(1); }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 18px;
+            margin-left: 10px;
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        /* --- 主内容区域 --- */
+        .main-wrapper {
+            max-width: 980px;
+            margin: 60px auto;
+            padding: 0 20px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        header { text-align: center; margin-bottom: 60px; }
+
+        h1 {
+            font-size: 56px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 10px;
+        }
+
+        .datetime {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            margin-left: 5px;
+        }
+
+        /* --- Bento Grid 卡片布局 --- */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            padding: 32px;
+            border-radius: var(--radius);
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 180px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card-title { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
+        .card-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.4; }
+        
+        .card-arrow {
+            align-self: flex-end;
+            width: 24px; height: 24px;
+            background: var(--text-primary);
+            color: var(--bg-card);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover .card-arrow { opacity: 1; transform: translateX(0); }
+
+        /* --- 留言板与底部 --- */
+        .comments-section {
+            margin-top: 80px;
             background: var(--bg-card);
             padding: 40px;
             border-radius: var(--radius);
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--shadow-card);
+        }
+
+        footer {
+            margin-top: 60px;
+            padding: 40px 0;
+            border-top: 1px solid var(--divider);
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        footer a { color: var(--text-secondary); text-decoration: none; margin: 0 8px; }
+        footer a:hover { text-decoration: underline; color: var(--text-primary); }
+
+        /* 搜索时隐藏不匹配的卡片 */
+        .card.hidden { display: none; }
+
+        /* --- 响应式适配 --- */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 0; left: 0; width: 100%; height: 100vh;
+                background: var(--bg-body);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 40px;
+                font-size: 24px;
+                transform: translateY(-100%);
+                transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 1000;
+            }
+            .nav-links.active { transform: translateY(0); }
+            .nav-links li a { font-size: 24px; font-weight: 600; color: var(--text-primary); }
+            
+            .mobile-menu-toggle { display: block; }
+            h1 { font-size: 40px; }
+            .grid-container { grid-template-columns: 1fr; }
+            .card { height: 140px; padding: 24px; }
         }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        /* 响应式 */
-        @media (max-width: 600px) {
-            .grid-container { grid-template-columns: 1fr; }
-            h1 { font-size: 36px; }
-            .card-link { height: 120px; padding: 24px; }
-            .card-title { font-size: 20px; }
-        }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>秋秋的页</h1>
-        <div class="datetime" id="current-time"></div>
-    </header>
+    <nav class="global-nav">
+        <div class="nav-content">
+            <button class="icon-btn mobile-menu-toggle" onclick="toggleMenu()">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+            </button>
 
-    <div class="section-header">探索</div>
-    
-    <div class="grid-container">
-        <a href="./html/daohang" class="card-link">
-            <div>
-                <div class="card-title">导航</div>
-                <div class="card-desc">快速访问所有入口</div>
-            </div>
-            <div class="arrow-icon">→</div>
-        </a>
+            <a href="#" class="nav-logo">QiūQiū</a>
 
-        <a href="./html/DeepSeek" class="card-link">
-            <div>
-                <div class="card-title">DeepSeek</div>
-                <div class="card-desc">人工智能对话</div>
-            </div>
-            <div class="arrow-icon">→</div>
-        </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="./html/daohang">导航</a></li>
+                <li><a href="./html/DeepSeek">DeepSeek</a></li>
+                <li><a href="./html/math-ques">数学题库</a></li>
+                <li><a href="https://wea-1.github.io/">我的项目</a></li>
+                <li><a href="./html/me">关于我</a></li>
+            </ul>
 
-        <a href="./html/math-ques" class="card-link">
-            <div>
-                <div class="card-title">高中数学</div>
-                <div class="card-desc">精选数学题库</div>
-            </div>
-            <div class="arrow-icon">→</div>
-        </a>
+            <button class="icon-btn" onclick="toggleSearch()">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            </button>
+        </div>
+    </nav>
 
-        <a href="./html/chat" class="card-link">
-            <div>
-                <div class="card-title">局域网聊天</div>
-                <div class="card-desc">实时通讯开发版</div>
-            </div>
-            <div class="arrow-icon">→</div>
-        </a>
-
-        <a href="./tool/index.html" class="card-link">
-            <div>
-                <div class="card-title">实用工具</div>
-                <div class="card-desc">效率提升组件</div>
-            </div>
-            <div class="arrow-icon">→</div>
-        </a>
-
-        <a href="./html/2048" class="card-link">
-            <div>
-                <div class="card-title">2048</div>
-                <div class="card-desc">经典益智游戏</div>
-            </div>
-            <div class="arrow-icon">→</div>
-        </a>
-        
-        <a href="https://wea-1.github.io/" class="card-link">
-            <div>
-                <div class="card-title">我的项目</div>
-                <div class="card-desc">个人开发作品集</div>
-            </div>
-            <div class="arrow-icon">→</div>
-        </a>
+    <div class="search-overlay" id="searchOverlay" onclick="if(event.target === this) toggleSearch()">
+        <div class="search-box">
+            <svg class="svg-icon" style="opacity: 0.5;" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <input type="text" class="search-input" id="searchInput" placeholder="搜索页面内容..." autocomplete="off">
+            <button class="icon-btn" onclick="toggleSearch()">✕</button>
+        </div>
     </div>
 
-    <div class="section-header" style="font-size: 20px; margin-top: 20px;">留言板</div>
-    <div class="comments-container">
-        <div id="cusdis_thread" 
-             data-host="https://cusdis.com" 
-             data-app-id="96e7f43c-b20e-43e4-b4eb-4e697bf57f2e" 
-             data-page-id="zh" 
-             data-page-url="shuo156.github.io/index_zh.html" 
-             data-page-title="评论">
+    <div class="main-wrapper">
+        <header>
+            <h1>秋秋的页</h1>
+            <div class="datetime" id="current-time"></div>
+        </header>
+
+        <div class="section-title">探索</div>
+        
+        <div class="grid-container" id="cardGrid">
+            <a href="./html/daohang" class="card" data-keywords="导航 daohang navigation">
+                <div>
+                    <div class="card-title">导航</div>
+                    <div class="card-desc">快速访问所有网站入口</div>
+                </div>
+                <div class="card-arrow">→</div>
+            </a>
+
+            <a href="./html/DeepSeek" class="card" data-keywords="ai deepseek 智能 对话 chat">
+                <div>
+                    <div class="card-title">DeepSeek</div>
+                    <div class="card-desc">人工智能对话助手</div>
+                </div>
+                <div class="card-arrow">→</div>
+            </a>
+
+            <a href="./html/math-ques" class="card" data-keywords="数学 math 高中 题库">
+                <div>
+                    <div class="card-title">高中数学</div>
+                    <div class="card-desc">精选数学题库与解析</div>
+                </div>
+                <div class="card-arrow">→</div>
+            </a>
+
+            <a href="./html/chat" class="card" data-keywords="聊天 chat 局域网 通讯">
+                <div>
+                    <div class="card-title">局域网聊天</div>
+                    <div class="card-desc">实时通讯工具开发版</div>
+                </div>
+                <div class="card-arrow">→</div>
+            </a>
+
+            <a href="./tool/index.html" class="card" data-keywords="工具 tool 效率 实用">
+                <div>
+                    <div class="card-title">实用工具</div>
+                    <div class="card-desc">日常效率提升组件</div>
+                </div>
+                <div class="card-arrow">→</div>
+            </a>
+
+            <a href="./html/2048" class="card" data-keywords="游戏 2048 game">
+                <div>
+                    <div class="card-title">2048</div>
+                    <div class="card-desc">经典数字益智游戏</div>
+                </div>
+                <div class="card-arrow">→</div>
+            </a>
+            
+            <a href="https://wea-1.github.io/" class="card" data-keywords="项目 project github">
+                <div>
+                    <div class="card-title">我的项目</div>
+                    <div class="card-desc">个人开发作品与代码库</div>
+                </div>
+                <div class="card-arrow">→</div>
+            </a>
+        </div>
+
+        <div class="comments-section">
+            <div class="section-title" style="margin-top: 0;">留言板</div>
+            <div id="cusdis_thread" 
+                data-host="https://cusdis.com" 
+                data-app-id="96e7f43c-b20e-43e4-b4eb-4e697bf57f2e" 
+                data-page-id="zh" 
+                data-page-url="shuo156.github.io/index_zh.html" 
+                data-page-title="评论">
+            </div>
         </div>
     </div>
 
     <footer>
-        <p>Designed by 秋秋</p>
+        <p>Copyright © 2025 秋秋. All rights reserved.</p>
         <p>
-            联系邮箱: <a href="#"><span class="__cf_email__" data-cfemail="e2918a978d958d9089d3d7d7a28d97968e8d8d89cc818d8f">[email&#160;protected]</span></a>
-        </p>
-        <p>
+            <a href="#" id="email-link">发送邮件</a>
+            <span style="color: var(--divider);">|</span>
             <a href="./html/me">关于我</a>
-            <span style="color: #d2d2d7;">|</span>
+            <span style="color: var(--divider);">|</span>
             <a href="./index_en.html">English</a>
         </p>
+        <span id="cf-email-source" class="__cf_email__" data-cfemail="5f2c372a3028302d346e6a6a1f302a2b33303034713c3032" style="display:none;"></span>
     </footer>
 
     <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
@@ -304,22 +438,104 @@
     <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
 
     <script>
+        // 1. 时间更新
         function updateDateTime() {
             const now = new Date();
-            const options = { 
-                timeZone: 'Asia/Shanghai', 
-                year: 'numeric', 
-                month: 'long', // 使用 "X月" 这种更自然的格式
-                day: 'numeric', 
-                hour: 'numeric', 
-                minute: '2-digit',
-                hour12: false // Apple通常使用24小时制或干净的格式
-            };
-            const formatter = new Intl.DateTimeFormat('zh-CN', options);
-            document.getElementById('current-time').innerHTML = formatter.format(now);
+            const options = { timeZone: 'Asia/Shanghai', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: false };
+            document.getElementById('current-time').innerHTML = new Intl.DateTimeFormat('zh-CN', options).format(now);
         }
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
+        updateDateTime(); setInterval(updateDateTime, 1000);
+
+        // 2. 搜索功能 (实时筛选)
+        function toggleSearch() {
+            const overlay = document.getElementById('searchOverlay');
+            const input = document.getElementById('searchInput');
+            overlay.classList.toggle('active');
+            if(overlay.classList.contains('active')) {
+                setTimeout(() => input.focus(), 100); // 自动聚焦
+            } else {
+                input.value = ''; // 关闭时清空
+                filterCards(''); // 恢复显示所有卡片
+            }
+        }
+
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', (e) => filterCards(e.target.value));
+
+        function filterCards(query) {
+            const cards = document.querySelectorAll('.card');
+            const lowerQuery = query.toLowerCase();
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                const keywords = card.getAttribute('data-keywords') || '';
+                if (text.includes(lowerQuery) || keywords.includes(lowerQuery)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // 3. 移动端菜单切换
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        // 4. 邮箱点击发送 (处理 Cloudflare 解码)
+        document.getElementById('email-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            // 等待 Cloudflare 解码完成后，span 内容会变成真实邮箱
+            const emailSpan = document.getElementById('cf-email-source');
+            
+            // 尝试获取解码后的邮箱 (如果 Cloudflare 脚本已运行，span 会被替换或内容改变)
+            // 这里我们使用一个技巧：直接从解码后的 DOM 中抓取，或者如果没有解码，提示稍后
+            
+            // 由于 Cloudflare email-decode 会替换 DOM 元素，我们这里做一个简单的延时检测或者直接寻找页面上已解码的文本
+            // 但为了稳妥，我们用更简单的逻辑：
+            // Cloudflare 的解码通常很快。如果用户看得到页面，应该已经解码了。
+            // 让我们尝试寻找被解码后的文本。
+            
+            // 更强硬的方法：如果 Cloudflare 替换了 span，原来的 ID 可能不在了。
+            // 我们改用 CSS 选择器查找那个位置的文本。
+            
+            // 实际上，最稳妥的方法是把 __cf_email__ 放在一个隐藏的 div 里，
+            // Cloudflare 脚本运行后，它会把 <span class="__cf_email__"> 替换为 <a href="mailto:...">email</a>
+            // 所以我们去那个父容器里找 'a' 标签。
+            
+            const container = document.getElementById('cf-email-source').parentNode; // Footer p tag
+            // Cloudflare 有时直接替换 span 为 text node，或者 a 标签。
+            // 让我们简化：既然你希望“点击直接发送”，我们可以把 href="mailto:..." 逻辑动态绑定。
+            
+            // 重新获取（因为可能被替换了）
+            const decodedLink = document.querySelector('footer span.__cf_email__') 
+                              ? null // 还没解码
+                              : document.querySelector('footer a[href^="mailto:"]'); // 已经解码并生成了链接
+            
+            if (decodedLink) {
+                decodedLink.click();
+            } else {
+                // 如果 Cloudflare 仅仅是解密了文本但没生成链接 (配置不同)
+                // 我们可以尝试解析 data-cfemail 属性手动解码 (备用方案)
+                const cfSpan = document.getElementById('cf-email-source');
+                if(cfSpan) {
+                   const encoded = cfSpan.getAttribute('data-cfemail');
+                   const email = decodeCfEmail(encoded);
+                   window.location.href = "mailto:" + email;
+                }
+            }
+        });
+
+        // 手动解码算法 (以防 Cloudflare 脚本加载慢或行为不符合预期)
+        function decodeCfEmail(encodedString) {
+            let email = "";
+            let r = parseInt(encodedString.substr(0, 2), 16);
+            for (let n = 2; n < encodedString.length; n += 2) {
+                let c = parseInt(encodedString.substr(n, 2), 16) ^ r;
+                email += String.fromCharCode(c);
+            }
+            return email;
+        }
     </script>
 </body>
 </html>
