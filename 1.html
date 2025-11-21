@@ -3,36 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>秋秋的页 | QiūQiū's Page</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>秋秋的页 | QiūQiū's Terminal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&family=Inter:wght@300;400;600&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
     <script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
     <script>LA.init({id:"3MeiU5nIDHpPFL1N",ck:"3MeiU5nIDHpPFL1N"})</script>
 
     <style>
-        /* --- CSS 样式重置与变量 --- */
+        /* --- CSS 变量定义：NVIDIA 科技配色方案 --- */
         :root {
-            --bg-color: #f0f2f5;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --text-main: #333333;
-            --text-sub: #666666;
-            --accent-color: #4a90e2;
-            --accent-hover: #357abd;
-            --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-            --radius: 16px;
+            --bg-core: #050505;   /* 最深背景 */
+            --bg-dark: #111111;   /* 次级背景 */
+            --card-bg: rgba(20, 20, 20, 0.85); /* 半透明卡片背景 */
+            
+            /* NVIDIA Green Palette */
+            --nvidia-green: #76b900; 
+            --neon-green: #39ff14; /* 更高亮的霓虹绿，用于强调 */
+            
+            --text-primary: #e0e0e0; /* 主要文字偏白灰，避免刺眼 */
+            --text-secondary: #888888; /* 次要文字 */
+            
+            /* 科技感辉光效果 */
+            --tech-glow: 0 0 10px rgba(57, 255, 20, 0.5), 0 0 20px rgba(118, 185, 0, 0.3);
+            --tech-glow-hover: 0 0 15px rgba(57, 255, 20, 0.8), 0 0 30px rgba(57, 255, 20, 0.5);
+            
+            --radius: 8px; /* 更硬朗的圆角 */
         }
 
         * { box-sizing: border-box; }
 
         body {
             font-family: 'Inter', 'Noto Sans SC', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            /* 放射状背景，营造能量核心感 */
+            background: radial-gradient(circle at center, #1a1a1a 0%, var(--bg-core) 100%);
             margin: 0;
             padding: 20px;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: var(--text-main);
+            color: var(--text-primary);
         }
 
         /* --- 主容器卡片 --- */
@@ -40,52 +49,76 @@
             background-color: var(--card-bg);
             padding: 40px;
             border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            /* 绿色边框和辉光 */
+            border: 1px solid rgba(118, 185, 0, 0.3);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.8), var(--tech-glow);
             width: 100%;
-            max-width: 600px;
-            backdrop-filter: blur(10px);
-            transition: transform 0.3s ease;
+            max-width: 650px;
+            backdrop-filter: blur(15px); /* 毛玻璃 */
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 可选：添加一个扫描线背景纹理，增强科技感 */
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(transparent 0px, transparent 2px, rgba(0,0,0,0.3) 3px);
+            pointer-events: none;
+            z-index: -1;
         }
 
         /* --- 头部区域 --- */
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+        header { text-align: center; margin-bottom: 35px; }
 
         h1 {
-            margin: 0 0 10px 0;
-            font-size: 2rem;
+            margin: 0 0 15px 0;
+            font-size: 2.2rem;
             font-weight: 700;
-            letter-spacing: -0.5px;
+            letter-spacing: 1px;
+            color: #ffffff;
+            /* 文字辉光 */
+            text-shadow: 0 0 10px var(--nvidia-green);
         }
 
+        /* --- 终端风格的时间显示 --- */
         .datetime {
-            font-size: 0.9rem;
-            color: var(--text-sub);
-            font-family: 'Fira Code', monospace; /* 如果你有引入 monospace 字体 */
-            background: #f0f0f0;
+            font-size: 0.95rem;
+            font-family: 'Fira Code', monospace; /* 使用等宽字体 */
+            color: var(--neon-green);
+            background: rgba(0, 0, 0, 0.3);
             display: inline-block;
-            padding: 5px 12px;
-            border-radius: 20px;
+            padding: 8px 16px;
+            border: 1px solid var(--nvidia-green);
+            border-radius: 4px;
+            position: relative;
         }
+        /* 模拟终端光标闪烁 */
+        .datetime::after {
+            content: "_";
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
 
         /* --- 分区标题 --- */
         .section-title {
-            font-size: 0.85rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-sub);
-            margin: 25px 0 15px 0;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 5px;
+            letter-spacing: 2px;
+            color: var(--nvidia-green);
+            margin: 30px 0 20px 0;
+            border-bottom: 1px solid rgba(118, 185, 0, 0.3);
+            padding-bottom: 8px;
             display: block;
         }
+        .section-title::before { content: "> "; color: var(--neon-green); }
 
         /* --- 链接网格 --- */
         .link-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 15px;
             list-style: none;
             padding: 0;
@@ -94,56 +127,67 @@
         .link-grid li a {
             display: block;
             text-decoration: none;
-            background: white;
-            border: 1px solid #eee;
-            color: var(--text-main);
-            padding: 15px;
-            border-radius: 12px;
+            background: rgba(30, 30, 30, 0.6);
+            border: 1px solid rgba(118, 185, 0, 0.2);
+            color: var(--text-primary);
+            padding: 18px;
+            border-radius: var(--radius);
             text-align: center;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             font-weight: 600;
+            position: relative;
+            overflow: hidden;
         }
 
+        /* 悬停激活状态 - 高能预警 */
         .link-grid li a:hover {
-            background: var(--accent-color);
-            color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
-            border-color: var(--accent-color);
+            background: var(--nvidia-green);
+            color: #000000; /* 悬停时文字变黑以保证对比度 */
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: var(--tech-glow-hover);
+            border-color: var(--neon-green);
         }
 
         /* --- 底部联系信息 --- */
         .footer-info {
-            margin-top: 30px;
+            margin-top: 40px;
             text-align: center;
             font-size: 0.9rem;
-            color: var(--text-sub);
+            color: var(--text-secondary);
             line-height: 1.8;
+            font-family: 'Fira Code', monospace;
         }
 
         .footer-info a {
-            color: var(--accent-color);
+            color: var(--neon-green);
             text-decoration: none;
-            transition: color 0.2s;
+            transition: all 0.3s;
+            border-bottom: 1px dotted var(--nvidia-green);
         }
         
         .footer-info a:hover {
-            color: var(--accent-hover);
-            text-decoration: underline;
+            color: #fff;
+            background: var(--nvidia-green);
+            box-shadow: var(--tech-glow);
+            text-decoration: none;
+            border-bottom: none;
         }
 
-        /* --- 评论区 --- */
+        /* --- 评论区适配深色 --- */
         .comments-wrapper {
             margin-top: 40px;
             padding-top: 20px;
-            border-top: 1px dashed #ddd;
+            border-top: 1px dashed rgba(118, 185, 0, 0.3);
         }
+        /* 强制 Cusdis 评论区使用深色主题 (如果它支持) */
+        #cusdis_thread { color-scheme: dark; }
 
         /* 响应式调整 */
         @media (max-width: 480px) {
-            .container { padding: 25px; }
-            h1 { font-size: 1.5rem; }
-            .link-grid { grid-template-columns: 1fr 1fr; }
+            .container { padding: 25px 20px; }
+            h1 { font-size: 1.8rem; }
+            .link-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .link-grid li a { padding: 15px; font-size: 0.9rem; }
         }
     </style>
 </head>
@@ -151,32 +195,32 @@
 
     <div class="container">
         <header>
-            <h1>秋秋的页</h1>
-            <div class="datetime" id="current-time">加载时间中...</div>
+            <h1>SYSTEM: QIŪQIŪ</h1>
+            <div class="datetime" id="current-time">INITIALIZING...</div>
         </header>
 
-        <span class="section-title">探索</span>
+        <span class="section-title">Nav_Modules</span>
         <ul class="link-grid">
-            <li><a href="./html/daohang">🚀 导航</a></li>
-            <li><a href="./html/2048">🎮 2048</a></li>
-            <li><a href="./html/DeepSeek">🤖 DeepSeek?</a></li>
-            <li><a href="./html/chat">💬 局域网聊天</a></li>
-            <li><a href="./html/math-ques">📐 高中数学</a></li>
-            <li><a href="./tool/index.html">🛠️ 实用工具</a></li>
-            <li><a href="https://wea-1.github.io/">📂 我的项目</a></li>
+            <li><a href="./html/daohang">🚀 导航终端</a></li>
+            <li><a href="./html/2048">🎮 2048 Core</a></li>
+            <li><a href="./html/DeepSeek">🤖 DeepSeek AI</a></li>
+            <li><a href="./html/chat">💬 局域网通讯</a></li>
+            <li><a href="./html/math-ques">📐 数学题库</a></li>
+            <li><a href="./tool/index.html">🛠️ 实用工具箱</a></li>
+            <li><a href="https://wea-1.github.io/">📂 项目仓库</a></li>
         </ul>
 
-        <span class="section-title">关于</span>
+        <span class="section-title">User_Data</span>
         <div class="footer-info">
-            <div>From <strong>秋秋</strong></div>
-            <div>邮箱: <a href="#"><span class="__cf_email__" data-cfemail="44372c312b332b362f757171042b3130282b2b2f6a272b29">[email&#160;protected]</span></a></div>
-            <div style="margin-top: 10px;">
-                <a href="./html/me">关于我</a> | <a href="./index_en.html">English</a>
+            <div>Operator: <strong>秋秋</strong></div>
+            <div>Email: <a href="#"><span class="__cf_email__" data-cfemail="04776c716b736b766f353131446b7170686b6b6f2a676b69">[email&#160;protected]</span></a></div>
+            <div style="margin-top: 15px;">
+                 [ <a href="./html/me">关于系统</a> ] :: [ <a href="./index_en.html">English Mode</a> ]
             </div>
         </div>
 
         <div class="comments-wrapper">
-            <span class="section-title">留言</span>
+            <span class="section-title">System_Logs</span>
             <div id="cusdis_thread" 
                 data-host="https://cusdis.com" 
                 data-app-id="96e7f43c-b20e-43e4-b4eb-4e697bf57f2e" 
@@ -200,19 +244,15 @@
     <script>
         function updateDateTime() {
             const now = new Date();
-            // 使用 Intl API 自动格式化为中国时间，更加准确且代码简洁
             const options = { 
                 timeZone: 'Asia/Shanghai', 
-                year: 'numeric', 
-                month: '2-digit', 
-                day: '2-digit', 
-                hour: '2-digit', 
-                minute: '2-digit', 
-                second: '2-digit',
+                year: 'numeric', month: '2-digit', day: '2-digit', 
+                hour: '2-digit', minute: '2-digit', second: '2-digit',
                 hour12: false 
             };
             const formatter = new Intl.DateTimeFormat('zh-CN', options);
-            document.getElementById('current-time').innerHTML = "北京时间: " + formatter.format(now);
+            // 格式化输出，使其更像系统日志
+            document.getElementById('current-time').innerHTML = "SYS.TIME [" + formatter.format(now) + "]";
         }
         updateDateTime();
         setInterval(updateDateTime, 1000);
