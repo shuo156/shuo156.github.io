@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生成绩查询系统 - Pro版</title>
+    <style>
+        :root {
+            /* 蓝色主题配色 */
+            --bg-color: #f2f6fa; /* 背景偏蓝灰 */
+            --card-bg: #ffffff;
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --accent-color: #007aff; /* Apple Blue */
+            --ring-bg: #e6effa; /* 圆环背景色 */
+            --border-radius: 20px;
+            --shadow: 0 8px 30px rgba(0, 50, 100, 0.08);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 40px;
+            position: relative;
+        }
+
+        /* 头部信息 */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid rgba(0, 122, 255, 0.1);
+            padding-bottom: 25px;
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+            user-select: none;
+        }
+
+        .student-info {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 25px;
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .info-item span {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* 成绩网格 - 圆环版 */
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+            justify-items: center;
+        }
+
+        /* 圆环容器 */
+        .ring-card {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* SVG 圆环样式 */
+        .progress-ring {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: rotate(-90deg); /* 从顶部开始 */
+        }
+
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.5s ease; /* 丝滑动画 */
+            transform-origin: 50% 50%;
+        }
+
+        /* 圆环内部文字 */
+        .ring-text-content {
+            z-index: 1;
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+        }
+
+        .subject-name {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .subject-score {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+        /* 总分特殊样式 */
+        .total-ring-card .subject-score {
+            color: var(--accent-color);
+        }
+        
+        .total-ring-card {
+             /* 稍微大一点以示区分 */
+            transform: scale(1.05);
+        }
+
+        /* 排名区域 */
+        .rank-section {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(0, 122, 255, 0.06); /* 极淡的蓝色背景 */
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 35px;
+        }
+
+        .rank-item {
+            text-align: center;
+        }
+
+        .rank-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .rank-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        /* 学习报告 */
+        .report-section h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .report-section h3::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 18px;
+            background: var(--accent-color);
+            margin-right: 10px;
+            border-radius: 2px;
+        }
+
+        .report-content {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #424245;
+            text-align: justify;
+            background: #fff;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* 编辑模式样式 */
+        .editable-active .editable {
+            background-color: rgba(0, 122, 255, 0.1);
+            border-radius: 4px;
+            padding: 2px 4px;
+            outline: 2px solid var(--accent-color);
+            cursor: text;
+            min-width: 20px;
+            display: inline-block;
+        }
+        
+        /* 修复圆环内编辑时的显示问题 */
+        .ring-text-content .editable {
+            padding: 0 2px;
+            background-color: transparent;
+             outline: none;
+             border-bottom: 2px solid var(--accent-color);
+             border-radius: 0;
+        }
+        .editable-active .ring-text-content .editable:focus {
+             border-bottom: 2px solid var(--accent-color);
+             background: rgba(0, 122, 255, 0.05);
+        }
+
+
+        /* 提示框 */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            text-align: center;
+            border-radius: 50px;
+            padding: 16px;
+            position: fixed;
+            z-index: 100;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-size: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: opacity 0.3s, bottom 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        #toast.show {
+            visibility: visible;
+            opacity: 1;
+            bottom: 50px;
+        }
+
+        /* 响应式 */
+        @media (max-width: 700px) {
+            .container { padding: 25px 20px; }
+            .score-grid { grid-template-columns: repeat(3, 1fr); gap: 15px; }
+            .ring-card { width: 100px; height: 100px; }
+            /* 缩小SVG以适应移动端 */
+            .progress-ring { width: 100px; height: 100px; }
+            .progress-ring circle { cx: 50; cy: 50; r: 42; stroke-width: 6; }
+            
+            .subject-score { font-size: 22px; }
+            .rank-section { flex-direction: column; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="mainCard">
+    <header>
+        <h1 id="triggerTitle" class="editable">2025学年第一学期期末成绩报告</h1>
+        <div class="student-info">
+            <div class="info-item">姓名：<span class="editable">李明</span></div>
+            <div class="info-item">学号：<span class="editable">20230852</span></div>
+            <div class="info-item">班级：<span class="editable">高二(3)班</span></div>
+        </div>
+    </header>
+
+    <div class="score-grid">
+        <div class="ring-card">
+            <svg class="progress-ring" width="120" height="120">
+                <circle class="progress-ring__bg" stroke="var(--ring-bg)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                <circle class="progress-ring__circle" stroke="var(--accent-color)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+            </svg>
+            <div class="ring-text-content">
+                <div class="subject-name">语文</div>
+                <div class="subject-score editable score-val" data-max="150">112</div>
+            </div>
+        </div>
+
+        <div class="ring-card">
+            <svg class="progress-ring" width="120" height="120">
+                <circle class="progress-ring__bg" stroke="var(--ring-bg)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                <circle class="progress-ring__circle" stroke="var(--accent-color)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+            </svg>
+            <div class="ring-text-content">
+                <div class="subject-name">数学</div>
+                <div class="subject-score editable score-val" data-max="150">135</div>
+            </div>
+        </div>
+
+        <div class="ring-card">
+            <svg class="progress-ring" width="120" height="120">
+                <circle class="progress-ring__bg" stroke="var(--ring-bg)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                <circle class="progress-ring__circle" stroke="var(--accent-color)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+            </svg>
+            <div class="ring-text-content">
+                <div class="subject-name">英语</div>
+                <div class="subject-score editable score-val" data-max="150">128</div>
+            </div>
+        </div>
+
+        <div class="ring-card">
+            <svg class="progress-ring" width="120" height="120">
+                <circle class="progress-ring__bg" stroke="var(--ring-bg)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                <circle class="progress-ring__circle" stroke="var(--accent-color)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+            </svg>
+            <div class="ring-text-content">
+                <div class="subject-name">物理</div>
+                <div class="subject-score editable score-val" data-max="100">88</div>
+            </div>
+        </div>
+        
+        <div class="ring-card">
+            <svg class="progress-ring" width="120" height="120">
+                <circle class="progress-ring__bg" stroke="var(--ring-bg)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                <circle class="progress-ring__circle" stroke="var(--accent-color)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+            </svg>
+            <div class="ring-text-content">
+                <div class="subject-name">化学</div>
+                <div class="subject-score editable score-val" data-max="100">92</div>
+            </div>
+        </div>
+
+        <div class="ring-card">
+            <svg class="progress-ring" width="120" height="120">
+                <circle class="progress-ring__bg" stroke="var(--ring-bg)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                <circle class="progress-ring__circle" stroke="var(--accent-color)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+            </svg>
+            <div class="ring-text-content">
+                <div class="subject-name">生物</div>
+                <div class="subject-score editable score-val" data-max="100">85</div>
+            </div>
+        </div>
+
+        <div class="ring-card">
+            <svg class="progress-ring" width="120" height="120">
+                <circle class="progress-ring__bg" stroke="var(--ring-bg)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                <circle class="progress-ring__circle" stroke="var(--accent-color)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+            </svg>
+            <div class="ring-text-content">
+                <div class="subject-name">政治</div>
+                <div class="subject-score editable score-val" data-max="100">76</div>
+            </div>
+        </div>
+
+        <div class="ring-card">
+            <svg class="progress-ring" width="120" height="120">
+                <circle class="progress-ring__bg" stroke="var(--ring-bg)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                <circle class="progress-ring__circle" stroke="var(--accent-color)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+            </svg>
+            <div class="ring-text-content">
+                <div class="subject-name">历史</div>
+                <div class="subject-score editable score-val" data-max="100">82</div>
+            </div>
+        </div>
+
+        <div class="ring-card">
+            <svg class="progress-ring" width="120" height="120">
+                <circle class="progress-ring__bg" stroke="var(--ring-bg)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                <circle class="progress-ring__circle" stroke="var(--accent-color)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+            </svg>
+            <div class="ring-text-content">
+                <div class="subject-name">地理</div>
+                <div class="subject-score editable score-val" data-max="100">79</div>
+            </div>
+        </div>
+
+        <div class="ring-card total-ring-card">
+             <svg class="progress-ring" width="120" height="120">
+                <circle class="progress-ring__bg" stroke="var(--ring-bg)" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                <circle class="progress-ring__circle" stroke="#005ecb" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+            </svg>
+            <div class="ring-text-content">
+                <div class="subject-name">总分</div>
+                <div class="subject-score" id="totalScore" data-max="1050">0</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="rank-section">
+        <div class="rank-item">
+            <div class="rank-label">班级排名</div>
+            <div class="rank-value editable">3</div>
+        </div>
+        <div class="rank-item">
+            <div class="rank-label">年级排名</div>
+            <div class="rank-value editable">45</div>
+        </div>
+        <div class="rank-item">
+            <div class="rank-label">超过百分比</div>
+            <div class="rank-value editable">96%</div>
+        </div>
+    </div>
+
+    <div class="report-section">
+        <h3>学习报告与教师寄语</h3>
+        <div class="report-content editable">
+            该生本学期学习态度端正，理科优势明显，尤其是数学成绩稳步提升。在英语阅读理解方面仍有进步空间。课堂表现积极，希望能继续保持良好的学习习惯，加强对文科知识点的背诵与积累。总体表现优秀，望下学期再接再厉！
+        </div>
+    </div>
+</div>
+
+<div id="toast">已进入编辑模式，请点击文字修改</div>
+
+<script>
+    // --- 配置 ---
+    const CLICK_THRESHOLD = 3; // 点击几次触发编辑模式
+    const RESET_TIME = 800; // 点击间隔重置时间
+
+    // --- 变量 ---
+    let clickCount = 0;
+    let clickTimer = null;
+    let isEditMode = false;
+    let totalMaxScore = 0;
+
+    // --- DOM 元素 ---
+    const title = document.getElementById('triggerTitle');
+    const container = document.getElementById('mainCard');
+    const toast = document.getElementById('toast');
+    const scoreElements = document.querySelectorAll('.score-val');
+    const totalElement = document.getElementById('totalScore');
+    
+    // --- 初始化 ---
+    function init() {
+        // 1. 计算总分满分是多少
+        scoreElements.forEach(el => {
+            totalMaxScore += parseFloat(el.getAttribute('data-max') || 100);
+        });
+        totalElement.setAttribute('data-max', totalMaxScore);
+
+        // 2. 初始化所有圆环进度和总分
+        updateAllRingsAndTotal();
+        
+        // 3. 绑定事件
+        bindEvents();
+    }
+
+    // --- 核心功能：更新圆环进度条 ---
+    function updateRing(scoreEl) {
+        const score = parseFloat(scoreEl.innerText) || 0;
+        const max = parseFloat(scoreEl.getAttribute('data-max') || 100);
+        // 找到对应的 SVG 圆环 (在 DOM 结构中向上找父级再找前面的兄弟元素)
+        const ringCard = scoreEl.closest('.ring-card');
+        const circle = ringCard.querySelector('.progress-ring__circle');
+        
+        // 计算 SVG 属性
+        const radius = circle.r.baseVal.value;
+        const circumference = 2 * Math.PI * radius; // 圆周长
+        
+        // 计算进度百分比 (限制在 0 到 1 之间)
+        let percent = score / max;
+        percent = Math.min(Math.max(percent, 0), 1);
+        
+        const offset = circumference - (percent * circumference);
+        
+        // 设置样式
+        circle.style.strokeDasharray = `${circumference} ${circumference}`;
+        circle.style.strokeDashoffset = offset;
+    }
+
+    // --- 辅助功能：更新所有和总分 ---
+    function updateAllRingsAndTotal() {
+        let currentTotalSum = 0;
+        scoreElements.forEach(el => {
+            updateRing(el);
+            currentTotalSum += parseFloat(el.innerText) || 0;
+        });
+        // 更新总分文字
+        totalElement.innerText = currentTotalSum;
+        // 更新总分圆环
+        updateRing(totalElement);
+    }
+
+
+    // --- 事件绑定 ---
+    function bindEvents() {
+        // 触发编辑模式
+        title.addEventListener('click', (e) => {
+            if (isEditMode) return; // 如果已经是编辑模式，点击标题只当普通编辑，不触发切换逻辑
+            e.preventDefault(); 
+            clickCount++;
+            clearTimeout(clickTimer);
+            clickTimer = setTimeout(() => { clickCount = 0; }, RESET_TIME);
+            if (clickCount === CLICK_THRESHOLD) {
+                toggleEditMode(true);
+                clickCount = 0;
+            }
+        });
+
+        // 监听分数变化，实时更新圆环和总分
+        scoreElements.forEach(el => {
+             // input 事件在内容改变时实时触发
+            el.addEventListener('input', updateAllRingsAndTotal);
+             // blur 事件在失去焦点时触发，用于处理异常输入
+            el.addEventListener('blur', function() {
+                let val = parseFloat(this.innerText);
+                // 如果输入非数字，重置为0
+                if(isNaN(val)) {
+                    this.innerText = 0;
+                }
+                 // 确保不超过满分 (可选，如果你希望可以输入超过满分则注释掉下面两行)
+                const max = parseFloat(this.getAttribute('data-max'));
+                if(val > max) this.innerText = max;
+
+                updateAllRingsAndTotal();
+            });
+        });
+    }
+
+    // --- 切换编辑模式 ---
+    function toggleEditMode(showToastMsg) {
+        isEditMode = !isEditMode;
+        const allEditable = document.querySelectorAll('.editable');
+        
+        if (isEditMode) {
+            container.classList.add('editable-active');
+            if(showToastMsg) showToast("🔓 已解锁：点击蓝色文字即可修改");
+            allEditable.forEach(el => el.setAttribute('contenteditable', 'true'));
+        } else {
+            container.classList.remove('editable-active');
+            if(showToastMsg) showToast("🔒 已锁定：修改已保存");
+            allEditable.forEach(el => el.removeAttribute('contenteditable'));
+            // 退出时再刷新一次数据确保正确
+            updateAllRingsAndTotal();
+        }
+    }
+
+    // --- 全局点击监听，用于退出编辑模式 ---
+    // 如果在编辑模式下，点击了非编辑区域，并且点击次数达到了阈值，则退出编辑模式
+    document.addEventListener('click', (e) => {
+        if (!isEditMode) return;
+        // 如果点击的不是可编辑元素本身
+        if (!e.target.classList.contains('editable')) {
+             clickCount++;
+             clearTimeout(clickTimer);
+             clickTimer = setTimeout(() => { clickCount = 0; }, RESET_TIME);
+             if (clickCount === CLICK_THRESHOLD) {
+                toggleEditMode(false); // 退出编辑模式
+                clickCount = 0;
+            }
+        }
+    });
+
+
+    // --- 提示框 ---
+    function showToast(message) {
+        toast.innerText = message;
+        toast.className = "show";
+        setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+    }
+
+    // 启动!
+    init();
+
+</script>
+
+</body>
+</html>
