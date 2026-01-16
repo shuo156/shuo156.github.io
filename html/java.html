@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java 25 - 官方下载</title>
+    <!-- 使用CloudFlare CDN的CSS资源 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <style>
+        :root {
+            --primary-color: #F80000;
+            --secondary-color: #0D74CE;
+            --dark-color: #222222;
+            --light-color: #F8F9FA;
+            --gray-color: #6C757D;
+            --success-color: #28a745;
+        }
+        
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--dark-color) 0%, #3a3a3a 100%);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            border-bottom: 5px solid var(--primary-color);
+        }
+        
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .logo-container i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #aaa;
+            max-width: 800px;
+            margin: 0 auto 30px;
+        }
+        
+        .download-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            margin: 40px 0;
+            text-align: center;
+        }
+        
+        .java-version {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        
+        .download-info {
+            margin-bottom: 30px;
+        }
+        
+        .download-info h2 {
+            color: var(--dark-color);
+            margin-bottom: 15px;
+            font-size: 2rem;
+        }
+        
+        .download-info p {
+            color: var(--gray-color);
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+        
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            padding: 18px 40px;
+            border-radius: 8px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(248, 0, 0, 0.3);
+        }
+        
+        .download-btn:hover {
+            background-color: #d60000;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(248, 0, 0, 0.4);
+        }
+        
+        .download-btn i {
+            font-size: 1.8rem;
+        }
+        
+        .file-details {
+            background-color: var(--light-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: left;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .file-details h3 {
+            margin-top: 0;
+            color: var(--dark-color);
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+        
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .detail-item {
+            padding: 5px 0;
+        }
+        
+        .detail-label {
+            font-weight: bold;
+            color: var(--gray-color);
+        }
+        
+        .detail-value {
+            color: var(--dark-color);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 50px;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-card i {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            color: var(--dark-color);
+            margin-top: 0;
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            border-top: 5px solid var(--primary-color);
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-links a {
+            color: #bbb;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            color: #999;
+            font-size: 0.9rem;
+        }
+        
+        .warning {
+            background-color: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+            text-align: left;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .download-section {
+                padding: 25px;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo-container">
+                <i class="fab fa-java"></i>
+                <h1>Java Development Kit 25</h1>
+            </div>
+            <p class="subtitle">适用于 Windows 的官方 Java 开发工具包 (JDK) - 最新版本，提供高性能、安全性和稳定性</p>
+        </div>
+    </header>
+    
+    <main class="container">
+        <section class="download-section">
+            <div class="java-version">版本 25.0.0</div>
+            <div class="download-info">
+                <h2>Java JDK 25 Windows 64位安装程序</h2>
+                <p>此安装包包含完整的 Java 开发环境，支持最新的 Java 特性和性能改进。适用于 Windows 10 及更高版本的 64 位操作系统。</p>
+            </div>
+            
+            <a href="https://download.oracle.com/java/25/latest/jdk-25_windows-x64_bin.exe" class="download-btn" id="downloadLink">
+                <i class="fas fa-download"></i>
+                <span>下载 JDK 25 (Windows x64)</span>
+            </a>
+            
+            <p style="color: var(--gray-color); margin-top: 10px;">文件大小: 约 165 MB</p>
+            
+            <div class="warning">
+                <strong><i class="fas fa-exclamation-triangle"></i> 重要提示：</strong> 
+                点击下载按钮后，您将被重定向到 Oracle 官方下载服务器。请确保您接受 Oracle 的许可协议，并遵守相关的使用条款。
+            </div>
+            
+            <div class="file-details">
+                <h3>文件详细信息</h3>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">文件名称：</div>
+                        <div class="detail-value">jdk-25_windows-x64_bin.exe</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">版本：</div>
+                        <div class="detail-value">25.0.0 (最新版本)</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">平台：</div>
+                        <div class="detail-value">Windows x64</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">类型：</div>
+                        <div class="detail-value">安装程序 (Executable)</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">供应商：</div>
+                        <div class="detail-value">Oracle Corporation</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">发布日期：</div>
+                        <div class="detail-value">2024年9月17日</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="features">
+            <div class="feature-card">
+                <i class="fas fa-bolt"></i>
+                <h3>高性能</h3>
+                <p>Java 25 包含多项性能优化，提供更快的启动时间和更低的内存占用，显著提升应用程序运行效率。</p>
+            </div>
+            
+            <div class="feature-card">
+                <i class="fas fa-shield-alt"></i>
+                <h3>增强安全</h3>
+                <p>内置最新的安全功能和补丁，保护您的应用程序免受安全威胁，确保企业级应用的安全性。</p>
+            </div>
+            
+            <div class="feature-card">
+                <i class="fas fa-code"></i>
+                <h3>开发友好</h3>
+                <p>包含完整的开发工具和API，支持现代开发工作流程，提供更好的开发体验和调试工具。</p>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="https://www.oracle.com/java/" target="_blank">Java 官方网站</a>
+                <a href="https://docs.oracle.com/en/java/javase/25/" target="_blank">Java 25 文档</a>
+                <a href="https://www.oracle.com/legal/terms.html" target="_blank">使用条款</a>
+                <a href="https://www.oracle.com/legal/privacy/" target="_blank">隐私政策</a>
+            </div>
+            <p class="copyright">© 2024 Oracle Corporation. Java 是 Oracle 和/或其关联公司的注册商标。</p>
+            <p class="copyright">本页面仅为下载引导页面，所有软件版权归 Oracle 公司所有。</p>
+        </div>
+    </footer>
+    
+    <script>
+        // 添加下载确认功能
+        document.getElementById('downloadLink').addEventListener('click', function(e) {
+            if (!confirm('您即将下载 JDK 25 for Windows (64位)。\n\n文件大小约为 165 MB。\n\n点击"确定"继续下载。')) {
+                e.preventDefault();
+            }
+        });
+        
+        // 添加简单的动画效果
+        document.addEventListener('DOMContentLoaded', function() {
+            const featureCards = document.querySelectorAll('.feature-card');
+            featureCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 300 + (index * 150));
+            });
+        });
+    </script>
+</body>
+</html>
