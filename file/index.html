@@ -1,0 +1,2395 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <title>高考成绩模拟系统 - 秋秋同学</title>
+    <link rel="icon" href="data:,">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Noto+Sans+SC:wght@300;400;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
+            --accent: #f59e0b;
+            --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.3);
+        }
+
+        * {
+            -webkit-tap-highlight-color: transparent;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', 'Noto Sans SC', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            color: #1e293b;
+            padding-bottom: env(safe-area-inset-bottom);
+            overflow-x: hidden;
+        }
+
+        /* Premium Background Decorations */
+        .bg-glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+            filter: blur(50px);
+        }
+
+        .glow-1 {
+            top: -100px;
+            right: -100px;
+        }
+
+        .glow-2 {
+            bottom: -100px;
+            left: -100px;
+        }
+
+        /* Glassmorphism Classes */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-gradient {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            box-shadow: 0 10px 25px -5px rgba(30, 58, 138, 0.3);
+        }
+
+        /* Animations */
+        @keyframes modalEnter {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes overlayEnter {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-animation {
+            animation: modalEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .overlay-animation {
+            animation: overlayEnter 0.3s ease-out forwards;
+        }
+
+        /* Custom Tags */
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .tag-985 {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .tag-211 {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .tag-local {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        /* Result Popup Overlay */
+        #resultOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 50;
+            display: none;
+            overflow-y: auto;
+            padding: 20px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .results-container {
+            max-width: 500px;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        /* Form Styling */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .input-focus-effect:focus-within {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-premium {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .btn-premium::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: 0.5s;
+        }
+
+        .btn-premium:hover::after {
+            left: 100%;
+        }
+
+        .btn-premium:active {
+            transform: scale(0.98);
+        }
+
+        .pb-safe {
+            padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+        }
+
+        /* Roast Mode Styles */
+        .roast-bg {
+            background: #0f172a;
+            color: #f1f5f9;
+        }
+
+        .roast-glitch {
+            text-shadow: 2px 0 #ff00c1, -2px 0 #00fff9;
+            animation: glitch 2s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch {
+            0% {
+                text-shadow: 2px 0 #ff00c1, -2px 0 #00fff9;
+            }
+
+            50% {
+                text-shadow: -2px 0 #ff00c1, 2px 0 #00fff9;
+            }
+
+            100% {
+                text-shadow: 2px 0 #ff00c1, -2px 0 #00fff9;
+            }
+        }
+
+        .roast-card {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+        }
+
+        .share-gradient-border {
+            background: linear-gradient(135deg, #fb7185, #6366f1, #22d3ee);
+            padding: 2px;
+            border-radius: 24px;
+        }
+
+        .neon-text-glow {
+            text-shadow: 0 0 10px rgba(244, 63, 114, 0.8);
+        }
+
+        .scanner-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #fb7185, transparent);
+            width: 100%;
+            position: absolute;
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% {
+                top: 0%;
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body class="flex flex-col items-center py-6 px-4">
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+
+    <!-- Header Section -->
+    <header class="w-full max-w-md mb-8 text-center">
+        <div class="header-gradient text-white p-6 rounded-3xl relative overflow-hidden">
+            <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+
+            <!-- Official Seal (印章强化版) -->
+            <div class="absolute -top-1 -right-1 -rotate-12 z-20 pointer-events-none drop-shadow-2xl">
+                <div
+                    class="border-[5px] border-double border-rose-500 rounded-full w-28 h-28 flex flex-col items-center justify-center p-1 bg-white/10 backdrop-blur-md scale-75 sm:scale-100 origin-top-right">
+                    <div
+                        class="border-2 border-rose-500 rounded-full w-full h-full flex flex-col items-center justify-center text-rose-500 font-black">
+                        <span class="text-[9px] tracking-[0.2em] mb-1 opacity-80">QIUQIU</span>
+                        <div class="h-[2px] w-16 bg-rose-500 mb-1"></div>
+                        <div class="text-center py-0.5">
+                            <p class="text-base leading-none">已更新</p>
+                            <p class="text-[10px] mt-1 tracking-tight">25年数据库</p>
+                        </div>
+                        <div class="h-[2px] w-16 bg-rose-500 mt-1"></div>
+                        <span class="text-[8px] tracking-widest mt-1 opacity-80">OFFICIAL</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col items-center">
+                <div
+                    class="bg-blue-400/20 px-3 py-1 rounded-full text-[10px] font-extrabold tracking-[0.2em] border border-white/20 mb-3 backdrop-blur-sm">
+                    QIUQIU · 秋秋同学
+                </div>
+                <h1 class="text-2xl font-black tracking-tight mb-1 whitespace-nowrap">安徽省新高考位次模拟系统</h1>
+                <div class="text-blue-100 text-base font-black tracking-widest mb-2 opacity-90">高考成绩模拟系统</div>
+                <p class="text-blue-200 text-xs font-light opacity-90">基于2025年安徽省千万级模型精准预测</p>
+                <p class="text-blue-300/60 text-[10px] mt-2 font-medium tracking-widest">—— 该数据仅供参考 ——</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Entry Form -->
+    <main class="w-full max-w-md glass-card p-6 mb-8 input-focus-effect transition-all duration-300">
+        <form id="predictForm" class="space-y-6">
+            <!-- Subject Selection -->
+            <div>
+                <label
+                    class="block text-slate-500 text-[10px] font-black uppercase tracking-widest mb-3 px-1">首选科目类别</label>
+                <div class="grid grid-cols-2 gap-4">
+                    <label class="relative cursor-pointer group">
+                        <input type="radio" name="subject" value="physics" class="peer sr-only" checked>
+                        <div
+                            class="flex items-center justify-center py-3 px-4 rounded-2xl border-2 border-slate-100 bg-slate-50 peer-checked:bg-white peer-checked:border-blue-600 peer-checked:text-blue-700 transition-all shadow-sm group-active:scale-95">
+                            <span class="font-bold text-sm">物理类</span>
+                            <div
+                                class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-blue-600 text-white rounded-full flex items-center justify-center opacity-0 peer-checked:opacity-100 transition-opacity">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </label>
+                    <label class="relative cursor-pointer group">
+                        <input type="radio" name="subject" value="history" class="peer sr-only">
+                        <div
+                            class="flex items-center justify-center py-3 px-4 rounded-2xl border-2 border-slate-100 bg-slate-50 peer-checked:bg-white peer-checked:border-blue-600 peer-checked:text-blue-700 transition-all shadow-sm group-active:scale-95">
+                            <span class="font-bold text-sm">历史类</span>
+                            <div
+                                class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-blue-600 text-white rounded-full flex items-center justify-center opacity-0 peer-checked:opacity-100 transition-opacity">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div>
+    <label class="block text-slate-500 text-[10px] font-black uppercase tracking-widest mb-3 px-1">所在市(州)</label>
+    <select id="city" required class="sr-only">
+        <option value="hefei" selected>合肥市</option>
+        <option value="fuyang">阜阳市</option>
+        <option value="anqing">安庆市</option>
+        <option value="lvan">六安市</option>
+        <option value="bozhou">亳州市</option>
+        <option value="suzhou">宿州市</option>
+        <option value="chuzhou">滁州市</option>
+        <option value="bengbu">蚌埠市</option>
+        <option value="tongling">铜陵市</option>
+        <option value="xuancheng">宣城市</option>
+        <option value="maanshan">马鞍山市</option>
+        <option value="huainan">淮南市</option>
+        <option value="chizhou">池州市</option>
+        <option value="huangshan">黄山市</option>
+        <option value="huaibei">淮北市</option>
+    </select>
+</div>
+
+                <div class="relative">
+    <button type="button" id="cityBtn"
+        class="w-full px-4 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50 hover:bg-white focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-100 font-extrabold text-slate-800 text-xl text-center transition-all outline-none flex items-center justify-center">
+        <span id="cityBtnText">合肥市</span>
+        <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 9l-7 7-7-7">
+                </path>
+            </svg>
+        </span>
+    </button>
+    <button type="button" onclick="openEduModal()"
+        class="w-full mt-2 text-[10px] font-black tracking-widest text-blue-600 hover:text-blue-700 active:scale-95 transition-all text-center">
+        查看各市综合排名与修正依据
+    </button>
+
+    <div id="cityMenu"
+        class="hidden absolute left-0 right-0 mt-2 bg-white rounded-2xl border-2 border-slate-100 shadow-2xl overflow-hidden z-50">
+        <div class="max-h-72 overflow-y-auto py-1">
+            <button type="button" data-city="hefei"
+                class="cityOption w-full px-4 py-3 text-slate-800 font-extrabold text-base text-center hover:bg-slate-50 transition-colors">
+                合肥市
+            </button>
+            <button type="button" data-city="fuyang"
+                class="cityOption w-full px-4 py-3 text-slate-800 font-extrabold text-base text-center hover:bg-slate-50 transition-colors">
+                阜阳市
+            </button>
+            <button type="button" data-city="anqing"
+                class="cityOption w-full px-4 py-3 text-slate-800 font-extrabold text-base text-center hover:bg-slate-50 transition-colors">
+                安庆市
+            </button>
+            <button type="button" data-city="lvan"
+                class="cityOption w-full px-4 py-3 text-slate-800 font-extrabold text-base text-center hover:bg-slate-50 transition-colors">
+                六安市
+            </button>
+            <button type="button" data-city="bozhou"
+                class="cityOption w-full px-4 py-3 text-slate-800 font-extrabold text-base text-center hover:bg-slate-50 transition-colors">
+                亳州市
+            </button>
+            <button type="button" data-city="suzhou"
+                class="cityOption w-full px-4 py-3 text-slate-800 font-extrabold text-base text-center hover:bg-slate-50 transition-colors">
+                宿州市
+            </button>
+            <button type="button" data-city="chuzhou"
+                class="cityOption w-full px-4 py-3 text-slate-800 font-extrabold text-base text-center hover:bg-slate-50 transition-colors">
+                滁州市
+            </button>
+            <button type="button" data-city="bengbu"
+                class="cityOption w-full px-4 py-3 text-slate-800 font-extrabold text-base text-center hover:bg-slate-50 transition-colors">
+                蚌埠市
+            </button>
+            <button type="button" data-city="tongling"
+                class="cityOption w-full px-4 py-3 text-slate-800 font-extrabold text-base text-center hover:bg-slate-50 transition-colors">
+                铜陵市
+            </button>
+            <button type="button" data-city="xuancheng"
+                class="cityOption w-full px-4 py-3 text-slate-800 font-extrabold text-base text-center hover:bg-slate-50 transition-colors">
+                宣城市
+            </button>
+            <button type="button" data-city="maanshan"
+                class="cityOption w-full px-4 py-3 text-slate-800 font-extrabold text-base text-center hover:bg-slate-50 transition-colors">
+                马鞍山市
+            </button>
+            <button type="button" data-city="huainan"
+                class="cityOption w-full px-4 py-3 text-slate-800 font-extrabold text-base text-center hover:bg-slate-50 transition-colors">
+                淮南市
+            </button>
+            <button type="button" data-city="chizhou"
+                class="cityOption w-full px-4 py-3 text-slate-800 font-extrabold text-base text-center hover:bg-slate-50 transition-colors">
+                池州市
+            </button>
+            <button type="button" data-city="huangshan"
+                class="cityOption w-full px-4 py-3 text-slate-800 font-extrabold text-base text-center hover:bg-slate-50 transition-colors">
+                黄山市
+            </button>
+            <button type="button" data-city="huaibei"
+                class="cityOption w-full px-4 py-3 text-slate-800 font-extrabold text-base text-center hover:bg-slate-50 transition-colors">
+                淮北市
+            </button>
+        </div>
+    </div>
+</div>
+
+
+            <!-- Rank Input -->
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label
+                        class="block text-slate-500 text-[10px] font-black uppercase tracking-widest mb-3 px-1">模拟考试市排名</label>
+                    <div class="relative group">
+                        <input type="number" id="rank" inputmode="numeric" pattern="[0-9]*" placeholder="0" required
+                            min="1" max="50000"
+                            class="w-full px-4 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-100 font-extrabold text-slate-800 text-xl text-center transition-all outline-none">
+                        <div class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-[10px]">名
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label
+                        class="block text-slate-500 text-[10px] font-black uppercase tracking-widest mb-3 px-1">模拟考试成绩</label>
+                    <div class="relative group">
+                        <input type="number" id="score" inputmode="numeric" pattern="[0-9]*" placeholder="0" required
+                            min="0" max="750"
+                            class="w-full px-4 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-100 font-extrabold text-slate-800 text-xl text-center transition-all outline-none">
+                        <div class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-[10px]">分
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-2 ml-1">数据越真实，分析越精准</p>
+
+            <!-- Difficulty Evaluation -->
+            <div>
+                <label
+                    class="block text-slate-500 text-[10px] font-black uppercase tracking-widest mb-3 px-1">个人难度体感</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <label class="cursor-pointer group">
+                        <input type="radio" name="difficulty" value="easy" class="peer sr-only">
+                        <div
+                            class="text-center py-3 rounded-xl border-2 border-slate-50 bg-slate-100 text-slate-400 peer-checked:bg-emerald-50 peer-checked:border-emerald-500 peer-checked:text-emerald-700 transition-all font-bold text-xs">
+                            偏易</div>
+                    </label>
+                    <label class="cursor-pointer group">
+                        <input type="radio" name="difficulty" value="normal" class="peer sr-only" checked>
+                        <div
+                            class="text-center py-3 rounded-xl border-2 border-slate-50 bg-slate-100 text-slate-400 peer-checked:bg-blue-50 peer-checked:border-blue-500 peer-checked:text-blue-700 transition-all font-bold text-xs">
+                            适中</div>
+                    </label>
+                    <label class="cursor-pointer group">
+                        <input type="radio" name="difficulty" value="hard" class="peer sr-only">
+                        <div
+                            class="text-center py-3 rounded-xl border-2 border-slate-50 bg-slate-100 text-slate-400 peer-checked:bg-rose-50 peer-checked:border-rose-500 peer-checked:text-rose-700 transition-all font-bold text-xs">
+                            偏难</div>
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" id="submitBtn"
+                class="w-full btn-premium text-white font-black py-5 rounded-2xl shadow-xl shadow-blue-200 transform hover:-translate-y-1 active:scale-95 transition-all text-lg tracking-widest flex items-center justify-center">
+                <span id="btnText">立即生成多维分析报表</span>
+                <div id="loadingDots" class="hidden flex space-x-1 ml-2">
+                    <div class="w-1.5 h-1.5 bg-white rounded-full animate-bounce"></div>
+                    <div class="w-1.5 h-1.5 bg-white rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                    <div class="w-1.5 h-1.5 bg-white rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+                </div>
+            </button>
+            <div class="mt-8 pt-2">
+                <button type="button" onclick="openRoastModal()"
+                    class="group w-full flex items-center justify-between p-4 rounded-2xl bg-slate-50/50 border border-dashed border-slate-200 hover:bg-rose-50 hover:border-rose-200 hover:border-solid transition-all duration-300">
+                    <div class="flex items-center space-x-3">
+                        <div
+                            class="w-10 h-10 rounded-xl bg-slate-100 group-hover:bg-rose-500 flex items-center justify-center transition-all duration-300 overflow-hidden ring-4 ring-white">
+                            <span class="text-xl group-hover:scale-125 transition-transform duration-300">🔥</span>
+                        </div>
+                        <div class="text-left">
+                            <p
+                                class="text-[9px] font-black text-slate-400 group-hover:text-rose-600 transition-colors uppercase tracking-[0.2em] mb-0.5">
+                                不想看这种正经报告？</p>
+                            <p class="text-xs font-extrabold text-slate-700">进入「AI 毒舌测评」禁区</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span
+                            class="text-[10px] font-black text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity">GO!</span>
+                        <svg class="w-5 h-5 text-slate-300 group-hover:text-rose-400 group-hover:translate-x-1 transition-all duration-300"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                            </path>
+                        </svg>
+                    </div>
+                </button>
+                <p class="text-center text-[8px] text-slate-300 mt-3 font-medium tracking-widest uppercase opacity-50">
+                    ANTI-CHICKEN SOUP ZONE · 秋秋同学特别策划</p>
+            </div>
+        </form>
+    </main>
+
+    <!-- Footer Branding -->
+    <footer class="w-full max-w-md text-center opacity-60 px-4">
+        <p class="text-[10px] font-bold text-slate-400 tracking-[0.3em]">TECHNICAL SUPPORT BY QIUQIU</p>
+        <p class="text-[9px] text-slate-400 mt-1">秋秋同学 · 为梦想保驾护航</p>
+    </footer>
+
+    <!-- Result Popup Overlay -->
+    <div id="resultOverlay" class="overlay-animation">
+        <div class="results-container pb-safe">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center mb-4 px-2">
+                <div class="flex items-center">
+                    <div class="w-1 h-4 bg-blue-600 rounded-full mr-2"></div>
+                    <span class="text-white font-black tracking-widest text-sm uppercase">Analysis Report</span>
+                </div>
+                <button onclick="closeOverlay()"
+                    class="w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Score Summary Card -->
+            <div class="glass-card mb-6 p-6 modal-animation overflow-hidden relative">
+                <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-600/5 rounded-full blur-3xl"></div>
+                <div class="flex flex-col">
+                    <div class="flex justify-between items-end mb-4">
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">预估2025省位次</p>
+                            <h2 class="text-5xl font-black text-slate-800" id="estProvRank">---</h2>
+                            <div class="mt-2 flex items-center justify-between gap-3">
+                                <p class="text-[10px] font-bold text-slate-400 tracking-widest">
+                                    市州：<span class="text-slate-600" id="estCityName">---</span>
+                                </p>
+                                <div class="flex items-center gap-1 flex-nowrap">
+                                    <button type="button" id="feedbackHighBtn"
+                                        class="px-2 py-1 rounded-full bg-rose-50 text-rose-600 border border-rose-100 text-[10px] font-black tracking-widest active:scale-95 transition-transform whitespace-nowrap">
+                                        偏高
+                                    </button>
+                                    <button type="button" id="feedbackLowBtn"
+                                        class="px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100 text-[10px] font-black tracking-widest active:scale-95 transition-transform whitespace-nowrap">
+                                        偏低
+                                    </button>
+                                    <button type="button" id="feedbackOkBtn"
+                                        class="px-2 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-100 text-[10px] font-black tracking-widest active:scale-95 transition-transform whitespace-nowrap">
+                                        不错
+                                    </button>
+                                    <button type="button" onclick="captureReport()"
+                                        class="px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100 text-[10px] font-black tracking-widest active:scale-95 transition-transform whitespace-nowrap">
+                                        分享海报
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="mt-2 text-[9px] text-slate-400 font-bold tracking-widest" id="feedbackHint">
+                                反馈越多，预测越准（仅用于数据采集）
+                            </div>
+                            <div class="mt-1 text-[9px] text-slate-400 font-bold tracking-widest" id="feedbackStatus"></div>
+                            <div class="mt-2 text-[9px] text-slate-400 font-bold tracking-widest" id="shareActionStatus"></div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">参考高考分</p>
+                            <p class="text-3xl font-black text-blue-600"><span class="text-lg">≈</span><span
+                                    id="estScore">---</span><span class="text-xs ml-1 font-bold">PTS</span></p>
+                        </div>
+                    </div>
+
+                    <!-- New: Mock Analysis Section -->
+                    <div
+                        class="bg-blue-600 rounded-2xl p-4 text-white mb-6 shadow-lg shadow-blue-200 relative overflow-hidden">
+                        <div class="absolute right-0 top-0 opacity-10 transform translate-x-4 -translate-y-4">
+                            <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                            </svg>
+                        </div>
+                        <div class="relative z-10">
+                            <p id="mockHeader" class="text-[10px] font-bold text-blue-100 uppercase tracking-widest mb-1">2026模拟考试·官方对标水平</p>
+                            <div class="mt-1 space-y-1">
+                                <div class="text-2xl font-black leading-tight" id="mockLevelName">---</div>
+                                <div class="text-[10px] font-medium opacity-90 leading-snug" id="mockLevelAdvise">正在分析复习建议...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="bg-rose-50/50 p-2 rounded-xl text-center border border-rose-100">
+                            <p class="text-[8px] text-rose-400 font-bold mb-0.5">录取波动</p>
+                            <p class="text-xs font-black text-rose-700">±1.2%</p>
+                        </div>
+                        <div class="bg-sky-50/50 p-2 rounded-xl text-center border border-sky-100">
+                            <p class="text-[8px] text-sky-400 font-bold mb-0.5">置信区间</p>
+                            <p class="text-xs font-black text-sky-700">98.5%</p>
+                        </div>
+                        <div class="bg-emerald-50/50 p-2 rounded-xl text-center border border-emerald-100">
+                            <p class="text-[8px] text-emerald-400 font-bold mb-0.5">计算耗时</p>
+                            <p class="text-xs font-black text-emerald-700" id="calcCost">--ms</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommendations -->
+            <div class="space-y-6 modal-animation" style="animation-delay: 0.1s;">
+                <!-- Chong Section -->
+                <div class="glass-card overflow-hidden">
+                    <div class="bg-rose-50/80 px-4 py-3 border-b border-rose-100 flex justify-between items-center">
+                        <div class="flex items-center">
+                            <div class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-2 shadow-[0_0_8px_rgba(244,63,94,0.6)]">
+                            </div>
+                            <span class="text-rose-900 font-black text-xs tracking-wider">冲刺院校 · HIGHER RISK</span>
+                        </div>
+                        <span class="text-[8px] font-bold text-rose-400 uppercase">Top Reach</span>
+                    </div>
+                    <div class="p-2 space-y-1" id="listChong"></div>
+                </div>
+
+                <!-- Wen Section -->
+                <div class="glass-card overflow-hidden border-blue-200 border-2 relative">
+                    <div
+                        class="absolute -right-2 top-2 bg-blue-600 text-white text-[8px] px-2 py-0.5 rounded-l-md font-bold uppercase tracking-widest z-10 shadow-lg">
+                        Preferred</div>
+                    <div class="bg-blue-50/80 px-4 py-3 border-b border-blue-100 flex justify-between items-center">
+                        <div class="flex items-center">
+                            <div class="w-1.5 h-1.5 rounded-full bg-blue-600 mr-2 shadow-[0_0_8px_rgba(37,99,235,0.6)]">
+                            </div>
+                            <span class="text-blue-900 font-black text-xs tracking-wider">稳妥院校 · TARGET MATCH</span>
+                        </div>
+                        <span class="text-[8px] font-bold text-blue-400 uppercase">Highest Match</span>
+                    </div>
+                    <div class="p-2 space-y-1" id="listWen"></div>
+                </div>
+
+                <!-- Bao Section -->
+                <div class="glass-card overflow-hidden">
+                    <div
+                        class="bg-emerald-50/80 px-4 py-3 border-b border-emerald-100 flex justify-between items-center">
+                        <div class="flex items-center">
+                            <div
+                                class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-2 shadow-[0_0_8px_rgba(16,185,129,0.6)]">
+                            </div>
+                            <span class="text-emerald-900 font-black text-xs tracking-wider">保底院校 · SAFETY ZONE</span>
+                        </div>
+                        <span class="text-[8px] font-bold text-emerald-400 uppercase">Secure</span>
+                    </div>
+                    <div class="p-2 space-y-1" id="listBao"></div>
+                </div>
+            </div>
+
+            <!-- Disclaimer & CTA -->
+            <div class="mt-8 mb-4 modal-animation" style="animation-delay: 0.2s;">
+                <div
+                    class="glass-card p-5 bg-gradient-to-br from-slate-800 to-slate-900 text-white border-none shadow-2xl relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl"></div>
+
+                    <h4 class="text-xs font-black tracking-widest mb-3 flex items-center text-blue-400">
+                        <svg class="w-3 h-3 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                            </path>
+                        </svg>
+                        A MESSAGE FROM PHYSICS TEACHER · 物理老师有话说
+                    </h4>
+
+                    <div class="text-[10px] text-slate-300 space-y-3 leading-relaxed font-light mb-6">
+                        <div class="flex items-start">
+                            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1 mr-2 flex-shrink-0"></span>
+                            <p>无论你这次考得好还是不理想，真正拉开差距的从来不是“分数本身”，而是你对这张卷子的复盘深度。</p>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1 mr-2 flex-shrink-0"></span>
+                            <p>试卷分析做对了，你才能知道：丢分点在哪、能补回多少、下一阶段该怎么练，进步才会变得可控。</p>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1 mr-2 flex-shrink-0"></span>
+                            <p>下面提供一份全省通用的【试卷分析报告模板】参考，你可以照着把“会的题丢的分”一项项找回来。</p>
+                        </div>
+                    </div>
+
+                    <!-- Template Link Button -->
+                    <button onclick="openTemplate()"
+                        class="w-full py-3 mb-6 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all group">
+                        <span
+                            class="text-[10px] font-bold tracking-widest text-slate-300 group-hover:text-white">查看：试卷分析报告模板</span>
+                        <svg class="w-3 h-3 ml-2 text-blue-400 group-hover:translate-x-1 transition-transform"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                        </svg>
+                    </button>
+
+                    <div class="p-4 rounded-2xl bg-blue-600/10 border border-blue-500/20 backdrop-blur-md">
+                        <div class="flex items-center justify-between mb-3">
+                            <div>
+                                <p class="text-[10px] font-bold text-blue-400">PRACTICAL ADVICES</p>
+                                <p class="text-xs font-black">预约物理 1:1 卷面错题复盘</p>
+                            </div>
+                            <div
+                                class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center animate-pulse shadow-[0_0_15px_rgba(37,99,235,0.4)]">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                        d="M12 4v16m8-8H4"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="text-[10px] text-white/60 mb-4 leading-tight">
+                            添加微信并发送【模拟考试解析】，我们可以聊聊那些扣分点到底出在哪。我会帮你制定后续的复习节奏。
+                            <br><span class="text-amber-400 font-bold">【秋秋同学】每日名额有限，旨在陪孩子实实在在跨过这一关。</span>
+                        </p>
+                        <button onclick="copyWechat()"
+                            class="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 transition-all flex items-center justify-center shadow-lg shadow-blue-900/40">
+                            <span class="text-xs font-black tracking-widest" id="wechatText">添加微信：预约深度复盘</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 px-4 py-3 bg-slate-900/30 rounded-xl border border-white/5">
+                <p class="text-[8px] text-slate-400 leading-relaxed text-justify">
+                    <span
+                        class="font-bold text-slate-300">免责声明：</span>本系统所生成的预估分数、位次及推荐院校仅基于“本市排名-安徽省位次”转换模型及2025年录取数据进行数学模拟，不代表官方最终结论。任何关于志愿填报的决策应以安徽省教育考试院公布的正式数据为准。开发者（秋秋同学）不对因参考本系统而产生的任何决策后果承担法律责任。
+                </p>
+            </div>
+
+            <button onclick="closeOverlay()"
+                class="w-full py-4 text-slate-400 text-[10px] font-bold tracking-[0.3em] uppercase hover:text-white transition-colors">
+                Return to Simulation · 返回
+            </button>
+        </div>
+    </div>
+
+    <div
+        style="position: absolute; top: 0; left: 0; width: 0; height: 0; overflow: hidden; pointer-events: none;">
+        <div id="shareReportCard" class="bg-[#020617] p-0 overflow-hidden font-['Outfit']"
+            style="width: 420px; visibility: hidden;">
+            <div class="h-2 w-full bg-gradient-to-r from-blue-500 via-indigo-500 to-emerald-400"></div>
+            <div class="p-10">
+                <div class="flex items-start justify-between mb-10">
+                    <div>
+                        <div class="text-[9px] text-slate-400 font-bold tracking-[0.35em] uppercase">QIUQIU · SIMULATION REPORT</div>
+                        <div class="mt-3 text-[34px] leading-[1] font-black text-white" id="shareReportRank">---</div>
+                        <div class="mt-2 text-[10px] text-slate-400 font-bold tracking-widest">
+                            <span id="shareReportSubject">---</span> · <span id="shareReportCity">---</span> · 参考分≈<span id="shareReportScore">---</span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-[10px] text-slate-500 font-bold tracking-widest">预估省位次</div>
+                        <div class="text-[44px] font-black text-blue-400/20 leading-none">JL</div>
+                    </div>
+                </div>
+
+                <div class="share-gradient-border mb-10 shadow-2xl">
+                    <div class="bg-[#0f172a] rounded-[22px] p-7 space-y-6">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="text-[10px] font-black text-rose-400 tracking-widest">冲刺</div>
+                                <div class="text-[9px] font-bold text-slate-500" id="shareReportChongRange">---</div>
+                            </div>
+                            <div class="text-[11px] font-bold text-slate-200 leading-relaxed" id="shareReportChongTop">---</div>
+                        </div>
+                        <div class="border-t border-white/5 pt-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="text-[10px] font-black text-blue-400 tracking-widest">稳妥</div>
+                                <div class="text-[9px] font-bold text-slate-500" id="shareReportWenRange">---</div>
+                            </div>
+                            <div class="text-[11px] font-bold text-slate-200 leading-relaxed" id="shareReportWenTop">---</div>
+                        </div>
+                        <div class="border-t border-white/5 pt-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="text-[10px] font-black text-emerald-400 tracking-widest">保底</div>
+                                <div class="text-[9px] font-bold text-slate-500" id="shareReportBaoRange">---</div>
+                            </div>
+                            <div class="text-[11px] font-bold text-slate-200 leading-relaxed" id="shareReportBaoTop">---</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-end justify-between">
+                    <div class="flex-1 pr-6 pb-1">
+                        <div class="text-xs font-black text-white mb-2">秋秋同学 · 高考模拟系统</div>
+                        <div class="text-[10px] text-slate-500 leading-relaxed font-bold">
+                            长按识别二维码 →<br>
+                            <span class="text-slate-300">生成你的专属模拟考试分析报表</span>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <div
+                            class="absolute -inset-2 bg-gradient-to-tr from-blue-500 to-emerald-400 rounded-2xl blur-md opacity-30">
+                        </div>
+                        <div class="relative w-24 h-24 bg-white p-2 rounded-2xl shadow-2xl">
+                            <img id="reportQrCode" src="qrcode_official.png" alt="QR" crossorigin="anonymous" class="w-full h-full">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Physics Template Modal -->
+    <div id="templateOverlay"
+        class="fixed inset-0 bg-white z-[100] hidden overflow-y-auto p-0 flex-col animate-overlayEnter">
+        <!-- Sticky Header -->
+        <div
+            class="sticky top-0 bg-white/80 backdrop-blur-md border-b border-slate-100 px-6 py-4 flex justify-between items-center z-20">
+            <div class="flex items-center space-x-3">
+                <div class="bg-blue-600 text-white p-2 rounded-xl font-black text-xs">秋秋</div>
+                <div>
+                    <h3 class="text-xs font-black text-slate-900">2026 试卷分析报告模板（全省通用）</h3>
+                    <p class="text-[8px] text-slate-400 uppercase tracking-widest font-bold">Produced by Qiuqiu
+                        Academic Dept.</p>
+                </div>
+            </div>
+            <button onclick="closeTemplate()"
+                class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-full font-bold text-[10px] transition-all">
+                关闭预览 / Return
+            </button>
+        </div>
+
+        <div class="max-w-2xl mx-auto py-10 px-6 pb-24 space-y-12">
+            <!-- Part 0: Report Branding -->
+            <div class="text-center space-y-2 border-b-2 border-slate-900 pb-10">
+                <div class="text-blue-600 font-black text-[10px] tracking-[0.4em] uppercase mb-4">Qiuqiu Scientific
+                    Analysis System</div>
+                <h1 class="text-3xl font-black text-slate-900 leading-tight">2026安徽省模拟考试·试卷分析报告模板<br>& 三阶段复习提分路径图</h1>
+                <div class="flex justify-center flex-wrap gap-3 mt-6">
+                    <span
+                        class="bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg text-[9px] font-bold text-slate-500">老师：秋秋同学物理组</span>
+                    <span
+                        class="bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg text-[9px] font-bold text-slate-500">建议版本：实用诊断版</span>
+                </div>
+            </div>
+
+            <!-- Part 1: Radar View -->
+            <div class="space-y-4">
+                <div class="flex items-center space-x-2">
+                    <div class="w-1.5 h-4 bg-blue-600 rounded-full"></div>
+                    <h2 class="text-sm font-black text-slate-900 uppercase">Focus Area · 物理能力项复盘</h2>
+                </div>
+                <div class="bg-slate-50 rounded-3xl p-8 border border-slate-100 grid md:grid-cols-2 gap-8 items-center">
+                    <div class="relative w-48 h-48 mx-auto flex items-center justify-center">
+                        <div class="absolute inset-0 border-2 border-slate-200 rounded-full border-dashed opacity-50">
+                        </div>
+                        <div class="absolute inset-4 border-2 border-slate-200 rounded-full border-dashed opacity-50">
+                        </div>
+                        <div class="absolute inset-8 border-2 border-slate-200 rounded-full border-dashed opacity-50">
+                        </div>
+                        <div class="w-full h-full flex items-center justify-center relative z-10">
+                            <svg viewBox="0 0 100 100" class="w-full h-full text-blue-600/20 fill-blue-600/30">
+                                <polygon points="50,10 85,35 75,75 50,90 25,75 15,35" stroke="currentColor"
+                                    stroke-width="2" />
+                            </svg>
+                        </div>
+                        <span
+                            class="absolute -top-2 left-1/2 -translate-x-1/2 text-[8px] font-black text-slate-400">模型抽象</span>
+                        <span
+                            class="absolute top-1/2 -right-6 -translate-y-1/2 text-[8px] font-black text-slate-400">数学计算</span>
+                        <span
+                            class="absolute -bottom-2 left-1/2 -translate-x-1/2 text-[8px] font-black text-slate-400">实验逻辑</span>
+                        <span
+                            class="absolute top-1/2 -left-6 -translate-y-1/2 text-[8px] font-black text-slate-400">情境拆解</span>
+                    </div>
+                    <div class="space-y-4">
+                        <p class="text-[11px] leading-relaxed text-slate-500 text-justify italic">
+                            本生在<span class="text-blue-600 font-bold">【模型抽象】</span>与<span
+                                class="text-blue-600 font-bold">【情境拆解】</span>维度存在重度短板。面对全省模拟考试常见的复杂题目背景，无法有效剥离干扰信息，导致题目入手点找寻困难，直接导致计算题第一问得分率不足
+                            40%。
+                        </p>
+                        <div class="flex space-x-2">
+                            <div class="flex-1 bg-white p-2 rounded-xl border border-slate-100 shadow-sm text-center">
+                                <p class="text-[8px] font-bold text-slate-400 mb-0.5">读题效率</p>
+                                <p class="text-xs font-black text-slate-800">偏慢</p>
+                            </div>
+                            <div class="flex-1 bg-white p-2 rounded-xl border border-slate-100 shadow-sm text-center">
+                                <p class="text-[8px] font-bold text-slate-400 mb-0.5">失误倾向</p>
+                                <p class="text-xs font-black text-rose-500">惯性错选</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 2: Table Section -->
+            <div class="space-y-4">
+                <div class="flex items-center space-x-2">
+                    <div class="w-1.5 h-4 bg-blue-600 rounded-full"></div>
+                    <h2 class="text-sm font-black text-slate-900 uppercase">Item Fault Trace · 卷面失分溯源细节</h2>
+                </div>
+                <div class="overflow-hidden border border-slate-100 rounded-3xl">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr
+                                class="bg-slate-900 text-white font-bold text-[9px] uppercase tracking-widest text-center">
+                                <th class="px-4 py-4 border-r border-slate-800">题号</th>
+                                <th class="px-4 py-4 border-r border-slate-800 text-left">对标知识点</th>
+                                <th class="px-4 py-4 border-r border-slate-800">失分溯源 (Root Cause)</th>
+                                <th class="px-4 py-4">推荐后续任务</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-[10px]">
+                            <tr>
+                                <td class="px-4 py-5 font-black text-center bg-slate-50/50">第 4 题</td>
+                                <td class="px-4 py-5">
+                                    <span class="font-bold text-slate-800">恒定电流 - 效率分析</span>
+                                    <div class="text-[8px] text-slate-400 mt-1">闭合电路欧姆定律变式</div>
+                                </td>
+                                <td class="px-4 py-5 text-rose-500 font-bold text-center leading-tight">
+                                    概念不清：误将输出功率增益<br>等同于电源效率。</td>
+                                <td class="px-4 py-5 text-slate-500 text-center">重读教材 P12 定义区</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-5 font-black text-center bg-slate-50/50">第 15 题</td>
+                                <td class="px-4 py-5">
+                                    <span class="font-bold text-slate-800">选修部分 - 热学/光学</span>
+                                    <div class="text-[8px] text-slate-400 mt-1">气体状体方程/折射率</div>
+                                </td>
+                                <td class="px-4 py-5 text-rose-500 font-bold text-center leading-tight">
+                                    计算失误：单位换算漏项<br>(cmHg → Pa)</td>
+                                <td class="px-4 py-5 text-slate-500 text-center">单位标注法针对训练</td>
+                            </tr>
+                            <tr class="bg-blue-50/20">
+                                <td class="px-4 py-5 font-black text-center">第 21 题</td>
+                                <td class="px-4 py-5">
+                                    <span class="font-bold text-slate-800">压轴题 - 动量守恒/碰撞</span>
+                                    <div class="text-[8px] text-slate-400 mt-1">多过程能量转化分析</div>
+                                </td>
+                                <td class="px-4 py-5 text-blue-600 font-bold text-center leading-tight">
+                                    【亮点】能量临界点抓取极准<br>但在代数式书写中遗漏符号</td>
+                                <td class="px-4 py-5 text-slate-500 text-center">提领书写规范 1:1 指导</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Part 3: Step Plan -->
+            <div class="space-y-8">
+                <div class="flex items-center space-x-2">
+                    <div class="w-1.5 h-4 bg-blue-600 rounded-full"></div>
+                    <h2 class="text-sm font-black text-slate-900 uppercase">Qiuqiu Stairway Plan · 秋秋同学后续复习路径</h2>
+                </div>
+
+                <div
+                    class="relative pl-6 space-y-12 before:content-[''] before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-100">
+                    <div class="relative">
+                        <div
+                            class="absolute -left-8 top-0 w-4 h-4 rounded-full bg-blue-600 border-4 border-white z-10 shadow-sm">
+                        </div>
+                        <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/50">
+                            <h3 class="text-xs font-black text-slate-800 mb-4 flex items-center">
+                                <span
+                                    class="bg-blue-600 text-white w-5 h-5 flex items-center justify-center rounded-md mr-2 text-[10px]">01</span>
+                                基础夯实与公式脱产期（模拟考试后 3 周）
+                            </h3>
+                            <div class="space-y-3 text-[10px] text-slate-500 leading-relaxed">
+                                <p>• <span class="text-slate-900 font-bold">受力分析地毯扫荡：</span> 针对常规力学模型进行日均 15
+                                    道母题深度拆解，必须做到受力分析图“零瑕疵”。</p>
+                                <p>• <span class="text-slate-900 font-bold">二轮衔接：</span> 重点回顾秋秋讲义【电学基础 24
+                                    讲】，清空电场势能、电势差计算的死角。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <div
+                            class="absolute -left-8 top-0 w-4 h-4 rounded-full bg-slate-200 border-4 border-white z-10 shadow-sm">
+                        </div>
+                        <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100 opacity-60">
+                            <h3 class="text-xs font-black text-slate-400 mb-4 flex items-center">
+                                <span
+                                    class="bg-slate-200 text-white w-5 h-5 flex items-center justify-center rounded-md mr-2 text-[10px]">02</span>
+                                专题攻坚与模态迁移期 (后续 4-8 周)
+                            </h3>
+                            <p class="text-[10px] text-slate-400">重点攻关电磁组合场、磁约束、能量守恒变式专题。</p>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <div
+                            class="absolute -left-8 top-0 w-4 h-4 rounded-full bg-slate-200 border-4 border-white z-10 shadow-sm">
+                        </div>
+                        <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100 opacity-60">
+                            <h3 class="text-xs font-black text-slate-400 mb-4 flex items-center">
+                                <span
+                                    class="bg-slate-200 text-white w-5 h-5 flex items-center justify-center rounded-md mr-2 text-[10px]">03</span>
+                                答题规范与限时回归期 (考前 1 个月)
+                            </h3>
+                            <p class="text-[10px] text-slate-400">全真模拟环境下，进行物理书写规范性的闭环修正。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Section -->
+            <div class="bg-slate-900 rounded-[2.5rem] p-10 text-white relative overflow-hidden text-center">
+                <div
+                    class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[size:20px_20px]">
+                </div>
+                <div class="relative z-10">
+                    <p class="text-[9px] font-bold text-blue-400 tracking-[0.4em] mb-4">PRACTICAL SUPPORT</p>
+                    <h3 class="text-xl font-black mb-6">想获得专属的【卷面复盘建议】吗？</h3>
+                    <p class="text-xs text-slate-400 mb-10 max-w-sm mx-auto leading-relaxed">
+                        秋秋同学物理组将基于孩子的模拟考试卷面，输出一份务实的诊断建议，并希望能通过 1:1 面谈实实在在地帮他解决点问题。
+                    </p>
+                    <button onclick="copyWechat(); closeTemplate();"
+                        class="bg-blue-600 px-10 py-4 rounded-2xl font-black text-xs shadow-2xl shadow-blue-500/40 active:scale-95 transition-all">
+                        立即联系老师：进行卷面复盘
+                    </button>
+                    <p class="text-[8px] text-slate-600 mt-6 font-medium">© 2026 QIUQIU EDUCATION GROUP · 秋秋同学</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="eduModal" class="fixed inset-0 bg-white/90 backdrop-blur-md z-[180] hidden items-center justify-center p-6">
+        <div class="w-full max-w-md glass-card p-6 modal-animation overflow-hidden relative">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center">
+                    <div class="w-1 h-4 bg-blue-600 rounded-full mr-2"></div>
+                    <span class="text-slate-800 font-black tracking-widest text-sm uppercase">Education Ranking</span>
+                </div>
+                <button type="button" onclick="closeEduModal()"
+                    class="w-8 h-8 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center hover:bg-slate-200 transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="text-xs font-extrabold text-slate-700 mb-3 tracking-wider">安徽省各地市教育水平综合排名（高→低）</div>
+<div class="space-y-2 text-sm font-extrabold text-slate-800">
+    <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+        <span>1. 合肥市</span><span class="text-slate-400 text-xs font-black tracking-widest">Top</span>
+    </div>
+    <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+        <span>2. 芜湖市</span><span class="text-slate-400 text-xs font-black tracking-widest">A</span>
+    </div>
+    <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+        <span>3. 蚌埠市</span><span class="text-slate-400 text-xs font-black tracking-widest">A</span>
+    </div>
+    <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+        <span>4. 马鞍山市</span><span class="text-slate-400 text-xs font-black tracking-widest">B</span>
+    </div>
+    <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+        <span>5. 安庆市</span><span class="text-slate-400 text-xs font-black tracking-widest">B</span>
+    </div>
+    <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+        <span>6. 铜陵市</span><span class="text-slate-400 text-xs font-black tracking-widest">B</span>
+    </div>
+    <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+        <span>7. 滁州市</span><span class="text-slate-400 text-xs font-black tracking-widest">C</span>
+    </div>
+    <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+        <span>8. 阜阳市</span><span class="text-slate-400 text-xs font-black tracking-widest">C</span>
+    </div>
+    <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+        <span>9. 宿州市</span><span class="text-slate-400 text-xs font-black tracking-widest">C</span>
+    </div>
+    <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+        <span>10. 六安市</span><span class="text-slate-400 text-xs font-black tracking-widest">C</span>
+    </div>
+    <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+        <span>11. 宣城市</span><span class="text-slate-400 text-xs font-black tracking-widest">C</span>
+    </div>
+    <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+        <span>12. 淮南市</span><span class="text-slate-400 text-xs font-black tracking-widest">D</span>
+    </div>
+    <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+        <span>13. 淮北市</span><span class="text-slate-400 text-xs font-black tracking-widest">D</span>
+    </div>
+    <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+        <span>14. 亳州市</span><span class="text-slate-400 text-xs font-black tracking-widest">D</span>
+    </div>
+    <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+        <span>15. 池州市</span><span class="text-slate-400 text-xs font-black tracking-widest">D</span>
+    </div>
+    <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+        <span>16. 黄山市</span><span class="text-slate-400 text-xs font-black tracking-widest">D</span>
+    </div>
+</div>
+
+
+            <div class="mt-4 text-[10px] text-slate-400 font-bold leading-relaxed tracking-widest">
+                <div>依据：高考人数、高教资源、高中实力、义务教育均衡度等维度汇总。</div>
+                <div>用途：仅作为换算轻量修正（±4%内），反馈越多预测越准。</div>
+            </div>
+
+            <button type="button" onclick="closeEduModal()"
+                class="w-full mt-5 py-4 rounded-2xl bg-blue-600 text-white font-black tracking-widest shadow-lg shadow-blue-200 active:scale-95 transition-all">
+                知道了
+            </button>
+        </div>
+    </div>
+
+    <!-- AI Roast Modal -->
+    <div id="roastModal"
+        class="fixed inset-0 bg-[#0f172a]/95 backdrop-blur-xl z-[200] hidden overflow-y-auto p-6 flex-col items-center">
+        <div class="w-full max-w-md">
+            <div class="flex justify-between items-center mb-8">
+                <div
+                    class="bg-rose-500 text-white px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-tighter shadow-[0_0_15px_rgba(244,63,94,0.5)]">
+                    Anti-Chicken Soup Zone</div>
+                <button onclick="closeRoastModal()" class="text-slate-400 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <header class="text-center mb-10">
+                <h2 class="text-3xl font-black text-white roast-glitch mb-2">AI 毒舌测评系统</h2>
+                <p class="text-slate-500 text-xs font-medium">—— 秋秋同学特别策划：专治各种考试不服 ——</p>
+            </header>
+
+            <div id="roastFormArea">
+                <p class="text-[10px] text-slate-400 mb-6 text-center">输入全科分数，领阅最纯正的高考扎心吐槽</p>
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="space-y-4">
+                        <input type="number" id="r_yw" placeholder="语文"
+                            class="w-full bg-slate-800 border-none rounded-xl p-4 text-white text-sm font-bold focus:ring-2 focus:ring-rose-500 outline-none">
+                        <input type="number" id="r_sx" placeholder="数学"
+                            class="w-full bg-slate-800 border-none rounded-xl p-4 text-white text-sm font-bold focus:ring-2 focus:ring-rose-500 outline-none">
+                        <input type="number" id="r_yy" placeholder="英语"
+                            class="w-full bg-slate-800 border-none rounded-xl p-4 text-white text-sm font-bold focus:ring-2 focus:ring-rose-500 outline-none">
+                    </div>
+                    <div class="space-y-4">
+                        <input type="number" id="r_x1" placeholder="物理 / 历史"
+                            class="w-full bg-slate-800 border-none rounded-xl p-4 text-white text-sm font-bold focus:ring-2 focus:ring-rose-500 outline-none">
+                        <input type="number" id="r_x2" placeholder="再选 A (化/生/地/政)"
+                            class="w-full bg-slate-800 border-none rounded-xl p-4 text-white text-[10px] font-bold focus:ring-2 focus:ring-rose-500 outline-none">
+                        <input type="number" id="r_x3" placeholder="再选 B (化/生/地/政)"
+                            class="w-full bg-slate-800 border-none rounded-xl p-4 text-white text-[10px] font-bold focus:ring-2 focus:ring-rose-500 outline-none">
+                    </div>
+                </div>
+                <button onclick="generateRoast()"
+                    class="w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-4 rounded-xl shadow-lg shadow-rose-900/40 transition-all active:scale-95">
+                    看看到底有多扎心
+                </button>
+            </div>
+
+            <!-- Roast Result Display (Hidden initially) -->
+            <div id="roastResultArea" class="hidden animate-modalEnter">
+                <div class="roast-card p-4 border-2 border-rose-500/30 mb-8 relative">
+                    <div
+                        class="absolute -top-3 -left-2 bg-rose-600 text-[8px] font-black px-2 py-0.5 rounded text-white">
+                        SYSTEM ROASTING...</div>
+                    <div class="text-rose-400 font-mono text-xs mb-4">>>> DECODING BRAIN CAPACITY...</div>
+                    <p id="roastText" class="text-lg font-black text-rose-50 text-justify leading-relaxed mb-6 italic">
+                        ---</p>
+                    <div class="text-right">
+                        <p class="text-[8px] text-slate-500 italic opacity-60">—— 来自 秋秋同学 AI 毒舌引擎</p>
+                    </div>
+                </div>
+
+                <div class="bg-white/5 p-4 rounded-2xl mb-8 flex items-center justify-between">
+                    <div class="text-left">
+                        <p class="text-[10px] text-slate-400 leading-relaxed">
+                            虽然在扎你，但还是希望你能好。<br>
+                            <span class="text-rose-500 font-bold">生成专属分享图，让好基友也清醒一下？</span>
+                        </p>
+                    </div>
+                    <button onclick="captureRoast()"
+                        class="bg-rose-600 p-3 rounded-xl hover:bg-rose-500 transition-colors shadow-lg shadow-rose-900/40">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- [VIBE UPGRADE] Trendy Share Card for 08-borns -->
+                <!-- [VIBE UPGRADE] Trendy Share Card for 08-borns -->
+                <!-- Wrap in a hidden container that doesn't use -left-[9999px] for better canvas calculation -->
+                <div
+                    style="position: absolute; top: 0; left: 0; width: 0; height: 0; overflow: hidden; pointer-events: none;">
+                    <div id="shareCard" class="bg-[#020617] p-0 overflow-hidden font-['Outfit']" style="width: 420px;">
+                        <!-- Top Dynamic Stripe -->
+                        <div class="h-2 w-full bg-gradient-to-r from-rose-500 via-indigo-500 to-cyan-400"></div>
+
+                        <div class="p-10">
+                            <!-- Header: Sticker Style -->
+                            <div class="relative mb-12">
+                                <div
+                                    class="absolute -top-4 -left-4 rotate-[-10deg] bg-rose-600 text-white px-3 py-1 text-[9px] font-black tracking-widest rounded shadow-xl z-20">
+                                    ANTI-CHICKEN SOUP
+                                </div>
+                                <div class="flex flex-col">
+                                    <!-- REMOVED bg-clip-text for html2canvas compatibility -->
+                                    <h2 class="text-[44px] leading-[0.9] font-black text-white italic uppercase">
+                                        Roast<br><span class="text-rose-500">System</span>
+                                    </h2>
+                                    <p
+                                        class="text-[8px] text-slate-500 font-bold tracking-[0.4em] mt-2 border-l-2 border-rose-500 pl-2">
+                                        QIUQIU · AI 毒舌测评系统 2.0
+                                    </p>
+                                </div>
+                                <div class="absolute top-0 right-0 text-right">
+                                    <span class="text-[40px] font-black text-rose-500/10 leading-none">08#</span>
+                                </div>
+                            </div>
+
+                            <!-- Main Content: Card -->
+                            <div class="share-gradient-border mb-12 shadow-2xl">
+                                <div class="bg-[#0f172a] rounded-[22px] p-8 relative overflow-hidden">
+                                    <div class="flex items-center space-x-2 mb-6 opacity-60">
+                                        <div class="flex space-x-1">
+                                            <div class="w-1.5 h-1.5 rounded-full bg-rose-500"></div>
+                                            <div class="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
+                                            <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                                        </div>
+                                        <span class="text-[8px] font-mono text-slate-400 tracking-tighter uppercase">
+                                            paper-fault-trace // analysis.exe</span>
+                                    </div>
+
+                                    <p id="shareRoastText"
+                                        class="text-[26px] font-black text-white leading-[1.3] mb-10 tracking-tight">
+                                        录取波动很大，你的心跳比分数线还稳。这分数去哪都是“重在参与”。
+                                    </p>
+
+                                    <div class="flex items-center justify-between border-t border-white/5 pt-6">
+                                        <p class="text-[9px] font-bold text-slate-500 italic uppercase">Generated by
+                                            Qiuqiu AI Core</p>
+                                        <div
+                                            class="px-2 py-0.5 bg-rose-500/10 border border-rose-500/20 rounded text-[8px] font-black text-rose-500 uppercase tracking-widest">
+                                            Toxic Level: MAX
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Footer: Viral Growth Section -->
+                            <div class="flex items-end justify-between">
+                                <div class="flex-1 pr-6 pb-2">
+                                    <div class="mb-4">
+                                        <p class="text-xs font-black text-white mb-1" id="shareRoastLabel">2026安徽省模拟考试·官方对标</p>
+                                        <div class="h-0.5 w-12 bg-rose-500"></div>
+                                    </div>
+                                    <p class="text-[10px] text-slate-500 leading-relaxed font-bold">
+                                        长按识别二维码 →<br>
+                                        <span class="text-slate-300">立刻领取你的复盘报告 & 救命建议</span>
+                                    </p>
+                                </div>
+                                <div class="relative">
+                                    <div
+                                        class="absolute -inset-2 bg-gradient-to-tr from-rose-500 to-cyan-400 rounded-2xl blur-md opacity-30">
+                                    </div>
+                                    <div class="relative w-24 h-24 bg-white p-2 rounded-2xl shadow-2xl">
+                                        <img id="qrCode" src="qrcode_official.png" alt="QR" crossorigin="anonymous" class="w-full h-full">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex space-x-3">
+                    <button id="roastCloseBtn" onclick="closeRoastModal()"
+                        class="flex-1 bg-slate-800 text-slate-300 py-3 rounded-xl text-xs font-bold">不看了，心碎了</button>
+                    <button id="roastHelpBtn" onclick="roastCopyWechat()"
+                        class="flex-1 bg-white text-slate-900 py-3 rounded-xl text-xs font-black shadow-xl">找老师求救</button>
+                </div>
+            </div>
+        </div>
+        <!-- Roast Alert Modal (Custom Notification) -->
+        <div id="roastAlertModal"
+            class="fixed inset-0 bg-[#020617]/95 backdrop-blur-lg z-[300] hidden items-center justify-center p-8">
+            <div
+                class="w-full max-w-xs bg-slate-900 border border-white/10 rounded-[40px] p-8 shadow-2xl animate-modalEnter">
+                <div class="mb-6 flex justify-center">
+                    <div class="w-16 h-16 bg-rose-500/20 rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <h3 id="roastAlertTitle" class="text-xl font-black text-rose-50 text-center mb-4 italic">Message</h3>
+                <div class="bg-white/5 rounded-2xl p-4 mb-6 border border-white/5">
+                    <p class="text-[10px] text-slate-500 text-center mb-1 uppercase tracking-widest font-bold">微信号 (已复制)
+                    </p>
+                    <p class="text-2xl font-black text-white text-center tracking-wider">A15655736069</p>
+                </div>
+                <p id="roastAlertContent" class="text-slate-400 text-xs leading-relaxed text-center mb-8 font-medium">
+                    内容加载中...
+                </p>
+                <button onclick="closeRoastAlert()"
+                    class="w-full bg-rose-600 text-white font-black py-4 rounded-2xl shadow-lg shadow-rose-900/40 active:scale-95 transition-all flex items-center justify-center space-x-2">
+                    <span>已复制，去微信粘贴搜索</span>
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <script src="database.js"></script>
+        <script>
+            // ... (Existing script remains same until end)
+            function openRoastModal() {
+                document.getElementById('roastModal').classList.remove('hidden');
+                document.getElementById('roastModal').classList.add('flex');
+                document.body.style.overflow = 'hidden';
+                // Default reset
+                document.getElementById('roastFormArea').classList.remove('hidden');
+                document.getElementById('roastResultArea').classList.add('hidden');
+            }
+
+            function closeRoastModal() {
+                document.getElementById('roastModal').classList.add('hidden');
+                document.getElementById('roastModal').classList.remove('flex');
+                document.body.style.overflow = 'auto';
+            }
+
+            function openEduModal() {
+                const el = document.getElementById('eduModal');
+                if (!el) return;
+                el.classList.remove('hidden');
+                el.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeEduModal() {
+                const el = document.getElementById('eduModal');
+                if (!el) return;
+                el.classList.add('hidden');
+                el.classList.remove('flex');
+                document.body.style.overflow = 'auto';
+            }
+
+            function getRoastCityInfo() {
+                const sel = document.getElementById('city');
+                const cityKey = sel && sel.value ? sel.value : '';
+                let name = '安徽省';
+                if (typeof CITY_META !== 'undefined' && cityKey && CITY_META[cityKey] && CITY_META[cityKey].name) {
+                    name = CITY_META[cityKey].name;
+                }
+                const short = name.replace(/(市|州)$/, '');
+                return { cityKey, name, short };
+            }
+
+            function applyRoastCityCopy(text) {
+                const { name, short } = getRoastCityInfo();
+                const cityName = name || '安徽省';
+                const cityShort = short || '安徽';
+                let t = String(text || '');
+                t = t.replace(/合肥模拟考试/g, `${cityShort}模拟考试`);
+                t = t.replace(/合肥市/g, cityName);
+                t = t.replace(/合肥/g, cityShort);
+                return t;
+            }
+
+            function generateRoast() {
+                const yw = parseFloat(document.getElementById('r_yw').value) || 0;
+                const sx = parseFloat(document.getElementById('r_sx').value) || 0;
+                const yy = parseFloat(document.getElementById('r_yy').value) || 0;
+                const x1 = parseFloat(document.getElementById('r_x1').value) || 0;
+                const x2 = parseFloat(document.getElementById('r_x2').value) || 0;
+                const x3 = parseFloat(document.getElementById('r_x3').value) || 0;
+                const x_total = x1 + x2 + x3;
+                const total = yw + sx + yy + x_total;
+
+                const roasts = {
+                    super_god: [ // 705+
+                        "建议直接把你的大脑捐给国家，留在这里参加考试纯属是降维打击。",
+                        "卷王已经无法形容你了，你是卷基建，你是卷文明。建议直接申请从地球退休。",
+                        "你考这个分，是为了证明阅卷系统没坏吗？清华的校友录建议提前把你名字刻上去。",
+                        "这种分数，走在吉大的路上，石头都能给你开出花来。请问你平时喝的是98号汽油吗？",
+                        "你的存在让‘努力’这个词显得非常苍白。建议去火星殖民，地球已经装不下你的智商了。"
+                    ],
+                    god: [ // 670-705
+                        "稳如狗的顶级精英。建议提前去练习一下大厂的早操，毕竟未来的985顶级打工人，体力也得跟上。",
+                        "你是刷题刷出了幻觉吗？这成绩稳得像假的一样，建议去看个中医，补补‘不卷会死’的元气。",
+                        "这种选手直接保送得了，还考什么试？简直就是对阅卷老师体力的亵渎。",
+                        "你这分数拿出来，全班的平均分都被你拽到了不属于它的高度。小心放学被同学‘查户口’。",
+                        "高考对你来说可能只是走个过场，建议直接联系顶级名校，那里的冷气更适合你的冷静。"
+                    ],
+                    math_god_total_low: [ // 数学142+ 总分低
+                        "数学考得像个战神，总分像个难民。你是准备以后用导数去推导你在工地搬砖的抛物线吗？",
+                        "逻辑脑长到了极限，语言脑大概是欠费了。你这种偏科法，建议去当AI的底层架构，别跟人类说话了。",
+                        "数学140+，英语不及格？你大概是上辈子被莎士比亚伤害过，这辈子专门来用数字复仇的吧？",
+                        "你的大脑是单核CPU吗？全把算力分配给数学了，其他科目都在那儿转圈呢？"
+                    ],
+                    math_fail: [ // 数学极低
+                        `数学考${sx}？这智力如果是余额的话，连共享单车都扫不动。建议去练练长跑，速度是你唯一的退路。`,
+                        "数学老师看到这张卷子，可能会当场原地退休，并连夜注销自己的教师资格证。",
+                        `数学${sx}分，你是怎么做到在避开所有正确选项的同时，还精准踩中所有雷区的？这也是一种天赋。`,
+                        "你的数学卷子让我看到了宇宙的虚无，除了大题开头的‘解’字，剩下的全是‘空虚’。",
+                        "建议把数学书烧了取暖，至少那样它还能产生点热量。指望它产生分数，你是想多了。"
+                    ],
+                    english_god_fail: [ // 英语极高总分低
+                        "英语考得挺欢实，是为了以后端盘子时能听懂外国老板怎么骂你吗？这种‘偏科到姥姥家’的节奏，不去当翻译官可惜了。",
+                        "满脑子伦敦腔，手里拿着不及格的数学卷。你这是准备去牛津大学当门卫，还是去剑桥大学扫落叶？",
+                        "英语好到飞起，总分惨不忍睹。你大概是上帝派来的和平使者，用外语向全世界传达你不想学习的信号。",
+                        "这英语水平建议直接移民，毕竟留在国内，这总分连自费本科的边都摸不到。",
+                        "你是打算以后靠翻译‘Sorry, I didn't study’这句话来度过余生吗？"
+                    ],
+                    invisible_mid: [ // 580-670 隐形中层
+                        "平庸到连AI都懒得吐槽。你就像手机系统自带的计算器，有用，但并没有人真的关心你的存在。",
+                        "你这类学生是教育局的最爱——因为你完美地维持了统计数据的稳定性，不多不少，刚好‘路人甲’。",
+                        "模拟考试考出这种‘稳如老狗’的中庸分数，你是在给未来的平凡生活预演排练吗？建议提前练习一下如何优雅地挤地铁。",
+                        "你的人生主打一个‘重在参与’。在卷王和学渣之间完美隐身，你是怎么做到表达得这么平庸的？",
+                        "考出这种分数的你，既没有资本狂妄，也没有借口颓废，只能在焦虑中反复横跳。"
+                    ],
+                    struggling_mid: [ // 480-580 挣扎区
+                        "这个分数就像白开水，喝了不解渴，倒了又有点可惜。建议给自己找个闪光点，哪怕是头发多也行。",
+                        "你在及格的边缘疯狂横跳，动作很优美，但成绩很骨感。建议找个稳一点的重心，别跳水里了。",
+                        "你这种丢分方式，主打一个‘雨露均沾’。对每个学科最大的公平，就是让它们全都考得半死不活。",
+                        "这是一个让家长想放弃、让老师想叹息、让你想打游戏的分数。你真是三方的心理博弈大师。"
+                    ],
+                    danger_zone: [ // 380-480 危险线
+                        "这分数在本科线上蹦迪，一个不小心就掉进大专的大坑里。建议你先把手机屏保换成‘我爱学习’，别再迷恋抖音了。",
+                        "你的成绩跌得比A股还惨，唯一的区别是A股还有可能反弹，你的模拟考试大概率只能‘反省’。",
+                        "你是带着‘佛系’的心态进的考场吗？由于你太慈悲，卷子上的分数全都被你布施出去了。",
+                        "建议以后考试带两根棒棒糖，一根给自己补充能量，一根塞进各科老师嘴里，防止他们骂出声。"
+                    ],
+                    low: [ // 320以下
+                        "这分数是在搞行为艺术吗？你确定拿的是试卷，不是给阅卷老师准备的‘脑瘫康复中心’入场券？",
+                        "08年的你，这分数是在提前预演‘离职即退休’的晚年生活吗？建议提前物色一个安静的公园，毕竟抢地盘也要趁早。",
+                        "分数跌破地平线，我看你这不是模拟考试，是给全省的平均分贡献了一个巨大的陷阱。",
+                        "孩子，这分数甚至不如你身份证号的前三位大，你到底是在和卷子博弈，还是在和自己的前途赌气？",
+                        "如果高考考的是‘人类离文明有多远’，你一定是第一名。这种原始感，真的很迷人。"
+                    ],
+                    science_heavy: [ // 选科极强
+                        "理综强得像战神，语数外弱得像难民。你这是打算以后用牛顿定律去说服HR给你涨工资吗？",
+                        "理化生满血，语数外贫血。你和大学的距离，大概中间隔着一个太平洋的文科知识。",
+                        "由于文科太差，你可能无法用中文准确表达你理科有多牛，这就是典型的‘哑巴技术员’种子选手。",
+                        "理科分在天，文科分在土。这种两极分化的程度，建议去申报精神分裂症（开玩笑）。"
+                    ],
+                    arts_heavy: [ // 语、英强
+                        "文科好得像诗人，理科烂得像乱码。你是打算考研去修仙，还是准备去电台讲鬼故事？",
+                        "你的大脑大概是隔离模式，左脑负责优雅的词汇，右脑负责屏蔽一切逻辑计算。你是怎么做到这么纯粹的？",
+                        "满纸荒唐言，一把辛勤泪。你的文料确实漂亮，可惜理科拖后腿的速度，连博尔特都追不上。"
+                    ],
+                    perfect_balanced_low: [ // 全不及格且分接近
+                        "六边形战士，可惜每条边都短得几乎看不见。你是准备以此为模板去参加‘全科挂科大奖赛’吗？",
+                        "全科稳定发挥——同步不及格。这种走钢丝的协调感，不去杂技团真的屈才了。",
+                        "你的每一科都在互相迁就，主打一个‘共同富裕，一起考砸’。这大概就是团队精神吧。"
+                    ]
+                };
+
+                let roastText = "";
+                if (total === 0) {
+                    roastText = "分数填都不敢填？这种心理承受能力，建议直接跳过高考，去练习如何优雅地承受白眼。";
+                } else if (total >= 705) {
+                    roastText = roasts.super_god[Math.floor(Math.random() * roasts.super_god.length)];
+                } else if (total >= 670) {
+                    roastText = roasts.god[Math.floor(Math.random() * roasts.god.length)];
+                } else if (sx >= 142 && total < 550) {
+                    roastText = roasts.math_god_total_low[Math.floor(Math.random() * roasts.math_god_total_low.length)];
+                } else if (yy >= 140 && total < 550) {
+                    roastText = roasts.english_god_fail[Math.floor(Math.random() * roasts.english_god_fail.length)];
+                } else if (sx < 65 && total > 400) {
+                    roastText = roasts.math_fail[Math.floor(Math.random() * roasts.math_fail.length)];
+                } else if (total >= 580 && total < 670) {
+                    roastText = roasts.invisible_mid[Math.floor(Math.random() * roasts.invisible_mid.length)];
+                } else if (total >= 480 && total < 580) {
+                    roastText = roasts.struggling_mid[Math.floor(Math.random() * roasts.struggling_mid.length)];
+                } else if (total >= 380 && total < 480) {
+                    roastText = roasts.danger_zone[Math.floor(Math.random() * roasts.danger_zone.length)];
+                } else if (total <= 320) {
+                    roastText = roasts.low[Math.floor(Math.random() * roasts.low.length)];
+                } else if (x_total > (yw + sx + yy) * 1.5) {
+                    roastText = roasts.science_heavy[Math.floor(Math.random() * roasts.science_heavy.length)];
+                } else if ((yw + yy) > (sx + x_total) * 1.5) {
+                    roastText = roasts.arts_heavy[Math.floor(Math.random() * roasts.arts_heavy.length)];
+                } else if (Math.abs(yw - sx) < 5 && Math.abs(sx - yy) < 5 && total < 450) {
+                    roastText = roasts.perfect_balanced_low[Math.floor(Math.random() * roasts.perfect_balanced_low.length)];
+                } else {
+                    roastText = "这是一个普通到连AI都懒得为你编段子的分数。你的模拟考试，平凡得就像食堂里的白菜，没毒，但也没味。";
+                }
+
+                roastText = applyRoastCityCopy(roastText);
+
+                document.getElementById('roastFormArea').classList.add('hidden');
+                const resArea = document.getElementById('roastResultArea');
+                resArea.classList.remove('hidden');
+                document.getElementById('roastText').innerText = roastText;
+
+                // Sync text to hidden share card
+                document.getElementById('shareRoastText').innerText = roastText;
+                const labelEl = document.getElementById('shareRoastLabel');
+                if (labelEl) {
+                    const { name } = getRoastCityInfo();
+                    labelEl.innerText = `2026${name}模拟考试·官方对标`;
+                }
+
+                // Updated Button Logic: Humorous CTAs based on scores
+                const helpBtn = document.getElementById('roastHelpBtn');
+                const closeBtn = document.getElementById('roastCloseBtn');
+
+                if (total >= 670) {
+                    helpBtn.innerText = "你就是老师，受我一拜";
+                    closeBtn.innerText = "俯瞰众生";
+                } else if (total <= 450 && total > 0) {
+                    helpBtn.innerText = "老师也没招，自生自灭吧";
+                    closeBtn.innerText = "再见此地狱(开玩笑)";
+                } else {
+                    helpBtn.innerText = "找老师垂死抢救一下";
+                    closeBtn.innerText = "不看了，心碎了";
+                }
+            }
+
+            async function captureRoast() {
+                const btn = event ? event.currentTarget : null;
+                const shareCard = document.getElementById('shareCard');
+                const qrImg = document.getElementById('qrCode');
+                const originalContent = btn ? btn.innerHTML : '';
+                let prevStyles = null;
+
+                if (!shareCard) {
+                    alert('生成图片失败，请尝试直接截图分享');
+                    return;
+                }
+
+                if (btn) {
+                    btn.innerHTML = '<span class="animate-spin inline-block">⏳</span>';
+                    btn.disabled = true;
+                }
+
+                try {
+                    // Wait for images with timeout
+                    await Promise.race([
+                        new Promise(resolve => {
+                            if (qrImg.complete) resolve();
+                            else {
+                                qrImg.onload = resolve;
+                                qrImg.onerror = resolve;
+                            }
+                        }),
+                        new Promise(resolve => setTimeout(resolve, 1500))
+                    ]);
+
+                    if (document.fonts && document.fonts.ready) {
+                        await Promise.race([
+                            document.fonts.ready,
+                            new Promise(resolve => setTimeout(resolve, 800))
+                        ]);
+                    }
+
+                    prevStyles = {
+                        visibility: shareCard.style.visibility,
+                        position: shareCard.style.position,
+                        left: shareCard.style.left,
+                        top: shareCard.style.top,
+                        zIndex: shareCard.style.zIndex
+                    };
+                    shareCard.style.visibility = 'visible';
+                    shareCard.style.position = 'fixed';
+                    shareCard.style.left = '-9999px';
+                    shareCard.style.top = '0';
+                    shareCard.style.zIndex = '9999';
+
+                    const canvas = await html2canvas(shareCard, {
+                        backgroundColor: '#020617',
+                        scale: 2,
+                        useCORS: true,
+                        allowTaint: false,
+                        imageTimeout: 1500,
+                        logging: false,
+                        onclone: (clonedDoc) => {
+                            // Ensure the cloned element is 'visible' for rendering
+                            const el = clonedDoc.getElementById('shareCard');
+                            if (el) {
+                                el.style.visibility = 'visible';
+                                el.style.position = 'fixed';
+                                el.style.left = '0';
+                                el.style.top = '0';
+                                el.style.zIndex = '9999';
+                            }
+                        }
+                    });
+
+                    const link = document.createElement('a');
+                    link.download = `秋秋同学-AI毒舌测评-${new Date().getTime()}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                } catch (err) {
+                    console.error("Capture failed:", err);
+                    alert("生成图片失败，请尝试直接截图分享");
+                } finally {
+                    if (prevStyles) {
+                        shareCard.style.visibility = prevStyles.visibility;
+                        shareCard.style.position = prevStyles.position;
+                        shareCard.style.left = prevStyles.left;
+                        shareCard.style.top = prevStyles.top;
+                        shareCard.style.zIndex = prevStyles.zIndex;
+                    }
+                    if (btn) {
+                        btn.innerHTML = originalContent;
+                        btn.disabled = false;
+                    }
+                }
+            }
+
+            // ==========================================
+            // Existing logic (Previously updated)
+            // ==========================================
+
+            const CITY_META = {
+                hefei: { name: '合肥市', examinees: 71000, strengthRank: 1 },
+                fuyang: { name: '阜阳市', examinees: 64035, strengthRank: 2 },
+                anqing: { name: '安庆市', examinees: 47726, strengthRank: 3 },
+                lvan: { name: '六安市', examinees: 44477, strengthRank: 4 },
+                bozhou: { name: '亳州市', examinees: 40348, strengthRank: 5 },
+                suzhou: { name: '宿州市', examinees: 40000, strengthRank: 6 },
+                chuzhou: { name: '滁州市', examinees: 25394, strengthRank: 7 },
+                bengbu: { name: '蚌埠市', examinees: 26702, strengthRank: 8 },
+                tongling: { name: '铜陵市', examinees: 14874, strengthRank: 9 },
+                suzhou: { name: '宿州市', examinees: 40000, strengthRank: 10 },
+                xuancheng: { name: '宣城市', examinees: 14486, strengthRank: 11 },
+                maanshan: { name: '马鞍山市', examinees: 14033, strengthRank: 12 },
+                huainan: { name: '淮南市', examinees: 33000, strengthRank: 13 },
+                chizhou: { name: '池州市', examinees: 11400, strengthRank: 14 },
+                huangshan: { name: '黄山市', examinees: 7000, strengthRank: 15 },
+                huaibei: { name: '淮北市', examinees: 15352, strengthRank: 16 }
+            };
+
+            const citySelectEl = document.getElementById('city');
+            const cityBtnEl = document.getElementById('cityBtn');
+            const cityBtnTextEl = document.getElementById('cityBtnText');
+            const cityMenuEl = document.getElementById('cityMenu');
+
+            function setCityUI(cityKey) {
+                if (citySelectEl && cityKey) citySelectEl.value = cityKey;
+                const nameFromMeta = CITY_META && CITY_META[cityKey] && CITY_META[cityKey].name ? CITY_META[cityKey].name : '';
+                const btn = cityKey ? document.querySelector(`.cityOption[data-city="${cityKey}"]`) : null;
+                const nameFromBtn = btn ? String(btn.innerText || '').trim() : '';
+                const name = nameFromMeta || nameFromBtn || '请选择';
+                if (cityBtnTextEl) cityBtnTextEl.innerText = name;
+            }
+
+            function closeCityMenu() {
+                if (!cityMenuEl) return;
+                cityMenuEl.classList.add('hidden');
+            }
+
+            function openCityMenu() {
+                if (!cityMenuEl) return;
+                cityMenuEl.classList.remove('hidden');
+            }
+
+            function toggleCityMenu() {
+                if (!cityMenuEl) return;
+                if (cityMenuEl.classList.contains('hidden')) openCityMenu();
+                else closeCityMenu();
+            }
+
+            if (cityBtnEl) {
+                cityBtnEl.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    toggleCityMenu();
+                });
+            }
+
+            document.querySelectorAll('.cityOption').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const key = btn.dataset && btn.dataset.city ? btn.dataset.city : '';
+                    if (key) setCityUI(key);
+                    closeCityMenu();
+                });
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!cityMenuEl || !cityBtnEl) return;
+                const t = e.target;
+                if (cityMenuEl.contains(t) || cityBtnEl.contains(t)) return;
+                closeCityMenu();
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeCityMenu();
+            });
+
+            if (citySelectEl) {
+                setCityUI(citySelectEl.value || 'hefei');
+                citySelectEl.addEventListener('change', () => setCityUI(citySelectEl.value));
+            }
+
+            function computeDaysToGaokao() {
+                const today = new Date();
+                const thisYearTarget = new Date(today.getFullYear(), 5, 7);
+                const target = today > thisYearTarget ? new Date(today.getFullYear() + 1, 5, 7) : thisYearTarget;
+                const ms = target.getTime() - today.getTime();
+                const days = Math.max(0, Math.ceil(ms / 86400000));
+                return clamp(days, 0, 500);
+            }
+
+            let lastCalcContext = null;
+            const provRankMaxCache = {};
+
+            function clamp(num, min, max) {
+                if (num < min) return min;
+                if (num > max) return max;
+                return num;
+            }
+
+            function getCityFactor(city) {
+                const base = CITY_META.hefei && CITY_META.hefei.examinees ? CITY_META.hefei.examinees : 47000;
+                const n = CITY_META[city] && CITY_META[city].examinees ? CITY_META[city].examinees : base;
+                const raw = base / n;
+                return clamp(raw, 0.6, 3.5);
+            }
+
+            function getStrengthAdjust(city) {
+                const r = CITY_META[city] && typeof CITY_META[city].strengthRank === 'number' ? CITY_META[city].strengthRank : 5;
+                const rank = clamp(r, 1, 9);
+                const t = (rank - 1) / 8;
+                const span = 0.08;
+                const raw = 1 + ((t - 0.5) * span);
+                return clamp(raw, 0.96, 1.04);
+            }
+
+            function getRankBucket(subject, rank) {
+                if (subject === 'physics') {
+                    if (rank <= 100) return 'p_100';
+                    if (rank <= 500) return 'p_500';
+                    if (rank <= 2000) return 'p_2000';
+                    if (rank <= 5000) return 'p_5000';
+                    return 'p_rest';
+                }
+                if (rank <= 100) return 'h_100';
+                if (rank <= 1000) return 'h_1000';
+                return 'h_rest';
+            }
+
+            function getBaseCoefficient(subject, rank) {
+                if (subject === 'physics') {
+                    if (rank <= 100) return 1.5;
+                    if (rank <= 500) return 1.8;
+                    if (rank <= 2000) return 2.1;
+                    if (rank <= 5000) return 2.4;
+                    return 2.6;
+                }
+                if (rank <= 100) return 1.4;
+                if (rank <= 1000) return 2.0;
+                return 2.5;
+            }
+
+            function getDifficultyAdjust(difficulty) {
+                if (difficulty === 'easy') return 1.08;
+                if (difficulty === 'hard') return 0.92;
+                return 1.0;
+            }
+
+            function getProvRankMax(subject) {
+                if (provRankMaxCache[subject]) return provRankMaxCache[subject];
+                if (typeof realData2024 === 'undefined' || !realData2024[subject] || !realData2024[subject].length) {
+                    provRankMaxCache[subject] = 200000;
+                    return provRankMaxCache[subject];
+                }
+                let maxR = 0;
+                realData2024[subject].forEach(item => {
+                    if (item && typeof item.r === 'number' && item.r > maxR) maxR = item.r;
+                });
+                provRankMaxCache[subject] = maxR || 200000;
+                return provRankMaxCache[subject];
+            }
+
+            function getCalibrationKey(subject, city, bucket) {
+                return `jl_rank_calib_v1:${subject}:${city}:${bucket}`;
+            }
+
+            function loadCalibrationFactor(subject, city, bucket) {
+                const key = getCalibrationKey(subject, city, bucket);
+                const raw = localStorage.getItem(key);
+                const val = parseFloat(raw);
+                if (!Number.isFinite(val) || val <= 0) return 1.0;
+                return val;
+            }
+
+            function saveCalibrationFactor(subject, city, bucket, factor) {
+                const key = getCalibrationKey(subject, city, bucket);
+                localStorage.setItem(key, String(factor));
+            }
+
+            function calculateEstProvRank(cityRank, subject, difficulty = 'normal', city = 'hefei') {
+                const base = getBaseCoefficient(subject, cityRank);
+                const diff = getDifficultyAdjust(difficulty);
+                const cityFactor = getCityFactor(city);
+                const strength = getStrengthAdjust(city);
+                const raw = Math.floor(cityRank * base * cityFactor * strength * diff);
+                const maxRank = getProvRankMax(subject);
+                return clamp(raw, 1, maxRank);
+            }
+
+            function computeEstScoreFromRank(estProvRank, subject) {
+                let estScore = "---";
+                if (typeof realData2024 === 'undefined' || !realData2024 || !realData2024[subject] || !realData2024[subject].length) {
+                    return estScore;
+                }
+                const data = realData2024[subject];
+                let lower = null, upper = null;
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i].r <= estProvRank) {
+                        if (!lower || data[i].r > lower.r) lower = data[i];
+                    } else {
+                        if (!upper || data[i].r < upper.r) upper = data[i];
+                    }
+                }
+                if (lower && upper) {
+                    const ratio = (estProvRank - lower.r) / (upper.r - lower.r);
+                    estScore = Math.round(lower.s - (lower.s - upper.s) * ratio);
+                } else if (lower) estScore = lower.s;
+                else if (upper) estScore = upper.s;
+                return estScore;
+            }
+
+            let lastReportShareData = null;
+
+            function getSubjectLabel(subject) {
+                if (subject === 'physics') return '物理类';
+                if (subject === 'history') return '历史类';
+                return '综合';
+            }
+
+            function simulateComputeTimeMs(estProvRank) {
+                const r = Number.isFinite(estProvRank) ? estProvRank : 10000;
+                const scale = r > 30000 ? 1.45 : r > 15000 ? 1.25 : r > 5000 ? 1.1 : 1.0;
+                const base = 8 + Math.floor(Math.random() * 13);
+                return clamp(Math.round(base * scale), 6, 36);
+            }
+
+            function getRankRange(items) {
+                if (!Array.isArray(items) || items.length === 0) return null;
+                let min = Infinity;
+                let max = -Infinity;
+                for (const it of items) {
+                    if (!it || typeof it.r !== 'number') continue;
+                    if (it.r < min) min = it.r;
+                    if (it.r > max) max = it.r;
+                }
+                if (!Number.isFinite(min) || !Number.isFinite(max)) return null;
+                return { min, max };
+            }
+
+            function formatRankRange(range) {
+                if (!range) return '暂无';
+                return `${range.min.toLocaleString()}~${range.max.toLocaleString()}位`;
+            }
+
+            function formatTopLines(items, maxLines = 2) {
+                if (!Array.isArray(items) || items.length === 0) return '暂无匹配';
+                const lines = [];
+                for (const it of items) {
+                    if (!it || !it.n || !it.m) continue;
+                    lines.push(`${it.n} · ${it.m}`);
+                    if (lines.length >= maxLines) break;
+                }
+                return lines.length ? lines.join('<br>') : '暂无匹配';
+            }
+
+            function syncReportShareCard(data) {
+                const card = document.getElementById('shareReportCard');
+                if (!card || !data) return;
+
+                const rankEl = document.getElementById('shareReportRank');
+                const scoreEl = document.getElementById('shareReportScore');
+                const cityEl = document.getElementById('shareReportCity');
+                const subjectEl = document.getElementById('shareReportSubject');
+                const chongRangeEl = document.getElementById('shareReportChongRange');
+                const wenRangeEl = document.getElementById('shareReportWenRange');
+                const baoRangeEl = document.getElementById('shareReportBaoRange');
+                const chongTopEl = document.getElementById('shareReportChongTop');
+                const wenTopEl = document.getElementById('shareReportWenTop');
+                const baoTopEl = document.getElementById('shareReportBaoTop');
+
+                if (rankEl) rankEl.innerText = String(data.estProvRank).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                if (scoreEl) scoreEl.innerText = data.estScore === '---' ? '---' : String(data.estScore);
+                if (cityEl) cityEl.innerText = data.cityName || '---';
+                if (subjectEl) subjectEl.innerText = data.subjectLabel || '---';
+                const ranges = data.ranges || {};
+                const top = data.top || {};
+                if (chongRangeEl) chongRangeEl.innerText = formatRankRange(ranges.chong || null);
+                if (wenRangeEl) wenRangeEl.innerText = formatRankRange(ranges.wen || null);
+                if (baoRangeEl) baoRangeEl.innerText = formatRankRange(ranges.bao || null);
+                if (chongTopEl) chongTopEl.innerHTML = formatTopLines(top.chong || [], 2);
+                if (wenTopEl) wenTopEl.innerHTML = formatTopLines(top.wen || [], 2);
+                if (baoTopEl) baoTopEl.innerHTML = formatTopLines(top.bao || [], 2);
+            }
+
+            function setShareActionStatus(text) {
+                const el = document.getElementById('shareActionStatus');
+                if (!el) return;
+                el.innerText = text || '';
+                window.clearTimeout(setShareActionStatus._t);
+                if (text) {
+                    setShareActionStatus._t = window.setTimeout(() => {
+                        el.innerText = '';
+                    }, 2200);
+                }
+            }
+
+            async function captureReport() {
+                const btn = event ? event.currentTarget : null;
+                const shareCard = document.getElementById('shareReportCard');
+                const qrImg = document.getElementById('reportQrCode');
+                const originalContent = btn ? btn.innerHTML : '';
+                let prevStyles = null;
+
+                if (!shareCard) {
+                    alert('生成图片失败，请尝试直接截图分享');
+                    return;
+                }
+
+                if (btn) {
+                    btn.innerHTML = '<span class="animate-spin inline-block">⏳</span>';
+                    btn.disabled = true;
+                }
+
+                try {
+                    syncReportShareCard(lastReportShareData);
+
+                    await Promise.race([
+                        new Promise(resolve => {
+                            if (!qrImg) return resolve();
+                            if (qrImg.complete) resolve();
+                            else {
+                                qrImg.onload = resolve;
+                                qrImg.onerror = resolve;
+                            }
+                        }),
+                        new Promise(resolve => setTimeout(resolve, 1500))
+                    ]);
+
+                    if (document.fonts && document.fonts.ready) {
+                        await Promise.race([
+                            document.fonts.ready,
+                            new Promise(resolve => setTimeout(resolve, 800))
+                        ]);
+                    }
+
+                    prevStyles = {
+                        visibility: shareCard.style.visibility,
+                        position: shareCard.style.position,
+                        left: shareCard.style.left,
+                        top: shareCard.style.top,
+                        zIndex: shareCard.style.zIndex
+                    };
+                    shareCard.style.visibility = 'visible';
+                    shareCard.style.position = 'fixed';
+                    shareCard.style.left = '-9999px';
+                    shareCard.style.top = '0';
+                    shareCard.style.zIndex = '9999';
+
+                    const canvas = await html2canvas(shareCard, {
+                        backgroundColor: '#020617',
+                        scale: 2,
+                        useCORS: true,
+                        allowTaint: false,
+                        imageTimeout: 1500,
+                        logging: false,
+                        onclone: (clonedDoc) => {
+                            const el = clonedDoc.getElementById('shareReportCard');
+                            if (el) {
+                                el.style.visibility = 'visible';
+                                el.style.position = 'fixed';
+                                el.style.left = '0';
+                                el.style.top = '0';
+                                el.style.zIndex = '9999';
+                            }
+                        }
+                    });
+
+                    const link = document.createElement('a');
+                    link.download = `秋秋同学-高考模拟报告-${new Date().getTime()}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    setShareActionStatus('✓ 海报已生成');
+                } catch (err) {
+                    console.error("Capture failed:", err);
+                    alert("生成图片失败，请尝试直接截图分享");
+                } finally {
+                    if (prevStyles) {
+                        shareCard.style.visibility = prevStyles.visibility;
+                        shareCard.style.position = prevStyles.position;
+                        shareCard.style.left = prevStyles.left;
+                        shareCard.style.top = prevStyles.top;
+                        shareCard.style.zIndex = prevStyles.zIndex;
+                    }
+                    if (btn) {
+                        btn.innerHTML = originalContent;
+                        btn.disabled = false;
+                    }
+                }
+            }
+
+            function updateOverlayResults(ctx) {
+                const estProvRank = calculateEstProvRank(ctx.rank, ctx.subject, ctx.difficulty, ctx.city);
+                const estScore = computeEstScoreFromRank(estProvRank, ctx.subject);
+                document.getElementById('estProvRank').innerText = estProvRank.toLocaleString();
+                document.getElementById('estScore').innerText = estScore;
+                const cityName = (CITY_META[ctx.city] && CITY_META[ctx.city].name) ? CITY_META[ctx.city].name : '---';
+                document.getElementById('estCityName').innerText = cityName;
+
+                const daysToGaokao = (ctx && typeof ctx.daysToGaokao === 'number') ? ctx.daysToGaokao : computeDaysToGaokao();
+                const recs = getRecommendations(estProvRank, ctx.subject, daysToGaokao);
+                document.getElementById('listChong').innerHTML = recs.chong.length ? recs.chong.map(renderRow).join('') : '<div class="text-[10px] text-slate-400 py-4 text-center">暂无合适冲刺目标</div>';
+                document.getElementById('listWen').innerHTML = recs.wen.length ? recs.wen.map(renderRow).join('') : '<div class="text-[10px] text-slate-400 py-4 text-center">正在同步最新匹配数据</div>';
+                document.getElementById('listBao').innerHTML = recs.bao.length ? recs.bao.map(renderRow).join('') : '<div class="text-[10px] text-slate-400 py-4 text-center">已处于安全线，无需兜底</div>';
+                const costEl = document.getElementById('calcCost');
+                if (costEl) costEl.innerText = `${simulateComputeTimeMs(estProvRank)}ms`;
+
+                lastReportShareData = {
+                    subjectLabel: getSubjectLabel(ctx.subject),
+                    cityName,
+                    estProvRank,
+                    estScore,
+                    ranges: {
+                        chong: getRankRange(recs.chong),
+                        wen: getRankRange(recs.wen),
+                        bao: getRankRange(recs.bao)
+                    },
+                    top: {
+                        chong: recs.chong || [],
+                        wen: recs.wen || [],
+                        bao: recs.bao || []
+                    }
+                };
+                syncReportShareCard(lastReportShareData);
+                return estProvRank;
+            }
+
+            function getRecommendations(estRank, subject, daysToGaokao = null) {
+                if (typeof realData2024 === 'undefined' || !realData2024[subject]) {
+                    return { chong: [], wen: [], bao: [] };
+                }
+
+                const data = realData2024[subject];
+                const recs = { chong: [], wen: [], bao: [] };
+
+                let rangeScale = 1.0;
+                if (estRank > 30000) rangeScale = 4.0;
+                else if (estRank > 15000) rangeScale = 2.5;
+                else if (estRank > 5000) rangeScale = 1.5;
+
+                const safeDays = Number.isFinite(daysToGaokao) ? clamp(daysToGaokao, 0, 500) : null;
+                const ambition = safeDays == null ? 1.0 : clamp(safeDays / 100, 0, 3);
+                const timeScale = safeDays == null
+                    ? 1.0
+                    : (safeDays <= 30 ? 0.75 : safeDays <= 100 ? 0.9 : safeDays <= 200 ? 1.05 : 1.2);
+                const reach = safeDays == null ? 1.0 : clamp(1 + ambition * 0.5, 1, 2.5);
+                const chongNearFactor = safeDays == null ? 1.0 : clamp(0.6 + ambition * 0.2, 0.6, 1.2);
+
+                const chongMin = estRank - (1200 * rangeScale * timeScale * reach);
+                const chongMax = estRank - (100 * rangeScale * timeScale * chongNearFactor);
+                const wenMin = estRank - (100 * rangeScale * timeScale);
+                const wenMax = estRank + (1200 * rangeScale * timeScale);
+                const baoMin = estRank + (1200 * rangeScale * timeScale);
+                const baoMax = estRank + (5000 * rangeScale * timeScale);
+
+                data.forEach(item => {
+                    const r = item.r;
+                    if (r >= chongMin && r < chongMax) recs.chong.push(item);
+                    if (r >= wenMin && r <= wenMax) recs.wen.push(item);
+                    if (r > baoMin && r <= baoMax) recs.bao.push(item);
+                });
+
+                recs.chong.sort((a, b) => b.r - a.r);
+                recs.wen.sort((a, b) => Math.abs(a.r - estRank) - Math.abs(b.r - estRank));
+                recs.bao.sort((a, b) => a.r - b.r);
+
+                function pickTop(items, count) {
+                    const picked = [];
+                    const seen = new Set();
+                    const schoolCount = {};
+                    for (const item of items) {
+                        if (!item || !item.n || !item.m) continue;
+                        const key = `${item.n}__${item.m}`;
+                        if (seen.has(key)) continue;
+                        const sc = schoolCount[item.n] || 0;
+                        if (sc >= 2) continue;
+                        picked.push(item);
+                        seen.add(key);
+                        schoolCount[item.n] = sc + 1;
+                        if (picked.length >= count) break;
+                    }
+                    return picked;
+                }
+
+                return {
+                    chong: pickTop(recs.chong, 5),
+                    wen: pickTop(recs.wen, 6),
+                    bao: pickTop(recs.bao, 5)
+                };
+            }
+
+            function renderRow(item) {
+                let tagsHtml = "";
+                item.t.forEach(t => {
+                    if (t === '985') tagsHtml += `<span class="tag tag-985 mr-1">985</span>`;
+                    else if (t === '211') tagsHtml += `<span class="tag tag-211 mr-1">211</span>`;
+                    else if (t === '省内') tagsHtml += `<span class="tag tag-local">省内</span>`;
+                });
+
+                return `
+            <div class="group flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-all border-b border-slate-50 last:border-none">
+                <div class="flex flex-col flex-1 min-w-0 pr-4">
+                    <div class="flex items-center mb-1 overflow-hidden">
+                        <span class="font-bold text-slate-800 text-xs truncate mr-2">${item.n}</span>
+                        <div class="flex flex-shrink-0">${tagsHtml}</div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-[9px] text-slate-400 font-medium">${item.l}</span>
+                        <div class="px-2 py-0.5 rounded bg-blue-50 text-[9px] text-blue-600 font-bold truncate">${item.m}</div>
+                    </div>
+                </div>
+                <div class="text-right flex-shrink-0">
+                    <div class="text-xs font-black text-slate-700 leading-tight">${item.r}<span class="text-[8px] font-bold ml-0.5">位</span></div>
+                    <div class="text-[9px] text-slate-400 font-medium">${item.s}分</div>
+                </div>
+            </div>
+            `;
+            }
+
+            const overlay = document.getElementById('resultOverlay');
+            const feedbackHighBtn = document.getElementById('feedbackHighBtn');
+            const feedbackLowBtn = document.getElementById('feedbackLowBtn');
+            const feedbackOkBtn = document.getElementById('feedbackOkBtn');
+            const feedbackStatusEl = document.getElementById('feedbackStatus');
+
+            function getOrCreateAnonId() {
+                const key = 'jl_anon_id_v1';
+                const existing = localStorage.getItem(key);
+                if (existing && existing.length >= 8) return existing;
+                let id = '';
+                if (window.crypto && typeof window.crypto.randomUUID === 'function') id = window.crypto.randomUUID();
+                else id = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
+                localStorage.setItem(key, id);
+                return id;
+            }
+
+            async function sendFeedbackEvent(feedbackType) {
+                if (!lastCalcContext) return;
+                const estProvRank = calculateEstProvRank(lastCalcContext.rank, lastCalcContext.subject, lastCalcContext.difficulty, lastCalcContext.city);
+                const estScore = computeEstScoreFromRank(estProvRank, lastCalcContext.subject);
+
+                const payload = {
+                    anonId: getOrCreateAnonId(),
+                    feedbackType,
+                    subject: lastCalcContext.subject,
+                    city: lastCalcContext.city,
+                    rank: lastCalcContext.rank,
+                    score: lastCalcContext.score,
+                    difficulty: lastCalcContext.difficulty,
+                    estProvRank,
+                    estScore: typeof estScore === 'number' ? estScore : null,
+                    page: window.location.href,
+                    ts: Date.now()
+                };
+
+                try {
+                    if (navigator.sendBeacon) {
+                        const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+                        navigator.sendBeacon('feedback.php', blob);
+                        return;
+                    }
+                    await fetch('feedback.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                } catch (_) {
+                }
+            }
+
+            function applyFeedback(type) {
+                if (!lastCalcContext) return;
+                sendFeedbackEvent(type);
+                if (feedbackStatusEl) {
+                    if (type === 'high') feedbackStatusEl.innerText = '已记录：你认为本次预估偏高（仅用于数据采集）';
+                    else if (type === 'low') feedbackStatusEl.innerText = '已记录：你认为本次预估偏低（仅用于数据采集）';
+                    else feedbackStatusEl.innerText = '已记录：你认为本次预估不错（仅用于数据采集）';
+                    window.clearTimeout(applyFeedback._t);
+                    applyFeedback._t = window.setTimeout(() => {
+                        feedbackStatusEl.innerText = '';
+                    }, 2200);
+                }
+            }
+
+            if (feedbackHighBtn) feedbackHighBtn.addEventListener('click', () => applyFeedback('high'));
+            if (feedbackLowBtn) feedbackLowBtn.addEventListener('click', () => applyFeedback('low'));
+            if (feedbackOkBtn) feedbackOkBtn.addEventListener('click', () => applyFeedback('ok'));
+
+            document.getElementById('predictForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                if (typeof realData2024 === 'undefined') {
+                    alert('系统数据加载中，请稍后...');
+                    return;
+                }
+
+                const btn = document.getElementById('submitBtn');
+                const btnText = document.getElementById('btnText');
+                const loadingDots = document.getElementById('loadingDots');
+
+                // 视觉动效：模拟计算过程
+                btn.disabled = true;
+                btnText.innerText = '正在对标模拟考试大数据';
+                loadingDots.classList.remove('hidden');
+
+                const mockLinesByCity = {
+                    hefei: {
+                        physics: [
+                            { score: 598.5, name: '高优有效分', advise: '冲击顶尖985，注意细节' },
+                            { score: 520, name: '一本有效分', advise: '稳守一本，突破211' },
+                            { score: 467, name: '特控有效分', advise: '过特控线，加强主干知识' },
+                            { score: 326.5, name: '本科有效分', advise: '过本科线，由于数学/物理较难，请稳住心态' }
+                        ],
+                        history: [
+                            { score: 587.5, name: '高优有效分', advise: '发挥稳定，冲击双一流' },
+                            { score: 517.5, name: '一本有效分', advise: '稳过一本線，提升综合实力' },
+                            { score: 458.5, name: '特控有效分', advise: '过特控线，重点提升文综' },
+                            { score: 312.5, name: '本科有效分', advise: '过本科线，继续夯实基础知识' }
+                        ]
+                    }
+                };
+
+                setTimeout(() => {
+                    const subject = document.querySelector('input[name="subject"]:checked').value;
+                    const city = document.getElementById('city').value;
+                    const rank = parseInt(document.getElementById('rank').value);
+                    const score = parseFloat(document.getElementById('score').value);
+                    const difficulty = document.querySelector('input[name="difficulty"]:checked').value;
+                    const daysToGaokao = computeDaysToGaokao();
+
+                    if (!rank || rank < 1 || rank > 50000) {
+                        resetBtn();
+                        return;
+                    }
+
+                    const cityName = (typeof CITY_META !== 'undefined' && CITY_META[city] && CITY_META[city].name) ? CITY_META[city].name : '本市';
+                    const mockHeaderEl = document.getElementById('mockHeader');
+                    const lines = mockLinesByCity[city] && mockLinesByCity[city][subject] ? mockLinesByCity[city][subject] : null;
+
+                    if (!lines || !lines.length) {
+                        if (mockHeaderEl) mockHeaderEl.innerText = `2026${cityName}模拟考试·官方对标水平（暂未公布）`;
+                        document.getElementById('mockLevelName').innerText = '暂未公布';
+                        document.getElementById('mockLevelAdvise').innerText = `${cityName}官方模拟考试分数线暂未公布，数据库尚未更新；公布后会第一时间更新，结果更准确！`;
+                    } else {
+                        if (mockHeaderEl) mockHeaderEl.innerText = `2026${cityName}模拟考试·官方对标水平`;
+                        let levelName = "未达本科有效分";
+                        let levelAdvise = "低于本科有效分：先稳住基础分，主攻常规题型";
+                        for (const line of lines) {
+                            if (score >= line.score) {
+                                levelName = line.name;
+                                levelAdvise = line.advise;
+                                break;
+                            }
+                        }
+                        document.getElementById('mockLevelName').innerText = levelName;
+                        document.getElementById('mockLevelAdvise').innerText = levelAdvise;
+                    }
+
+                    lastCalcContext = { subject, city, rank, score, difficulty, daysToGaokao };
+                    updateOverlayResults(lastCalcContext);
+                    sendFeedbackEvent('predict');
+
+                    // Show Popup
+                    overlay.style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                    resetBtn();
+                }, 1200);
+
+                function resetBtn() {
+                    btn.disabled = false;
+                    btnText.innerText = '立即生成多维分析报表';
+                    loadingDots.classList.add('hidden');
+                }
+            });
+
+            function closeOverlay() {
+                overlay.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+
+            function copyWechat() {
+                const wechatId = 'A15655736069';
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(wechatId).then(() => {
+                        const textEl = document.getElementById('wechatText');
+                        textEl.textContent = '✓ 已复制，去微信粘贴搜索';
+                        setTimeout(() => { textEl.textContent = '添加微信：预约试卷分析'; }, 3000);
+                    });
+                } else {
+                    alert('微信号：A15655736069');
+                }
+            }
+
+            function roastCopyWechat() {
+                const btnText = document.getElementById('roastHelpBtn').innerText;
+                const wechatId = 'A15655736069';
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(wechatId).then(() => {
+                        let title = "复制成功";
+                        let msg = "微信号已复制！打开微信，粘贴到搜索框即可添加（微信号：" + wechatId + "）。";
+
+                        if (btnText.includes("自生自灭")) {
+                            title = "别走！还有反转";
+                            msg = "其实你还有救！刚才那是AI为了激发你的斗志在演戏。微信号已复制，打开微信粘贴搜索，加我后咱们把卷面失分一项项复盘清楚。";
+                        } else if (btnText.includes("受我一拜")) {
+                            title = "向学霸致敬";
+                            msg = "微信号已复制！打开微信粘贴搜索即可添加。期待交流学习方法与冲刺规划。";
+                        }
+
+                        showRoastAlert(title, msg);
+                    });
+                } else {
+                    showRoastAlert("微信号", "请手动复制：A15655736069，然后去微信粘贴搜索添加。");
+                }
+            }
+
+            function showRoastAlert(title, content) {
+                document.getElementById('roastAlertTitle').innerText = title;
+                document.getElementById('roastAlertContent').innerText = content;
+                const modal = document.getElementById('roastAlertModal');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+
+            function closeRoastAlert() {
+                document.getElementById('roastAlertModal').classList.add('hidden');
+                document.getElementById('roastAlertModal').classList.remove('flex');
+            }
+
+            function openTemplate() {
+                document.getElementById('templateOverlay').classList.remove('hidden');
+                document.getElementById('templateOverlay').classList.add('flex');
+            }
+
+            function closeTemplate() {
+                document.getElementById('templateOverlay').classList.add('hidden');
+                document.getElementById('templateOverlay').classList.remove('flex');
+            }
+        </script>
+</body>
+
+</html>
