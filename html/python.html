@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python: A Journey | Python：一段旅程</title>
+    <!-- 引入 GSAP 动画库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;500;700&family=Outfit:wght@300;500;700&display=swap');
+
+        :root {
+            --bg-color: #f4f7f6;
+            --py-blue: #3776ab;
+            --py-yellow: #ffd343;
+            --text-dark: #2c3e50;
+            --text-sub: #58697a;
+            --accent-red: #e74c3c;
+            --accent-green: #2ecc71;
+            --card-bg: #ffffff;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #111; /* 影院背景 */
+            font-family: 'Outfit', 'Noto Sans SC', sans-serif;
+        }
+
+        /* 舞台容器 */
+        #stage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            max-width: 1200px;
+            aspect-ratio: 16/9;
+            background: var(--bg-color);
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        /* 电影感遮幅 */
+        .cinematic-bar {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 0; /* 动画开始时展开 */
+            background: #000;
+            z-index: 100;
+        }
+        .bar-top { top: 0; }
+        .bar-bottom { bottom: 0; display: flex; justify-content: center; align-items: center; }
+
+        /* 字幕区域 */
+        #subtitle-container {
+            position: absolute;
+            bottom: 4%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            width: 80%;
+            z-index: 101;
+            opacity: 0;
+        }
+
+        .sub-cn {
+            color: #fff;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .sub-en {
+            color: rgba(255,255,255,0.8);
+            font-size: 1.1rem;
+            font-weight: 300;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            display: block;
+        }
+
+        /* 通用场景样式 */
+        .scene {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* 背景装饰元素 */
+        .bg-shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.05;
+            z-index: 0;
+        }
+
+        /* ----- 场景 1: 起源 ----- */
+        .calendar-wrapper {
+            position: relative;
+            text-align: center;
+        }
+        .calendar {
+            width: 200px;
+            height: 240px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transform-origin: top center;
+        }
+        .cal-header {
+            height: 60px;
+            background: var(--accent-red);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .cal-body {
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-dark);
+        }
+        .year { font-size: 1.5rem; color: var(--text-sub); }
+        .date { font-size: 5rem; font-weight: bold; line-height: 1; }
+        
+        .guido-avatar {
+            margin-top: 40px;
+            width: 120px;
+            height: 120px;
+            background: #eee;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+        }
+
+        /* ----- 场景 2: 名字 ----- */
+        .name-comparison {
+            display: flex;
+            gap: 100px;
+            align-items: center;
+        }
+        .icon-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+        }
+        .icon-circle {
+            width: 180px;
+            height: 180px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            font-size: 4rem;
+            position: relative;
+        }
+        .cross-out {
+            position: absolute;
+            width: 100%;
+            height: 6px;
+            background: var(--accent-red);
+            transform: rotate(-45deg) scaleX(0);
+        }
+        .check-mark {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            font-size: 3rem;
+            color: var(--accent-green);
+            opacity: 0;
+            background: white;
+            border-radius: 50%;
+        }
+        .label {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+
+        /* ----- 场景 3: 哲学 ----- */
+        .code-container {
+            display: flex;
+            gap: 50px;
+            width: 80%;
+            justify-content: center;
+        }
+        .code-block {
+            background: #282c34;
+            border-radius: 10px;
+            padding: 20px;
+            width: 45%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            font-family: 'Courier New', monospace;
+            position: relative;
+        }
+        .code-title {
+            color: #abb2bf;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #3e4451;
+            padding-bottom: 5px;
+        }
+        .code-lines div {
+            height: 10px;
+            background: #3e4451;
+            margin-bottom: 8px;
+            border-radius: 4px;
+        }
+        .complex-code .line { background: #e06c75; width: 80%; }
+        .simple-code .line { background: #98c379; width: 60%; }
+        
+        .zen-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--text-dark);
+            text-align: center;
+            width: 100%;
+            opacity: 0;
+        }
+
+        /* ----- 场景 4: 生态 ----- */
+        .solar-system {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .sun {
+            width: 140px;
+            height: 140px;
+            z-index: 10;
+        }
+        .orbit {
+            position: absolute;
+            border: 2px dashed rgba(55, 118, 171, 0.2);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .orbit-1 { width: 300px; height: 300px; }
+        .orbit-2 { width: 500px; height: 500px; }
+        
+        .planet {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            color: var(--py-blue);
+            top: 0; left: 50%; /* Initial pos */
+            margin-top: -30px;
+            margin-left: -30px;
+        }
+        .planet-label {
+            position: absolute;
+            top: 70px;
+            width: 120px;
+            text-align: center;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+
+        /* ----- 场景 5: 结尾 ----- */
+        .final-logo {
+            transform: scale(0.5);
+            opacity: 0;
+        }
+        .final-text {
+            margin-top: 30px;
+            font-size: 2.5rem;
+            color: var(--text-dark);
+            text-align: center;
+            opacity: 0;
+        }
+
+        /* SVG 图标通用 */
+        svg { width: 100%; height: 100%; }
+
+        /* 进度条 */
+        #progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: var(--accent-red);
+            width: 0%;
+            z-index: 200;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="stage">
+        <!-- 进度条 -->
+        <div id="progress-bar"></div>
+
+        <!-- 电影黑边 -->
+        <div class="cinematic-bar bar-top"></div>
+        <div class="cinematic-bar bar-bottom"></div>
+        
+        <!-- 字幕 -->
+        <div id="subtitle-container">
+            <span class="sub-cn"></span>
+            <span class="sub-en"></span>
+        </div>
+
+        <!-- 动态背景 -->
+        <div class="bg-shape" style="top: 10%; left: 10%; width: 300px; height: 300px; background: var(--py-blue);"></div>
+        <div class="bg-shape" style="bottom: 10%; right: 10%; width: 400px; height: 400px; background: var(--py-yellow);"></div>
+
+        <!-- 场景 1: 起源 (1989) -->
+        <div class="scene" id="scene-1">
+            <div class="calendar-wrapper">
+                <div class="calendar">
+                    <div class="cal-header">DECEMBER</div>
+                    <div class="cal-body">
+                        <div class="year">1989</div>
+                        <div class="date">25</div>
+                    </div>
+                </div>
+                <div class="guido-avatar">
+                    <!-- 简单的抽象人像 SVG -->
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="40" r="20" fill="#58697a"/>
+                        <path d="M20,90 Q50,60 80,90" fill="#58697a"/>
+                    </svg>
+                </div>
+                <div style="margin-top:10px; color:#58697a; font-weight:500;">Guido van Rossum</div>
+            </div>
+        </div>
+
+        <!-- 场景 2: 名字 (Monty Python) -->
+        <div class="scene" id="scene-2">
+            <div class="name-comparison">
+                <div class="icon-box" id="snake-box">
+                    <div class="icon-circle">
+                        🐍
+                        <div class="cross-out"></div>
+                    </div>
+                    <div class="label">Snake</div>
+                </div>
+                <div class="icon-box" id="circus-box">
+                    <div class="icon-circle">
+                        🎪
+                        <div class="check-mark">✔</div>
+                    </div>
+                    <div class="label">Monty Python</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 场景 3: 哲学 (Zen of Python) -->
+        <div class="scene" id="scene-3">
+            <div class="code-container">
+                <div class="code-block complex-code">
+                    <div class="code-title">Other Languages</div>
+                    <div class="code-lines">
+                        <div style="width:90%"></div><div style="width:70%"></div><div style="width:85%"></div>
+                        <div style="width:40%"></div><div style="width:60%"></div><div style="width:90%"></div>
+                        <div style="width:50%"></div><div style="width:80%"></div>
+                    </div>
+                </div>
+                <div class="code-block simple-code">
+                    <div class="code-title">Python</div>
+                    <div class="code-lines">
+                        <div style="width:100%; background:none; color: #98c379; font-weight:bold; height:auto; padding:5px 0;">print("Hello")</div>
+                    </div>
+                </div>
+            </div>
+            <div class="zen-text">Simple is better<br>than complex.</div>
+        </div>
+
+        <!-- 场景 4: 生态 (Batteries Included) -->
+        <div class="scene" id="scene-4">
+            <div class="solar-system">
+                <div class="sun">
+                    <!-- Python Logo SVG -->
+                    <svg viewBox="0 0 100 100">
+                        <defs><linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#3776ab"/><stop offset="100%" style="stop-color:#20507a"/></linearGradient><linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#ffd343"/><stop offset="100%" style="stop-color:#e0bb2a"/></linearGradient></defs>
+                        <path fill="url(#g1)" d="M50,10 C35,10 32,18 32,18 L32,30 L65,30 L65,35 L20,35 L20,18 C20,8 28,2 50,2 C72,2 78,10 78,16 L78,25 L68,25 L68,16 C68,12 66,10 50,10 Z M60,14 A3,3 0 1,1 60,14.1 Z"/>
+                        <path fill="url(#g2)" d="M50,90 C65,90 68,82 68,82 L68,70 L35,70 L35,65 L80,65 L80,82 C80,92 72,98 50,98 C28,98 22,90 22,84 L22,75 L32,75 L32,84 C32,88 34,90 50,90 Z M40,86 A3,3 0 1,1 40,85.9 Z"/>
+                    </svg>
+                </div>
+                
+                <div class="orbit orbit-1"></div>
+                <div class="orbit orbit-2"></div>
+
+                <!-- 行星 -->
+                <div class="planet p1">🌐<div class="planet-label">Web Dev</div></div>
+                <div class="planet p2">🤖<div class="planet-label">AI & ML</div></div>
+                <div class="planet p3">📊<div class="planet-label">Data Science</div></div>
+                <div class="planet p4">⚙️<div class="planet-label">Automation</div></div>
+            </div>
+        </div>
+
+        <!-- 场景 5: 结尾 -->
+        <div class="scene" id="scene-5" style="flex-direction: column;">
+            <div class="final-logo" style="width: 200px; height: 200px;">
+                <svg viewBox="0 0 100 100">
+                    <path fill="#3776ab" d="M50,10 C35,10 32,18 32,18 L32,30 L65,30 L65,35 L20,35 L20,18 C20,8 28,2 50,2 C72,2 78,10 78,16 L78,25 L68,25 L68,16 C68,12 66,10 50,10 Z M60,14 A3,3 0 1,1 60,14.1 Z"/>
+                    <path fill="#ffd343" d="M50,90 C65,90 68,82 68,82 L68,70 L35,70 L35,65 L80,65 L80,82 C80,92 72,98 50,98 C28,98 22,90 22,84 L22,75 L32,75 L32,84 C32,88 34,90 50,90 Z M40,86 A3,3 0 1,1 40,85.9 Z"/>
+                </svg>
+            </div>
+            <div class="final-text">Python</div>
+            <div style="color:var(--text-sub); margin-top:10px;">The language for everyone.</div>
+        </div>
+
+    </div>
+
+    <script>
+        // 注册 GSAP 插件
+        gsap.registerPlugin();
+
+        // 获取元素
+        const subtitles = document.getElementById('subtitle-container');
+        const subCN = document.querySelector('.sub-cn');
+        const subEN = document.querySelector('.sub-en');
+        const progressBar = document.getElementById('progress-bar');
+
+        // 字幕更新函数
+        function setSubtitle(cn, en) {
+            // 淡出旧字幕
+            gsap.to(subtitles, { duration: 0.3, opacity: 0, onComplete: () => {
+                subCN.innerText = cn;
+                subEN.innerText = en;
+                // 淡入新字幕
+                gsap.to(subtitles, { duration: 0.5, opacity: 1 });
+            }});
+        }
+
+        // 清除字幕
+        function clearSubtitle() {
+            gsap.to(subtitles, { duration: 0.5, opacity: 0 });
+        }
+
+        // 主时间轴
+        const tl = gsap.timeline({ delay: 0.5 });
+        const totalDuration = 28; // 估算总时长用于进度条
+
+        // --- 0. 开场设置 ---
+        tl.to('.cinematic-bar', { duration: 1.5, height: '10%', ease: 'power2.inOut' })
+          .to('.bg-shape', { duration: 20, rotation: 360, repeat: -1, ease: "linear" }, 0); // 背景持续旋转
+
+        // 模拟进度条
+        gsap.to(progressBar, { width: '100%', duration: totalDuration, ease: 'linear' });
+
+        // --- 1. 场景一：起源 ---
+        tl.set('#scene-1', { autoAlpha: 1 })
+          .call(setSubtitle, ["1989年的那个寒冷圣诞节...", "In the cold Christmas of 1989..."])
+          .from('.calendar', { duration: 1, y: -50, opacity: 0, ease: 'back.out(1.7)' })
+          .from('.guido-avatar', { duration: 0.8, scale: 0, ease: 'elastic.out(1, 0.5)' }, "-=0.5")
+          
+          .call(setSubtitle, ["程序员吉多·范罗苏姆为了打发时间，开启了一个新项目。", "Programmer Guido van Rossum started a hobby project."])
+          .to('.calendar-wrapper', { duration: 1, scale: 1.1, ease: 'power1.inOut' })
+          .to('#scene-1', { duration: 0.5, autoAlpha: 0, delay: 3 });
+
+        // --- 2. 场景二：命名 ---
+        tl.set('#scene-2', { autoAlpha: 1 })
+          .call(setSubtitle, ["他给它起名为 Python。但这并不是因为蟒蛇。", "He named it Python. But not after the snake."])
+          .to('#snake-box', { duration: 0.8, opacity: 1, y: 0, from: {y: 50} })
+          .to('.cross-out', { duration: 0.5, scaleX: 1, ease: 'power2.inOut', delay: 0.5 })
+          .to('#snake-box', { duration: 0.5, opacity: 0.3 })
+          
+          .call(setSubtitle, ["而是致敬他最爱的喜剧团体：蒙提·派森的飞行马戏团。", "It was a tribute to the comedy group 'Monty Python's Flying Circus'."])
+          .to('#circus-box', { duration: 0.8, opacity: 1, y: 0, from: {y: 50} })
+          .to('.check-mark', { duration: 0.4, opacity: 1, scale: 1.2, ease: 'back.out' })
+          .to('#scene-2', { duration: 0.5, autoAlpha: 0, delay: 3 });
+
+        // --- 3. 场景三：哲学 ---
+        tl.set('#scene-3', { autoAlpha: 1 })
+          .call(setSubtitle, ["不同于复杂的机器语言，Python 追求极致的可读性。", "Unlike complex languages, Python focuses on readability."])
+          .from('.complex-code', { duration: 0.8, x: -50, opacity: 0 })
+          .from('.simple-code', { duration: 0.8, x: 50, opacity: 0 }, "-=0.6")
+          
+          .call(setSubtitle, ["它接近人类语言，简单胜于复杂。", "It's close to human language. Simple is better than complex."])
+          .to('.complex-code', { duration: 0.5, opacity: 0.1, filter: "blur(2px)" })
+          .to('.simple-code', { duration: 0.5, scale: 1.1, boxShadow: "0 0 30px rgba(46, 204, 113, 0.4)" })
+          
+          .to('.code-container', { duration: 0.5, opacity: 0, delay: 1 })
+          .to('.zen-text', { duration: 1, opacity: 1, y: -20, ease: "power2.out" })
+          .to('#scene-3', { duration: 0.5, autoAlpha: 0, delay: 2 });
+
+        // --- 4. 场景四：生态 ---
+        tl.set('#scene-4', { autoAlpha: 1 })
+          .call(setSubtitle, ["它自带“电池”，拥有庞大的生态系统。", "It comes with 'batteries included' and a massive ecosystem."])
+          .from('.sun', { duration: 1, scale: 0, rotation: -180, ease: 'back.out' })
+          .from('.orbit', { duration: 1, opacity: 0, scale: 0.5, stagger: 0.2 }, "-=0.5")
+          
+          // 轨道动画设置
+          .add("orbitStart")
+          
+        // 行星进入
+        const planets = ['.p1', '.p2', '.p3', '.p4'];
+        // 手动设置行星位置动画 (模拟轨道运动)
+        // Orbit 1: p1, p2
+        tl.set('.p1', { x: 150, y: 0 }); // 300px width / 2
+        tl.set('.p2', { x: -150, y: 0 });
+        // Orbit 2: p3, p4
+        tl.set('.p3', { x: 0, y: 250 }); // 500px width / 2
+        tl.set('.p4', { x: 0, y: -250 });
+
+        tl.from(planets, { duration: 0.8, scale: 0, opacity: 0, ease: 'back.out', stagger: 0.2 }, "orbitStart")
+        
+        // 旋转动画 (使用 GSAP 动画整个容器或分别计算，这里简单做视觉旋转)
+        gsap.to('.orbit-1', { rotation: 360, duration: 10, repeat: -1, ease: "linear" });
+        gsap.to('.orbit-2', { rotation: -360, duration: 15, repeat: -1, ease: "linear" });
+        // 为了让行星跟着轨道转，我们需要把行星放进轨道div里，或者用motionPath。
+        // 为了简化单文件代码，我们让行星做圆形运动。
+        
+        // 修正：更简单的轨道动画实现
+        // 让行星实际上绕中心旋转
+        gsap.to('.p1', { motionPath: { path: "M-150,0 a150,150 0 1,0 300,0 a150,150 0 1,0 -300,0", alignOrigin: [0.5, 0.5] }, duration: 10, repeat: -1, ease: "linear" });
+        
+        // 重新构建场景4的动画逻辑以确保视觉正确
+        // 既然轨道在转，我们把行星作为轨道的子元素会更简单，但HTML结构已定。
+        // 我们用简单的旋转动画：
+        // 实际上，上面的CSS .planet 是 absolute 在 container 里。
+        // 我们给 .orbit-1 添加行星作为子元素会最稳妥，但为了不破坏上面的结构，我们用一种视觉欺骗：
+        // 让 .solar-system 旋转？不，那 logo 也会转。
+        
+        // 动态脚本修正：让行星动起来
+        const orbit1Planets = ['.p1', '.p2'];
+        const orbit2Planets = ['.p3', '.p4'];
+        
+        // 简单的圆周运动函数
+        function orbitAnim(elem, radius, duration, startAngle) {
+            gsap.to(elem, {
+                duration: duration,
+                repeat: -1,
+                ease: "linear",
+                modifiers: {
+                    x: function() { return Math.cos(this.time() * (Math.PI * 2 / duration) + startAngle) * radius; },
+                    y: function() { return Math.sin(this.time() * (Math.PI * 2 / duration) + startAngle) * radius; }
+                }
+            });
+        }
+        
+        // 启动轨道动画
+        orbitAnim('.p1', 150, 8, 0);
+        orbitAnim('.p2', 150, 8, Math.PI);
+        orbitAnim('.p3', 250, 12, Math.PI / 2);
+        orbitAnim('.p4', 250, 12, -Math.PI / 2);
+
+        tl.call(setSubtitle, ["从网站开发、数据科学，到人工智能...", "From Web Development, Data Science, to AI..."])
+          .to('.p1', { scale: 1.3, duration: 0.5, yoyo: true, repeat: 1 })
+          .to('.p3', { scale: 1.3, duration: 0.5, yoyo: true, repeat: 1 })
+          .to('.p2', { scale: 1.3, duration: 0.5, yoyo: true, repeat: 1 })
+          
+          .call(setSubtitle, ["Python 连接着数字世界的万物。", "Python connects everything in the digital world."])
+          .to('.solar-system', { duration: 1, scale: 0.8, delay: 1 }) // Zoom out
+          .to('#scene-4', { duration: 0.5, autoAlpha: 0, delay: 2 });
+
+        // --- 5. 场景五：结尾 ---
+        tl.set('#scene-5', { autoAlpha: 1 })
+          .call(setSubtitle, ["简单、强大、无处不在。", "Simple. Powerful. Everywhere."])
+          .to('.final-logo', { duration: 1.5, scale: 1, opacity: 1, ease: 'power3.out' })
+          .to('.final-text', { duration: 1, opacity: 1, y: 0, from: {y: 20} }, "-=1")
+          
+          .call(setSubtitle, ["这就是 Python，通往未来的桥梁。", "This is Python. Your bridge to the future."])
+          .to('.final-logo', { duration: 10, rotation: 10, ease: 'linear' }, "-=1") // 缓慢旋转
+          .call(clearSubtitle, [], "+=3");
+
+    </script>
+</body>
+</html>
