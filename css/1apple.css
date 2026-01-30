@@ -1,0 +1,619 @@
+/* =====================================================
+   Apple Style Article UI - Full CSS (Updated)
+   Author: ChatGPT
+   ===================================================== */
+
+
+/* ================== 1. Design Tokens ================== */
+
+:root {
+
+    --bg-color: #f5f5f7;
+    --container-bg: #ffffff;
+
+    --text-primary: #1d1d1f;
+    --text-secondary: #86868b;
+
+    --border-color: rgba(0, 0, 0, 0.06);
+
+    --accent-color: #0071e3;
+
+    --nav-bg: rgba(255, 255, 255, 0.7);
+
+    --blur-bg: blur(20px) saturate(180%);
+
+    --font-stack:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Text",
+        "PingFang SC",
+        "Noto Sans SC",
+        sans-serif;
+}
+
+
+/* ================== Dark Mode ================== */
+
+html.dark {
+
+    --bg-color: #000000;
+    --container-bg: #1c1c1e;
+
+    --text-primary: #f5f5f7;
+    --text-secondary: #a1a1a6;
+
+    --border-color: rgba(255, 255, 255, 0.12);
+
+    --accent-color: #2997ff;
+
+    --nav-bg: rgba(28, 28, 30, 0.75);
+}
+
+
+/* ================== 2. Reset ================== */
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+
+    font-family: var(--font-stack);
+
+    background: var(--bg-color);
+
+    color: var(--text-primary);
+
+    line-height: 1.7;
+
+    -webkit-font-smoothing: antialiased;
+
+    transition: background .3s, color .3s;
+}
+
+
+/* ================== 3. Progress Bar ================== */
+
+#progress-bar {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 0%;
+
+    height: 3px;
+
+    background: var(--accent-color);
+
+    z-index: 10000;
+
+    transition: width .15s linear;
+}
+
+
+/* ================== 3.5. Top Navigation Bar (NEW) ================== */
+
+.top-nav {
+
+    position: fixed;
+
+    top: 0;
+
+    left: 0;
+
+    right: 0;
+
+    height: 56px;
+
+    background: var(--nav-bg);
+
+    backdrop-filter: var(--blur-bg);
+    -webkit-backdrop-filter: var(--blur-bg);
+
+    border-bottom: 1px solid var(--border-color);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 20px;
+
+    z-index: 9999;
+
+    transition: all .3s ease;
+}
+
+
+.nav-left,
+.nav-right {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+.nav-title {
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    color: var(--text-primary);
+
+    letter-spacing: -.03em;
+
+    text-align: center;
+
+    flex: 1;
+
+    position: absolute;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+}
+
+
+.nav-btn {
+
+    width: 36px;
+
+    height: 36px;
+
+    border-radius: 50%;
+
+    background: rgba(0, 0, 0, 0.08);
+
+    border: none;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    color: var(--text-primary);
+
+    transition: all .2s ease;
+
+    flex-shrink: 0;
+}
+
+
+html.dark .nav-btn {
+
+    background: rgba(255, 255, 255, 0.12);
+}
+
+
+.nav-btn:active {
+
+    opacity: 0.6;
+
+    transform: scale(0.95);
+}
+
+
+.nav-btn:hover {
+
+    background: rgba(0, 0, 0, 0.12);
+}
+
+
+html.dark .nav-btn:hover {
+
+    background: rgba(255, 255, 255, 0.16);
+}
+
+
+.nav-btn svg {
+
+    width: 20px;
+
+    height: 20px;
+
+    stroke: currentColor;
+
+    fill: none;
+
+    stroke-width: 2;
+
+    stroke-linecap: round;
+
+    stroke-linejoin: round;
+}
+
+
+.nav-btn svg path {
+
+    fill: currentColor;
+
+    stroke: none;
+}
+
+
+/* ================== 4. Container ================== */
+
+.container {
+
+    max-width: 740px;
+
+    margin: 80px auto 140px;
+
+    background: var(--container-bg);
+
+    padding: 60px 40px;
+
+    border-radius: 28px;
+
+    border: 1px solid var(--border-color);
+
+    box-shadow: 0 12px 40px rgba(0,0,0,.04);
+
+    transition: all .3s ease;
+}
+
+
+h1 {
+
+    font-size: 36px;
+
+    font-weight: 700;
+
+    letter-spacing: -.03em;
+
+    text-align: center;
+
+    margin-bottom: 12px;
+}
+
+
+.time {
+
+    text-align: center;
+
+    font-size: 14px;
+
+    color: var(--text-secondary);
+
+    margin-bottom: 40px;
+}
+
+
+/* ================== 5. Article ================== */
+
+.article-content {
+
+    font-size: 18px;
+
+    transition: font-size .2s;
+}
+
+
+.article-content.large-text {
+
+    font-size: 21px;
+}
+
+
+.article-content p {
+
+    margin-bottom: 1.4em;
+
+    text-align: justify;
+}
+
+
+.article-content img {
+
+    width: 100%;
+
+    border-radius: 12px;
+
+    margin: 20px 0;
+}
+
+
+/* ================== 6. Bottom Nav ================== */
+
+.bottom-nav {
+
+    position: fixed;
+
+    bottom: 24px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 92%;
+
+    max-width: 420px;
+
+    height: 64px;
+
+    background: var(--nav-bg);
+
+    backdrop-filter: var(--blur-bg);
+    -webkit-backdrop-filter: var(--blur-bg);
+
+    border-radius: 32px;
+
+    border: 1px solid var(--border-color);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-around;
+
+    box-shadow: 0 8px 32px rgba(0,0,0,.18);
+
+    z-index: 9999;
+}
+
+
+.nav-item {
+
+    flex: 1;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 4px;
+
+    font-size: 11px;
+
+    color: var(--text-primary);
+
+    background: none;
+
+    border: none;
+
+    cursor: pointer;
+
+    transition: opacity .2s;
+}
+
+
+.nav-item i {
+
+    font-size: 20px;
+}
+
+
+.nav-item:active {
+
+    opacity: .5;
+}
+
+
+/* ================== 7. Floating ================== */
+
+.theme-toggle {
+
+    position: fixed;
+
+    top: 22px;
+
+    right: 22px;
+
+    width: 44px;
+
+    height: 44px;
+
+    border-radius: 50%;
+
+    background: var(--container-bg);
+
+    border: 1px solid var(--border-color);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    color: var(--text-primary);
+
+    box-shadow: 0 4px 14px rgba(0,0,0,.12);
+
+    z-index: 10001;
+}
+
+
+#scrollTopBtn {
+
+    position: fixed;
+
+    bottom: 110px;
+
+    right: 22px;
+
+    width: 40px;
+
+    height: 40px;
+
+    border-radius: 50%;
+
+    background: var(--container-bg);
+
+    border: 1px solid var(--border-color);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    color: var(--text-primary);
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transition: all .25s;
+
+    z-index: 9998;
+}
+
+
+#scrollTopBtn.show {
+
+    opacity: 1;
+
+    visibility: visible;
+}
+
+
+/* ================== 8. SVG Icons ================== */
+
+.svg-icon {
+
+    width: 22px;
+
+    height: 22px;
+
+    stroke: currentColor;
+
+    fill: none;
+
+    stroke-width: 2;
+
+    stroke-linecap: round;
+
+    stroke-linejoin: round;
+}
+
+
+.svg-icon path {
+
+    fill: currentColor;
+
+    stroke: none;
+}
+
+
+.sun-icon circle {
+
+    fill: none;
+}
+
+
+/* ================== 9. View Transition ================== */
+
+::view-transition-old(root),
+::view-transition-new(root) {
+
+    animation: none;
+
+    mix-blend-mode: normal;
+}
+
+
+::view-transition-old(root) {
+
+    z-index: 1;
+}
+
+
+::view-transition-new(root) {
+
+    z-index: 9999;
+}
+
+
+.dark::view-transition-old(root) {
+
+    z-index: 9999;
+}
+
+
+.dark::view-transition-new(root) {
+
+    z-index: 1;
+}
+
+
+/* ================== 10. Mobile ================== */
+
+@media (max-width: 768px) {
+
+    .container {
+
+        margin: 60px 12px 120px;
+
+        padding: 36px 20px;
+
+        border-radius: 20px;
+    }
+
+
+    h1 {
+
+        font-size: 28px;
+    }
+
+
+    .article-content {
+
+        font-size: 17px;
+    }
+
+
+    .article-content.large-text {
+
+        font-size: 20px;
+    }
+
+    .top-nav {
+
+        height: 52px;
+
+        padding: 0 16px;
+    }
+
+    .nav-title {
+
+        font-size: 15px;
+    }
+
+    .nav-btn {
+
+        width: 32px;
+
+        height: 32px;
+    }
+
+    .nav-btn svg {
+
+        width: 18px;
+
+        height: 18px;
+    }
+}
