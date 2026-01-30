@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Python：一门简洁而强大的编程语言</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="https://shuo156.github.io/css/1apple.css">
+
+    <script src="https://shuo156.github.io/js/1apple.js"></script>
+
+    <style>
+        /* 强制覆盖：标题居中及扩展样式 */
+        h1 {
+            text-align: center !important;
+            margin-top: 20px;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.03em;
+        }
+
+        .meta-info {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .article-content p {
+            margin: 24px 0;
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        /* 扩展：iOS 风格的卡片脚注 */
+        .footer-note {
+            margin-top: 60px;
+            padding: 20px;
+            background: rgba(128, 128, 128, 0.05);
+            border-radius: 15px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ============= TOP NAVIGATION BAR ============= -->
+    <nav class="top-nav">
+        <div class="nav-left">
+            <button class="nav-btn" id="backBtn" title="返回">
+                <svg viewBox="0 0 24 24">
+                    <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                </svg>
+            </button>
+        </div>
+        
+        <div class="nav-title" id="navTitle">Python 简介</div>
+        
+        <div class="nav-right">
+            <button class="nav-btn" id="shareBtn" title="分享">
+                <svg viewBox="0 0 24 24">
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    <polyline points="16 6 12 2 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    <line x1="12" y1="2" x2="12" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                </svg>
+            </button>
+            <button class="nav-btn" id="themeToggleNav" title="切换主题">
+                <svg class="svg-icon sun-icon" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="5"/>
+                    <line x1="12" y1="1" x2="12" y2="3"/>
+                    <line x1="12" y1="21" x2="12" y2="23"/>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                    <line x1="1" y1="12" x2="3" y2="12"/>
+                    <line x1="21" y1="12" x2="23" y2="12"/>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ============= PROGRESS BAR ============= -->
+    <div id="progress-bar"></div>
+
+    <!-- ============= 旧风格的浮动主题按钮（可选保留，向后兼容）============= -->
+    <!-- 如果你想保留原来的圆形浮动按钮，取消下面注释 -->
+    <!-- <button class="theme-toggle" id="themeToggleFloat" onclick="toggleTheme(event)">
+        <i class="fa-solid fa-sun" id="themeIcon"></i>
+    </button> -->
+
+    <!-- ============= 返回顶部按钮 ============= -->
+    <button id="scrollTopBtn">
+        <svg class="svg-icon" viewBox="0 0 24 24">
+            <polyline points="18 15 12 9 6 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"></polyline>
+        </svg>
+    </button>
+
+    <!-- ============= 主要内容 ============= -->
+    <div class="container">
+
+        <h1>Python：一门简洁而强大的编程语言</h1>
+
+        <div class="meta-info">
+            <span><i class="fa-regular fa-calendar"></i> 2026-01-30 19:48</span>
+            <span><i class="fa-regular fa-file-lines"></i> 1010 字</span>
+            <span><i class="fa-regular fa-clock"></i> 预计阅读 3 分钟</span>
+        </div>
+
+        <div class="article-content" id="articleBody">
+            <p>　　Python是一种高级、解释型的编程语言，由Guido van Rossum于1991年首次发布。它以简洁易读的语法而闻名，使得初学者能够快速上手，同时也受到专业开发者的青睐。Python的设计哲学强调代码的可读性和简洁性，这体现在其"优雅"、"明确"、"简单"的原则中，使其成为教育、科学计算和快速原型开发的理想选择。</p>
+            <p>　　Python的诞生可以追溯到1980年代末，当时Guido van Rossum在荷兰国家数学和计算机科学研究所工作。他旨在创建一门语言，既能像C一样强大，又比Perl更易读，从而提升开发效率。Python的名字来源于英国喜剧团体Monty Python，反映了其幽默和轻松的风格。随着时间的推移，Python经历了多个版本更新，从Python 2到Python 3，目前Python 3已成为主流，持续推动着语言的现代化和性能优化。</p>
+            <p>　　Python的主要特点包括动态类型、自动内存管理和丰富的标准库，这些特性降低了编程的复杂性。其语法简洁，使用缩进来定义代码块，避免了繁琐的括号，使得代码结构清晰易读。Python支持多种编程范式，如面向对象、命令式、函数式和过程式编程，提供了灵活的编程方式。此外，Python拥有庞大的第三方库生态系统，如NumPy用于科学计算、Pandas用于数据分析、Django用于Web开发，极大地扩展了其应用范围。</p>
+            <p>　　Python在各个领域都有广泛的应用。在数据科学和机器学习中，库如TensorFlow、PyTorch和Scikit-learn使其成为首选工具，助力人工智能研究和实践。在Web开发中，框架如Flask和Django帮助开发者快速构建高性能网站和API。此外，Python在自动化脚本、网络爬虫、游戏开发、金融分析和科学研究中也随处可见其身影。它的跨平台特性使其能在Windows、Linux和macOS上无缝运行，进一步增强了其普适性。</p>
+            <p>　　学习Python的资源非常丰富，包括官方文档、在线课程（如Coursera、edX）、书籍和社区论坛（如Stack Overflow）。Python的活跃全球社区为开发者提供了持续的支持和协作机会，推动了语言的不断进化。未来，随着人工智能、大数据和物联网的快速发展，Python的地位预计将进一步巩固。对于初学者和有经验的程序员来说，掌握Python都将是一笔宝贵的资产，它不仅提升个人技能，还为职业发展打开广阔的大门。</p>
+        </div>
+
+        <div class="footer-note">
+            <p>© 2026 All Rights Reserved.</p>
+        </div>
+    </div>
+
+    <!-- ============= BOTTOM NAV ============= -->
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>首页</span>
+        </a>
+
+        <button class="nav-item" onclick="toggleFontSize()">
+            <i class="fa-solid fa-font"></i>
+            <span>字号</span>
+        </button>
+
+        <button class="nav-item" onclick="sharePage()">
+            <i class="fa-solid fa-arrow-up-from-bracket"></i>
+            <span>分享</span>
+        </button>
+    </nav>
+</body>
+
+</html>
